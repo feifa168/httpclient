@@ -47,15 +47,16 @@ public class UserNoSetter {
 
 
     @JsonCreator
-    public UserNoSetter(@JsonProperty("name") String name,
-                        @JsonProperty("score") HashMap<String, Integer> score,
-                        @JsonProperty("addr") Address addr) {
+    public UserNoSetter(@JsonProperty("_name123") String name,
+                        @JsonProperty("score1") HashMap<String, Integer> score,
+                        @JsonProperty("addr1") Address addr) {
         this.name = name;
-        this.score = score;
-        this.addr = addr;
+        this._score = score;
+        this._addr = addr;
     }
 
+    @JsonProperty("_name")
     private String name;
-    private HashMap<String, Integer> score;
-    private Address addr;
+    private HashMap<String, Integer> _score;
+    private Address _addr;
 }

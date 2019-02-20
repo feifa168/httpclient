@@ -37,25 +37,4 @@ public class TestUserNoSetter {
         UserNoSetter user2 = mapper.readValue(jsonString, UserNoSetter.class);
         System.out.println(mapper.writeValueAsString(user2));
     }
-    public static void main(String[] args) throws IOException {
-        HashMap<String, Integer> score = new HashMap<>();
-        score.put("yuwen", 99);
-        score.put("english", 97);
-
-        List<String> street = new ArrayList<>();
-        street.add("jiangsu");
-        street.add("nanjing");
-        UserNoSetter.Address addr = new UserNoSetter.Address("beijing", street);
-        UserNoSetter user = new UserNoSetter("tom", score, addr);
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.setVisibility(ALL, NONE).setVisibility(FIELD, ANY);
-
-
-        String jsonString = mapper.writeValueAsString(user);
-        System.out.println(jsonString);
-
-        UserNoSetter user2 = mapper.readValue(jsonString, UserNoSetter.class);
-        System.out.println(mapper.writeValueAsString(user2));
-    }
 }
