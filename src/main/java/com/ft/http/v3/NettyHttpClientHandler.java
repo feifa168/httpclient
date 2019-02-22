@@ -13,7 +13,11 @@ import java.nio.CharBuffer;
 public class NettyHttpClientHandler extends ChannelInboundHandlerAdapter {
     private ByteBufToBytes reader;
     private String contentType;
+    private NettyHttpClient client;
 
+    public NettyHttpClientHandler(NettyHttpClient client) {
+        this.client = client;
+    }
     private void displayBufHex(byte[] buf, boolean hex) {
         int len = buf.length;
         for (int i=0; i<len; i++) {
@@ -60,6 +64,7 @@ public class NettyHttpClientHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg)
             throws Exception {
+        System.out.println("remoteAddress() is " + ctx.channel().remoteAddress() + " localAddress is" + ctx.channel().localAddress());
         if (msg instanceof HttpResponse) {
             HttpResponse response = (HttpResponse) msg;
             System.out.println("HttpResponse Header: "+ response.headers());
@@ -97,13 +102,16 @@ public class NettyHttpClientHandler extends ChannelInboundHandlerAdapter {
 
             if (finish) {
                 System.out.println(reader.toString());
-                CharBuffer cb = CharBuffer.allocate(40960);
-                String resultStr = new String(reader.readFull(), "utf8");
-                String s = new String(resultStr.getBytes("utf-8"), "utf8");
-//                ObjectMapper mapper = new ObjectMapper();
-//                String s2 = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(s);
-                System.out.println("Server said:" + s);
-                ctx.close();
+
+                byte[] result = reader.readFull();
+                client.setResult(result);
+
+//                String resultStr = new String(reader.readFull(), "utf8");
+//                String s = new String(resultStr.getBytes("utf-8"), "utf8");
+////                ObjectMapper mapper = new ObjectMapper();
+////                String s2 = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(s);
+//                System.out.println("Server said:" + s);
+                //ctx.close();
             }
         }
         System.out.println("...");

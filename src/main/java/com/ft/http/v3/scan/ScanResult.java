@@ -1,4 +1,4 @@
-package com.ft.http.v3.task;
+package com.ft.http.v3.scan;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -39,7 +39,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 //         "total": 74
 //     }
 // }
-public class Scan {
+public class ScanResult {
 
     public static class Vulnerabilities {
         @JsonCreator
@@ -53,6 +53,22 @@ public class Scan {
             this.total = total;
         }
 
+        public int getCritical() {
+            return critical;
+        }
+
+        public int getModerate() {
+            return moderate;
+        }
+
+        public int getSevere() {
+            return severe;
+        }
+
+        public int getTotal() {
+            return total;
+        }
+
         private int critical;
         private int moderate;
         private int severe;
@@ -60,10 +76,10 @@ public class Scan {
     }
 
     @JsonCreator
-    public Scan(@JsonProperty("assets") int assets,
+    public ScanResult(@JsonProperty("assets") int assets,
                 @JsonProperty("duration") String duration,
                 @JsonProperty("endTime") String endTime,
-                @JsonProperty("engineId") String engineId,
+                @JsonProperty("engineId") int engineId,
                 @JsonProperty("engineName") String engineName,
                 @JsonProperty("id") int id,
                 @JsonProperty("scanType") String scanType,
@@ -84,10 +100,58 @@ public class Scan {
         this.vulnerabilities = vulnerabilities;
     }
 
+    public int getAssets() {
+        return assets;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public int getEngineId() {
+        return engineId;
+    }
+
+    public String getEngineName() {
+        return engineName;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getScanType() {
+        return scanType;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public String getStartedBy() {
+        return startedBy;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public Vulnerabilities getVulnerabilities() {
+        return vulnerabilities;
+    }
+
+    public boolean finished() {
+        return ("FINISHED".equals(status) || "STOPPED".equals(status));
+    }
+
     private int     assets;     // 资产数
     private String  duration;   // 持续时间
     private String  endTime;
-    private String  engineId;
+    private int     engineId;
     private String  engineName;
     private int     id;
     private String  scanType;

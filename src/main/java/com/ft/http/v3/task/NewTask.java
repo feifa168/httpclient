@@ -35,6 +35,10 @@ public class NewTask {
                     this.addresses = addresses;
                 }
 
+                public List<String> getAddresses() {
+                    return addresses;
+                }
+
                 private List<String> addresses;
             }
 
@@ -43,6 +47,14 @@ public class NewTask {
                           @JsonProperty("excludedTargets") Targets excludedTargets) {
                 this.includedTargets = includedTargets;
                 this.excludedTargets = excludedTargets;
+            }
+
+            public Targets getIncludedTargets() {
+                return includedTargets;
+            }
+
+            public Targets getExcludedTargets() {
+                return excludedTargets;
             }
 
             private Targets includedTargets;
@@ -54,7 +66,26 @@ public class NewTask {
             this.assets = assets;
         }
 
+        public Assets getAssets() {
+            return assets;
+        }
+
         private Assets assets;
+    }
+
+    public static class Connection {
+        @JsonCreator
+        public Connection(@JsonProperty("id") int id,
+                          @JsonProperty("name") String name,
+                          @JsonProperty("type") String type) {
+            this.id = id;
+            this.name = name;
+            this.type = type;
+        }
+
+        private int id;
+        private String name;
+        private String type;
     }
 
     @JsonCreator
@@ -74,34 +105,32 @@ public class NewTask {
         this.scanTemplateId = scanTemplateId;
     }
 
-//    @JsonCreator
-//    public NewTask(@JsonProperty("description") String description,
-//                   @JsonProperty("engineId") int engineId,
-//                   @JsonProperty("importance") String importance,
-//                   @JsonProperty("name") String name,
-//                   @JsonProperty("connection") Connection connection,
-//                   @JsonProperty("scanTemplateId") String scanTemplateId) {
-//        this.description = description;
-//        this.engineId = engineId;
-//        this.importance = importance;
-//        this.name = name;
-//        this.connection = connection;
-//        this.scanTemplateId = scanTemplateId;
-//    }
+    public String getDescription() {
+        return description;
+    }
 
-    public static class Connection {
-        @JsonCreator
-        public Connection(@JsonProperty("id") int id,
-                          @JsonProperty("name") String name,
-                          @JsonProperty("type") String type) {
-            this.id = id;
-            this.name = name;
-            this.type = type;
-        }
+    public int getEngineId() {
+        return engineId;
+    }
 
-        private int id;
-        private String name;
-        private String type;
+    public String getImportance() {
+        return importance;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Scan getScan() {
+        return scan;
+    }
+
+    public Connection getConnection() {
+        return connection;
+    }
+
+    public String getScanTemplateId() {
+        return scanTemplateId;
     }
 
     private String description;
