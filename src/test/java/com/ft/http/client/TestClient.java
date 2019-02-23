@@ -123,11 +123,24 @@ public class TestClient {
         NettyHttpClient client = new NettyHttpClient("10.0.92.95", 443);
         client.configSSL(true);
         client.configAuth(true, "admin", "admin@123");
+
+        client.connect();
         client.createTask(buildNewTask2(), "/api/v3/tasks");
-        CountDownLatch latch = new CountDownLatch(1);
-        client.setLatch(latch);
-        latch.await();
-        System.out.println("end");
+        client.waitCheckResult();
+        System.out.println("wait end");
+        client.stop();
+
+//        new Thread(()->{
+//            try {
+//                client.waitCheckResult();
+//                client.stop();
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            System.out.println("wait end");
+//        }).start();
+
+        System.out.println("all finish");
     }
     @Test
     public void testCreateScan() throws JsonProcessingException {
@@ -195,6 +208,7 @@ public class TestClient {
     private NewTask buildNewTask2() throws JsonProcessingException {
         List<String> incAddrs = new ArrayList<>();
         incAddrs.add("172.16.39.152");
+        incAddrs.add("192.168.0.121");
         List<String> excAddrs = new ArrayList<>();
         excAddrs.add("172.16.39.254");
 

@@ -18,10 +18,9 @@ import java.util.List;
 //      "malware": 0,
 //      "instances": 1
 //  }
-public class AssetsScanResult {
-
+public class AssetsQueryVulnerabilitiesResult {
     @JsonCreator
-    public AssetsScanResult(@JsonProperty("page") Page page,
+    public AssetsQueryVulnerabilitiesResult(@JsonProperty("page") Page page,
                             @JsonProperty("resources") List<AssetsScanVulnerabilities> resources) {
         this.page = page;
         this.resources = resources;

@@ -111,9 +111,37 @@ public class NettyHttpClientHandler extends ChannelInboundHandlerAdapter {
 ////                ObjectMapper mapper = new ObjectMapper();
 ////                String s2 = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(s);
 //                System.out.println("Server said:" + s);
-                //ctx.close();
+                ctx.close();
             }
         }
         System.out.println("...");
+    }
+
+    public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("handlerAdded");
+    }
+
+    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("handlerRemoved");
+    }
+
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        ctx.fireChannelInactive();
+    }
+
+    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+        ctx.fireChannelReadComplete();
+    }
+
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        ctx.fireUserEventTriggered(evt);
+    }
+
+    public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {
+        ctx.fireChannelWritabilityChanged();
+    }
+
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        ctx.fireExceptionCaught(cause);
     }
 }

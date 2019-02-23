@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ft.http.v3.assets.Assets;
-import com.ft.http.v3.assets.AssetsQueryResult;
-import com.ft.http.v3.assets.AssetsScanResult;
-import com.ft.http.v3.assets.AssetsSoftware;
+import com.ft.http.v3.assets.*;
 import com.ft.http.v3.scan.NewScan;
 import com.ft.http.v3.scan.NewScanReturn;
 import com.ft.http.v3.scan.ScanResult;
@@ -25,6 +22,8 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import io.netty.util.AsciiString;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -46,6 +45,16 @@ public class NettyHttpClient {
         TASK_TYPE_QUERY_ASSETS_ALL,             // 查询所有资产
         TASK_TYPE_QUERY_ASSETS_SINGLE,             // 查询单个资产
         TASK_TYPE_QUERY_ASSETS_VULNERABILITIES, // 查询资产漏洞
+        TASK_TYPE_QUERY_ASSETS_PORTS,           // 查询资产端口
+    }
+    public static class AssetsScanResult {
+        public List<AssetsQueryVulnerabilitiesResult> assetsVulnerabilities = new ArrayList<>();
+        public List<AssetsQueryPortResult> assetsPorts = new ArrayList<>();
+
+        public void clear() {
+            assetsPorts.clear();
+            assetsVulnerabilities.clear();
+        }
     }
 
     private String  host;
@@ -66,9 +75,10 @@ public class NettyHttpClient {
     private NewTask         task;
     private NewTaskReturn   taskReturn;
     private TaskResult      taskResult;
-    private List<AssetsScanResult> assetsScanResults = new ArrayList<>();
+    private AssetsScanResult assetScanResult = new AssetsScanResult();
     ObjectMapper mapper = new ObjectMapper();
 
+    private boolean finish = true;
     private CountDownLatch  latch;
 
     public NettyHttpClient(String host, int port) {
@@ -90,10 +100,6 @@ public class NettyHttpClient {
         this.user = user;
         this.pwd  = pwd;
         return this;
-    }
-
-    public void setLatch(CountDownLatch latch) {
-        this.latch = latch;
     }
 
     public void connect() throws Exception {
@@ -137,10 +143,13 @@ public class NettyHttpClient {
     public void stop() {
         try {
             if (futtureChannel.channel().isActive()) {
-                futtureChannel.channel().closeFuture().sync();
+                futtureChannel.channel().closeFuture().addListener(new GenericFutureListener<Future<? super Void>>() {
+                    @Override
+                    public void operationComplete(Future<? super Void> future) throws Exception {
+                        System.out.println("future.isDone() is " + future.isDone());
+                    }
+                });
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         } finally {
             workerGroup.shutdownGracefully();
         }
@@ -193,10 +202,8 @@ public class NettyHttpClient {
                 }
                 case TASK_TYPE_QUERY_TASK_RESULT:{
                     taskResult = buildResultObject(TaskResult.class);
-                    for (String addr : task.getScan().getAssets().getIncludedTargets().getAddresses()) {
-                        // /api/v3/assets/{assetsid}/vulnerabilities
-                        String url = "/api/v3/assets/"+addr+"/vulnerabilities";
-                    }
+                    String url = "/api/v3/assets";
+                    getAllAssets(url);
                     break;
                 }
                 case TASK_TYPE_QUERY_ASSETS_SOFTWARE:{
@@ -212,22 +219,42 @@ public class NettyHttpClient {
                     // todo: 资产多了有可能一次查询得不到想要的资产
                     List<Assets> resources = allAssets.getResources();
                     List<String> addrs = task.getScan().getAssets().getIncludedTargets().getAddresses();
+                    if (resources != null) {
+                        latch = new CountDownLatch(resources.size()*2);
+                    } else {
+                        finish = true;
+                    }
                     for (Assets item : resources) {
                         // /api/v3/assets/{assetsid}/vulnerabilities
                         // todo 可能有多个IP
                         for (String addr : addrs) {
                             if (item.getIp().equals(addr)) {
-                                String url = "/api/v3/assets/"+item.getId()+"/vulnerabilities";
-                                getAssetsvulnerabilities(url);
+                                int assetId = item.getId();
+                                // 漏洞
+                                String url = "/api/v3/assets/"+assetId+"/vulnerabilities";
+                                getAssetsVulnerabilities(url);
+
+                                // 端口
+                                // /api/v3/assets/{assetid}/ports
+                                url = "/api/v3/assets/"+assetId+"/ports";
+                                getAssetsPorts(url);
                                 break;
                             }
                         }
                     }
+
                     break;
                 }
                 case TASK_TYPE_QUERY_ASSETS_VULNERABILITIES: {
-                    AssetsScanResult assetsScanResult = buildResultObject(AssetsScanResult.class);
-                    assetsScanResults.add(assetsScanResult);
+                    AssetsQueryVulnerabilitiesResult assetsScanResult = buildResultObject(AssetsQueryVulnerabilitiesResult.class);
+                    assetScanResult.assetsVulnerabilities.add(assetsScanResult);
+                    downLatch();
+                    break;
+                }
+                case TASK_TYPE_QUERY_ASSETS_PORTS: {
+                    AssetsQueryPortResult assetsPorts = buildResultObject(AssetsQueryPortResult.class);
+                    assetScanResult.assetsPorts.add(assetsPorts);
+                    downLatch();
                     break;
                 }
                 default:{
@@ -296,11 +323,13 @@ public class NettyHttpClient {
         this.task = newTask;
         System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(newTask));
 
-        assetsScanResults.clear();
+        assetScanResult.clear();
+        finish = false;
 
         byte[] postBody = mapper.writeValueAsBytes(newTask);
-        Map<AsciiString, String> mapHead = new HashMap<>();
-        mapHead.put(HttpHeaderNames.CONTENT_TYPE, "application/json");
+
+//        Map<AsciiString, String> mapHead = new HashMap<>();
+//        mapHead.put(HttpHeaderNames.CONTENT_TYPE, "application/json");
 
 //        if (usessl) {
 //            configSSL(true);
@@ -310,53 +339,73 @@ public class NettyHttpClient {
 //            configAuth(true, "admin", "admin@123");
 //        }
 
-        connect();
-        setTaskType(TaskType.TASK_TYPE_CREATE_TASK);
-        postMessage(url, mapHead, postBody);
+        //connect();
+        //setTaskType(TaskType.TASK_TYPE_CREATE_TASK);
+        //postMessage(url, mapHead, postBody);
+        postMessage(url, postBody, TaskType.TASK_TYPE_CREATE_TASK);
         //stop();
     }
     public void createScan(NewScan newScan, String url) throws Exception {
         byte[] postBody = mapper.writeValueAsBytes(newScan);
         System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(newScan));
 
-        Map<AsciiString, String> mapHead = new HashMap<>();
-        mapHead.put(HttpHeaderNames.CONTENT_TYPE, "application/json");
+//        Map<AsciiString, String> mapHead = new HashMap<>();
+//        mapHead.put(HttpHeaderNames.CONTENT_TYPE, "application/json");
 
         //connect();
-        setTaskType(TaskType.TASK_TYPE_CREATE_SCAN);
-        postMessage(url, mapHead, postBody);
+//        setTaskType(TaskType.TASK_TYPE_CREATE_SCAN);
+//        postMessage(url, mapHead, postBody);
+        postMessage(url, postBody, TaskType.TASK_TYPE_CREATE_SCAN);
         //stop();
     }
     public void getScanResult(String url) throws Exception {
-        Map<AsciiString, String> mapHead = new HashMap<>();
-        mapHead.put(HttpHeaderNames.CONTENT_TYPE, "application/json");
-
-        //connect();
-        setTaskType(TaskType.TASK_TYPE_QUERY_SCAN_RESULT);
-        getMessage(url, mapHead);
+//        Map<AsciiString, String> mapHead = new HashMap<>();
+//        mapHead.put(HttpHeaderNames.CONTENT_TYPE, "application/json");
+//
+//        //connect();
+//        setTaskType(TaskType.TASK_TYPE_QUERY_SCAN_RESULT);
+//        getMessage(url, mapHead);
         //stop();
+
+        getMessage(url, TaskType.TASK_TYPE_QUERY_SCAN_RESULT);
     }
     public void getTaskScanResult(String url) throws Exception {
-        Map<AsciiString, String> mapHead = new HashMap<>();
-        mapHead.put(HttpHeaderNames.CONTENT_TYPE, "application/json");
-
-        //connect();
-        setTaskType(TaskType.TASK_TYPE_QUERY_TASK_RESULT);
-        getMessage(url, mapHead);
+//        Map<AsciiString, String> mapHead = new HashMap<>();
+//        mapHead.put(HttpHeaderNames.CONTENT_TYPE, "application/json");
+//
+//        //connect();
+//        setTaskType(TaskType.TASK_TYPE_QUERY_TASK_RESULT);
+//        getMessage(url, mapHead);
         //stop();
         //latch.countDown();
-    }
-    public void getAssetsvulnerabilities(String url) throws Exception {
-        Map<AsciiString, String> mapHead = new HashMap<>();
-        mapHead.put(HttpHeaderNames.CONTENT_TYPE, "application/json");
 
-        //connect();
-        setTaskType(TaskType.TASK_TYPE_QUERY_ASSETS_VULNERABILITIES);
-        getMessage(url, mapHead);
+        getMessage(url, TaskType.TASK_TYPE_QUERY_TASK_RESULT);
+    }
+    public void getAllAssets(String url) throws Exception {
+        getMessage(url, TaskType.TASK_TYPE_QUERY_ASSETS_ALL);
+    }
+    public void getAssetsVulnerabilities(String url) throws Exception {
+//        Map<AsciiString, String> mapHead = new HashMap<>();
+//        mapHead.put(HttpHeaderNames.CONTENT_TYPE, "application/json");
+//
+//        //connect();
+//        setTaskType(TaskType.TASK_TYPE_QUERY_ASSETS_VULNERABILITIES);
+//        getMessage(url, mapHead);
         //stop();
+        getMessage(url, TaskType.TASK_TYPE_QUERY_ASSETS_VULNERABILITIES);
+    }
+    public void getAssetsPorts(String url) throws Exception {
+//        Map<AsciiString, String> mapHead = new HashMap<>();
+//        mapHead.put(HttpHeaderNames.CONTENT_TYPE, "application/json");
+//
+//        //connect();
+//        setTaskType(TaskType.TASK_TYPE_QUERY_ASSETS_VULNERABILITIES);
+//        getMessage(url, mapHead);
+        //stop();
+        getMessage(url, TaskType.TASK_TYPE_QUERY_ASSETS_VULNERABILITIES);
     }
 
-    public void getMessage(String url, TaskType type) throws URISyntaxException {
+    public void getMessage(String url, TaskType type) throws Exception {
         Map<AsciiString, String> mapHeader = new HashMap<>();
         mapHeader.put(HttpHeaderNames.CONTENT_TYPE, "application/json");
 
@@ -365,7 +414,7 @@ public class NettyHttpClient {
         queryMessage(HttpMethod.GET, url, mapHeader, null);
         //stop();
     }
-    public void postMessage(String url, byte[] body, TaskType type) throws URISyntaxException {
+    public void postMessage(String url, byte[] body, TaskType type) throws Exception {
         Map<AsciiString, String> mapHeader = new HashMap<>();
         mapHeader.put(HttpHeaderNames.CONTENT_TYPE, "application/json");
 
@@ -424,5 +473,17 @@ public class NettyHttpClient {
 
         // 发送http请求
         futtureChannel.channel().writeAndFlush(request);
+    }
+
+    private void downLatch() {
+        latch.countDown();
+        if (latch.getCount() == 0) {
+            finish = true;
+        }
+    }
+    public void waitCheckResult() throws InterruptedException {
+        if (!finish) {
+            //latch.await();
+        }
     }
 }
