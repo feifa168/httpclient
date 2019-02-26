@@ -26,103 +26,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 //  "name": "名称",
 //  "portRestriction": 22
 //  }
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Credential {
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class Account {
-
-        @JsonCreator
-        public Account(@JsonProperty("database") String database,
-                       @JsonProperty("domain") String domain,
-                       @JsonProperty("ntlmHash") String ntlmHash,
-                       @JsonProperty("password") String password,
-                       @JsonProperty("pemKey") String pemKey,
-                       @JsonProperty("permissionElevation") String permissionElevation,
-                       @JsonProperty("permissionElevationUsername") String permissionElevationUsername,
-                       @JsonProperty("privateKeyPassword") String privateKeyPassword,
-                       @JsonProperty("realm") String realm,
-                       @JsonProperty("service") String service,
-                       @JsonProperty("sid") String sid,
-                       @JsonProperty("username") String username) {
-            this.database = database;
-            this.domain = domain;
-            this.ntlmHash = ntlmHash;
-            this.password = password;
-            this.pemKey = pemKey;
-            this.permissionElevation = permissionElevation;
-            this.permissionElevationUsername = permissionElevationUsername;
-            this.privateKeyPassword = privateKeyPassword;
-            this.realm = realm;
-            this.service = service;
-            this.sid = sid;
-            this.username = username;
-        }
-
-        public String getDatabase() {
-            return database;
-        }
-
-        public String getDomain() {
-            return domain;
-        }
-
-        public String getNtlmHash() {
-            return ntlmHash;
-        }
-
-        public String getPassword() {
-            return password;
-        }
-
-        public String getPemKey() {
-            return pemKey;
-        }
-
-        public String getPermissionElevation() {
-            return permissionElevation;
-        }
-
-        public String getPermissionElevationUsername() {
-            return permissionElevationUsername;
-        }
-
-        public String getPrivateKeyPassword() {
-            return privateKeyPassword;
-        }
-
-        public String getRealm() {
-            return realm;
-        }
-
-        public String getService() {
-            return service;
-        }
-
-        public String getSid() {
-            return sid;
-        }
-
-        public String getUsername() {
-            return username;
-        }
-
-        private String database;
-        private String domain;
-        private String ntlmHash;
-        private String password;
-        private String pemKey;
-        private String permissionElevation;
-        private String permissionElevationUsername;
-        private String privateKeyPassword;
-        private String realm;
-        private String service;
-        private String sid;
-        private String username;
-    }
-
     @JsonCreator
-    public Credential(@JsonProperty("account") Account account,
+    public Credential(@JsonProperty("account") Object account,
                       @JsonProperty("description") String description,
                       @JsonProperty("enabled") boolean enabled,
                       @JsonProperty("hostRestriction") String hostRestriction,
@@ -136,7 +44,7 @@ public class Credential {
         this.portRestriction = portRestriction;
     }
 
-    public Account getAccount() {
+    public Object getAccount() {
         return account;
     }
 
@@ -160,7 +68,7 @@ public class Credential {
         return portRestriction;
     }
 
-    private Account account;
+    private Object account;
     private String description;
     private boolean enabled;
     private String hostRestriction;

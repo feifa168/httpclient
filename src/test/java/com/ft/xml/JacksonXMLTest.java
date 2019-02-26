@@ -6,13 +6,17 @@ import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.ft.http.v3.config.TaskScanConfig;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class JacksonXMLTest {
     private XmlMapper init() {
@@ -25,7 +29,7 @@ public class JacksonXMLTest {
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)    // 忽略pojo中不存在的字段
         ;
         //XML标签名:使用骆驼命名的属性名，
-        xmlMapper.setPropertyNamingStrategy(PropertyNamingStrategy.UPPER_CAMEL_CASE);
+        //xmlMapper.setPropertyNamingStrategy(PropertyNamingStrategy.UPPER_CAMEL_CASE);
         //设置转换模式
         xmlMapper.enable(MapperFeature.USE_STD_BEAN_NAMING);
 
@@ -38,7 +42,10 @@ public class JacksonXMLTest {
 
         String encoding = "utf-8";
         String xmlHead = "<?xml version=\"1.0\" encoding=\""+encoding+"\" ?>\n";
-        BeanForXml bfx = new BeanForXml(20, "李大壮", null);
+        List<String> addrs = new ArrayList<>();
+        addrs.add("jiangsu");
+        addrs.add("nanjing");
+        BeanForXml bfx = new BeanForXml(20, "李大壮", addrs);
         String xmlString = xmlMapper.writerWithDefaultPrettyPrinter().writeValueAsString(bfx);
         xmlString = new String(xmlString.getBytes(encoding), encoding);
         System.out.println(xmlString);
@@ -46,41 +53,52 @@ public class JacksonXMLTest {
         String xmlString2 = xmlHead+"<BeanForXml>\n" +
                 "  <age>20</age>\n" +
                 "  <age2>30</age2>\n" +
-                "  <Naem>李大壮</Naem>\n" +
+                "  <name>李大壮</name>\n" +
                 "</BeanForXml>";
         bfx = xmlMapper.readValue(xmlString2, BeanForXml.class);
         xmlString2 = xmlMapper.writerWithDefaultPrettyPrinter().writeValueAsString(bfx);
         System.out.println(xmlString2);
     }
     @Test
-    public void testStudent() throws JsonProcessingException {
-        XmlMapper xmlMapper = new XmlMapper();
-        xmlMapper.setDefaultUseWrapper(false);
+    public void testBeanForJson() throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
         //字段为null，自动忽略，不再序列化
-        xmlMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)               // 允许不序列化值为null的属性
+                .setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE)    // 设置getter,setter,field等所有都不不见
+                .setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)   // 可以不配置setter而使用直接访问类属性
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)    // 忽略pojo中不存在的字段
+        ;
         //XML标签名:使用骆驼命名的属性名，
-        xmlMapper.setPropertyNamingStrategy(PropertyNamingStrategy.UPPER_CAMEL_CASE);
+        //mapper.setPropertyNamingStrategy(PropertyNamingStrategy.UPPER_CAMEL_CASE);
         //设置转换模式
-        xmlMapper.enable(MapperFeature.USE_STD_BEAN_NAMING);
+        mapper.enable(MapperFeature.USE_STD_BEAN_NAMING);
+
+        List<String> addrs = new ArrayList<>();
+        addrs.add("jiangsu");
+        addrs.add("nanjing");
+        BeanForXml bfx = new BeanForXml(20, "李大壮", addrs);
+        String xmlString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(bfx);
+        String encoding = "utf-8";
+        xmlString = new String(xmlString.getBytes(encoding), encoding);
+        System.out.println(xmlString);
+
+        bfx = mapper.readValue(xmlString, BeanForXml.class);
+        System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(bfx));
+    }
+    @Test
+    public void testStudent() throws JsonProcessingException {
+        XmlMapper xmlMapper = init();
 
         Student stu = new Student();
         stu.setId("3");
         stu.setName("tom");
-        String xmlString = xmlMapper.writeValueAsString(stu);
+        String xmlString = xmlMapper.writerWithDefaultPrettyPrinter().writeValueAsString(stu);
         System.out.println(xmlString);
     }
 
     @Test
     public void testGroup() throws JsonProcessingException {
-
-        XmlMapper xmlMapper = new XmlMapper();
-        xmlMapper.setDefaultUseWrapper(false);
-        //字段为null，自动忽略，不再序列化
-        xmlMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        //XML标签名:使用骆驼命名的属性名，
-        xmlMapper.setPropertyNamingStrategy(PropertyNamingStrategy.UPPER_CAMEL_CASE);
-        //设置转换模式
-        xmlMapper.enable(MapperFeature.USE_STD_BEAN_NAMING);
+        XmlMapper xmlMapper = init();
 
         //序列化 bean--->xml
         Group group = new Group();  //忍者班级
@@ -122,8 +140,6 @@ public class JacksonXMLTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(group2);
-
-
+        System.out.println(xmlMapper.writerWithDefaultPrettyPrinter().writeValueAsString(group2));
     }
 }

@@ -47,7 +47,7 @@ public class TestTaskResult {
         ;
 
 
-        Credential.Account result = mapper.readValue(jsonString, Credential.Account.class);
+        Object result = mapper.readValue(jsonString, Object.class);
         jsonString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(result);
         System.out.println(jsonString);
     }

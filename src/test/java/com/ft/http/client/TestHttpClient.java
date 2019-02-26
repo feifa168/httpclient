@@ -10,6 +10,8 @@ import com.ft.http.v3.assets.Assets;
 import com.ft.http.v3.assets.AssetsQueryPortResult;
 import com.ft.http.v3.assets.AssetsQueryResult;
 import com.ft.http.v3.assets.AssetsQueryVulnerabilitiesResult;
+import com.ft.http.v3.config.*;
+import com.ft.http.v3.credential.Credential;
 import com.ft.http.v3.scan.NewScan;
 import com.ft.http.v3.scan.NewScanReturn;
 import com.ft.http.v3.scan.ScanResult;
@@ -110,6 +112,8 @@ public class TestHttpClient {
         NewScanReturn newScanReturn;
 
         task = buildNewTask2();
+        TaskScanConfig config = buildTaskConfig();
+
         // 创建任务
         newTaskReturn = startTask(task);
 
@@ -282,5 +286,96 @@ public class TestHttpClient {
                 scan, null, "full-audit-without-web-spider");
 
         return nt;
+    }
+
+    private TaskScanConfig buildTaskConfig() throws JsonProcessingException {
+        Object as400 = new DomainUserPwd("as400", "domain", "user", "password");
+
+        NewTask task = buildNewTask2();
+        List<Credential> credentials = new ArrayList<>();
+        Credential credential;
+
+        credential = new Credential(new DomainUserPwd("as400", "domain", "user", "password"),
+                "description", false, "127.0.0.1", "name", 22);
+        credentials.add(credential);
+
+        credential = new Credential(new DomainUserPwd("cifs", "domain", "user", "password"),
+                "description", false, "127.0.0.1", "name", 22);
+        credentials.add(credential);
+
+        credential = new Credential(new Cifshash("cifshash", "domain", "user", "ntlmHash"),
+                "description", false, "127.0.0.1", "name", 22);
+        credentials.add(credential);
+
+        credential = new Credential(new DomainUserPwd("cvs", "domain", "user", "password"),
+                "description", false, "127.0.0.1", "name", 22);
+        credentials.add(credential);
+
+        credential = new Credential(new DbUserPwd("db2", "databasename", "user", "password"),
+                "description", false, "127.0.0.1", "name", 22);
+        credentials.add(credential);
+
+        credential = new Credential(new UserPwd("ftp","user","password"),
+                "description", false, "127.0.0.1", "name", 22);
+        credentials.add(credential);
+
+        credential = new Credential(new Http("http","realm","user","password"),
+                "description", false, "127.0.0.1", "name", 22);
+        credentials.add(credential);
+
+        credential = new Credential(new DbDomainUserPwd("ms-sql","databasename", false, "domain","user","password"),
+                "description", false, "127.0.0.1", "name", 22);
+        credentials.add(credential);
+
+        credential = new Credential(new DbUserPwd("mysql","databasename", "user","password"),
+                "description", false, "127.0.0.1", "name", 22);
+        credentials.add(credential);
+
+        credential = new Credential(new Notes("notes","notesIDPassword"),
+                "description", false, "127.0.0.1", "name", 22);
+        credentials.add(credential);
+
+        credential = new Credential(new Oracle("oracle", "sid","user","password", false, "oracleListenerPassword"),
+                "description", false, "127.0.0.1", "name", 22);
+        credentials.add(credential);
+
+        credential = new Credential(new UserPwd("pop","user","password"),
+                "description", false, "127.0.0.1", "name", 22);
+        credentials.add(credential);
+
+        credential = new Credential(new DbUserPwd("postgresql","databasename", "user","password"),
+                "description", false, "127.0.0.1", "name", 22);
+        credentials.add(credential);
+
+        credential = new Credential(new UserPwd("remote-exec","user","password"),
+                "description", false, "127.0.0.1", "name", 22);
+        credentials.add(credential);
+
+        credential = new Credential(new Snmp("snmp","communityName"),
+                "description", false, "127.0.0.1", "name", 22);
+        credentials.add(credential);
+
+        credential = new Credential(new Snmpv3("snmpv3","md5", "user", "pwd", "aes-128", "privacyPassword"),
+                "description", false, "127.0.0.1", "name", 22);
+        credentials.add(credential);
+
+        credential = new Credential(new Ssh("ssh","user", "pwd", "sudo", "permissionElevationUsername", "permissionElevationPassword"),
+                "description", false, "127.0.0.1", "name", 22);
+        credentials.add(credential);
+
+        credential = new Credential(new SshKey("ssh-key","user", "privateKeyPassword", "pemKey", "sudo", "permissionElevationUsername", "permissionElevationPassword"),
+                "description", false, "127.0.0.1", "name", 22);
+        credentials.add(credential);
+
+        credential = new Credential(new DbDomainUserPwd("sybase","databasename", false, "domain","user","password"),
+                "description", false, "127.0.0.1", "name", 22);
+        credentials.add(credential);
+
+        credential = new Credential(new UserPwd("telnet","user","password"),
+                "description", false, "127.0.0.1", "name", 22);
+        credentials.add(credential);
+
+        TaskScanConfig config = new TaskScanConfig(task, credentials);
+        return config;
     }
 }
