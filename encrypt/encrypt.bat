@@ -1,0 +1,2 @@
+set outdir=..\out\artifacts\httpclient_jar
+java -agentlib:libNativeDecrypt=dec_config.xml -jar encClass.jar -xml httpclient.xml -src %outdir%\httpclient.jar -dst %outdir%\httpclient_enc.jar -decxml %outdir%\dec_httpclient.xml

@@ -1,0 +1,228 @@
+{
+  "toolcategory" : "toolcategory",
+  "taskcode" : "taskcode",
+  "success" : true,
+  "taskid" : "97",
+  "scanid" : "75",
+  "result" : [ {
+    "assetId" : 3,
+    "address" : "172.16.39.22",
+    "vulnerabilitiesResult" : [ {
+      "id" : "certificate-common-name-mismatch",
+      "title" : "X.509 Certificate Subject CN 与实体名称不匹配",
+      "cvss" : 7,
+      "publishDate" : "2007-08-03",
+      "riskScore" : 795,
+      "severity" : 7,
+      "exploit" : 0,
+      "malware" : 0,
+      "instances" : 1
+    }, {
+      "id" : "http-basic-auth-cleartext",
+      "title" : "启用HTTP基本认证",
+      "cvss" : 6,
+      "publishDate" : "1997-01-01",
+      "riskScore" : 752,
+      "severity" : 7,
+      "exploit" : 0,
+      "malware" : 0,
+      "instances" : 1
+    }, {
+      "id" : "windows-rdp-constant-key-mitm",
+      "title" : "Microsoft RDP协议硬代码RSA弱私钥",
+      "cvss" : 6,
+      "cve" : "CVE-2005-1794",
+      "publishDate" : "2005-06-01",
+      "riskScore" : 685,
+      "severity" : 6,
+      "exploit" : 0,
+      "malware" : 0,
+      "instances" : 1
+    }, {
+      "id" : "tls-untrusted-ca",
+      "title" : "不信任的TLS/SSL服务器X.509证书",
+      "cvss" : 5,
+      "publishDate" : "1995-01-01",
+      "riskScore" : 695,
+      "severity" : 6,
+      "exploit" : 0,
+      "malware" : 0,
+      "instances" : 1
+    }, {
+      "id" : "ssl-cve-2016-2183-sweet32",
+      "title" : "TLS/SSL 64位分组密码生日攻击(SWEET32)",
+      "cvss" : 5,
+      "cve" : "CVE-2016-2183",
+      "publishDate" : "2016-08-24",
+      "riskScore" : 495,
+      "severity" : 5,
+      "exploit" : 1,
+      "malware" : 0,
+      "instances" : 1
+    }, {
+      "id" : "rc4-cve-2013-2566",
+      "title" : "TLS/SSL服务器支持RC4密码算法(CVE-2013-2566)",
+      "cvss" : 4,
+      "cve" : "CVE-2013-2566",
+      "publishDate" : "2013-03-12",
+      "riskScore" : 469,
+      "severity" : 4,
+      "exploit" : 0,
+      "malware" : 0,
+      "instances" : 1
+    }, {
+      "id" : "ssl-self-signed-certificate",
+      "title" : "自己签名的TLS/SSL证书",
+      "cvss" : 4,
+      "publishDate" : "1995-01-01",
+      "riskScore" : 248,
+      "severity" : 4,
+      "exploit" : 0,
+      "malware" : 0,
+      "instances" : 1
+    }, {
+      "id" : "tlsv1_0-enabled",
+      "title" : "TLS服务器支持TLS 1.0版本",
+      "cvss" : 4,
+      "publishDate" : "2014-10-14",
+      "riskScore" : 422,
+      "severity" : 4,
+      "exploit" : 0,
+      "malware" : 0,
+      "instances" : 1
+    }, {
+      "id" : "ssl-cve-2011-3389-beast",
+      "title" : "TLS/SSL服务器允许BEAST攻击",
+      "cvss" : 4,
+      "cve" : "CVE-2011-3389",
+      "publishDate" : "2011-09-06",
+      "riskScore" : 502,
+      "severity" : 4,
+      "exploit" : 0,
+      "malware" : 0,
+      "instances" : 1
+    }, {
+      "id" : "ssl-static-key-ciphers",
+      "title" : "TLS/SSL服务器支持使用静态密钥",
+      "cvss" : 2,
+      "publishDate" : "2015-02-01",
+      "riskScore" : 367,
+      "severity" : 3,
+      "exploit" : 0,
+      "malware" : 0,
+      "instances" : 1
+    } ],
+    "portResult" : [ ]
+  }, {
+    "assetId" : 4,
+    "address" : "172.16.39.251",
+    "vulnerabilitiesResult" : [ {
+      "id" : "certificate-common-name-mismatch",
+      "title" : "X.509 Certificate Subject CN 与实体名称不匹配",
+      "cvss" : 7,
+      "publishDate" : "2007-08-03",
+      "riskScore" : 795,
+      "severity" : 7,
+      "exploit" : 0,
+      "malware" : 0,
+      "instances" : 1
+    }, {
+      "id" : "http-openssl-cve-2014-0224",
+      "title" : "OpenSSL的SSL / TLS MITM漏洞（CVE-2014-0224）",
+      "cvss" : 6,
+      "cve" : "CVE-2014-0224",
+      "publishDate" : "2014-06-05",
+      "riskScore" : 594,
+      "severity" : 7,
+      "exploit" : 1,
+      "malware" : 0,
+      "instances" : 1
+    }, {
+      "id" : "windows-rdp-constant-key-mitm",
+      "title" : "Microsoft RDP协议硬代码RSA弱私钥",
+      "cvss" : 6,
+      "cve" : "CVE-2005-1794",
+      "publishDate" : "2005-06-01",
+      "riskScore" : 685,
+      "severity" : 6,
+      "exploit" : 0,
+      "malware" : 0,
+      "instances" : 1
+    }, {
+      "id" : "ssl-des-ciphers",
+      "title" : "TLS/SSL服务器支持DES和IDEA密码组",
+      "cvss" : 5,
+      "publishDate" : "2009-02-01",
+      "riskScore" : 631,
+      "severity" : 6,
+      "exploit" : 0,
+      "malware" : 0,
+      "instances" : 1
+    }, {
+      "id" : "tls-untrusted-ca",
+      "title" : "不信任的TLS/SSL服务器X.509证书",
+      "cvss" : 5,
+      "publishDate" : "1995-01-01",
+      "riskScore" : 695,
+      "severity" : 6,
+      "exploit" : 0,
+      "malware" : 0,
+      "instances" : 1
+    }, {
+      "id" : "http-options-method-enabled",
+      "title" : "HTTP OPTIONS方法已启用",
+      "cvss" : 5,
+      "publishDate" : "2005-10-07",
+      "riskScore" : 586,
+      "severity" : 5,
+      "exploit" : 0,
+      "malware" : 0,
+      "instances" : 1
+    }, {
+      "id" : "ssl-cve-2016-2183-sweet32",
+      "title" : "TLS/SSL 64位分组密码生日攻击(SWEET32)",
+      "cvss" : 5,
+      "cve" : "CVE-2016-2183",
+      "publishDate" : "2016-08-24",
+      "riskScore" : 495,
+      "severity" : 5,
+      "exploit" : 1,
+      "malware" : 0,
+      "instances" : 2
+    }, {
+      "id" : "rc4-cve-2013-2566",
+      "title" : "TLS/SSL服务器支持RC4密码算法(CVE-2013-2566)",
+      "cvss" : 4,
+      "cve" : "CVE-2013-2566",
+      "publishDate" : "2013-03-12",
+      "riskScore" : 469,
+      "severity" : 4,
+      "exploit" : 0,
+      "malware" : 0,
+      "instances" : 2
+    }, {
+      "id" : "ssl-cve-2011-3389-beast",
+      "title" : "TLS/SSL服务器允许BEAST攻击",
+      "cvss" : 4,
+      "cve" : "CVE-2011-3389",
+      "publishDate" : "2011-09-06",
+      "riskScore" : 502,
+      "severity" : 4,
+      "exploit" : 0,
+      "malware" : 0,
+      "instances" : 2
+    }, {
+      "id" : "sslv3-supported",
+      "title" : "TLS/SSL服务器支持SSLv3",
+      "cvss" : 4,
+      "cve" : "CVE-2014-3566",
+      "publishDate" : "2014-10-14",
+      "riskScore" : 457,
+      "severity" : 4,
+      "exploit" : 1,
+      "malware" : 0,
+      "instances" : 1
+    } ],
+    "portResult" : [ ]
+  } ]
+}

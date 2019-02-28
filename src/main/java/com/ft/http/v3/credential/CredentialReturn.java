@@ -1,17 +1,17 @@
-package com.ft.http.v3.task;
+package com.ft.http.v3.credential;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-//{
-//    "error": "Internal Server Error"
+// {
+//    "id": 14
+// }
+// {
+//    "error": "Internal error."
 //}
-//{
-//    "id": 49
-//}
-public class NewTaskReturn {
+public class CredentialReturn {
     @JsonCreator
-    public NewTaskReturn(@JsonProperty("id") int id,
+    public CredentialReturn(@JsonProperty("id") int id,
                          @JsonProperty("error") String error) {
         this.id = id;
         this.error = error;

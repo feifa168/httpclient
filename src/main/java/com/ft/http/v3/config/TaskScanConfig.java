@@ -13,22 +13,76 @@ import java.util.List;
 @JacksonXmlRootElement(localName = "taskscan")
 public class TaskScanConfig {
     @JsonCreator
-    public TaskScanConfig(@JsonProperty("task") NewTask task,
-                          @JsonProperty("credentials") List<Credential> credentials) {
-        this.task = task;
-        this.credentials = credentials;
+    public TaskScanConfig(@JsonProperty("taskconfigs") List<TaskConfig> taskconfigs,
+                          @JsonProperty("description") String description,
+                          @JsonProperty("engineId") int engineId,
+                          @JsonProperty("importance") String importance,
+                          @JsonProperty("name") String name,
+                          @JsonProperty("scanTemplateId") String scanTemplateId,
+                          @JsonProperty("toolcategory") String toolcategory,
+                          @JsonProperty("output") String output,
+                          @JsonProperty("taskcode") String taskcode) {
+        this.taskconfigs = taskconfigs;
+        this.description = description;
+        this.engineId = engineId;
+        this.importance = importance;
+        this.name = name;
+        this.scanTemplateId = scanTemplateId;
+        this.toolcategory = toolcategory;
+        this.output = output;
+        this.taskcode = taskcode;
     }
 
-    public NewTask getTask() {
-        return task;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public List<Credential> getCredential() {
-        return credentials;
+    public List<TaskConfig> getTaskconfigs() {
+        return taskconfigs;
     }
 
-    private NewTask task;
-    @JacksonXmlElementWrapper(localName = "credentialsItem")
-    @JacksonXmlProperty(localName = "credential")
-    private List<Credential> credentials;
+    public String getDescription() {
+        return description;
+    }
+
+    public int getEngineId() {
+        return engineId;
+    }
+
+    public String getImportance() {
+        return importance;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getScanTemplateId() {
+        return scanTemplateId;
+    }
+
+    public String getToolcategory() {
+        return toolcategory;
+    }
+
+    public String getOutput() {
+        return output;
+    }
+
+    public String getTaskcode() {
+        return taskcode;
+    }
+
+    @JacksonXmlElementWrapper(localName = "taskconfigItems")
+    @JacksonXmlProperty(localName = "taskconfig")
+    private List<TaskConfig> taskconfigs;
+
+    private String description;
+    private int    engineId;
+    private String importance;
+    private String name;
+    private String scanTemplateId;
+    private String toolcategory;
+    private String output;
+    private String taskcode;
 }

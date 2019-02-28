@@ -122,6 +122,9 @@ public class HttpClient {
     public void postMessage(String url, Map<AsciiString, String> mapHeader, byte[] body, ResultCallBack resultCallback) throws URISyntaxException {
         queryMessage(HttpMethod.POST, url, mapHeader, body, resultCallback);
     }
+    public void putMessage(String url, Map<AsciiString, String> mapHeader, byte[] body, ResultCallBack resultCallback) throws URISyntaxException {
+        queryMessage(HttpMethod.PUT, url, mapHeader, body, resultCallback);
+    }
     private void queryMessage(HttpMethod method, String url, Map<AsciiString, String> mapHeader, byte[] body, ResultCallBack resultCallback) throws URISyntaxException {
         this.resultCallback = resultCallback;
 

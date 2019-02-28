@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<encrypt>
+    <src>httpclient.jar</src>
+    <dst>httpclient_enc.jar</dst>
+    <decxml>dec_httpclient.xml</decxml>
+    <files>
+        <file type="package">com.ft.http.v3.assets</file>
+        <file type="package">com.ft.http.v3.config</file>
+        <file type="package">com.ft.http.v3.credential</file>
+        <file type="package">com.ft.http.v3.scan</file>
+        <file type="package">com.ft.http.v3.task</file>
+        <file type="package">com.ft.http.v3</file>
+    </files>
+</encrypt>

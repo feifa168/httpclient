@@ -3,6 +3,7 @@ package com.ft.http.v3.credential;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jdk.nashorn.internal.runtime.linker.Bootstrap;
 
 //  {
 //  "account": {
@@ -32,7 +33,7 @@ public class Credential {
     @JsonCreator
     public Credential(@JsonProperty("account") Object account,
                       @JsonProperty("description") String description,
-                      @JsonProperty("enabled") boolean enabled,
+                      @JsonProperty("enabled") Boolean enabled,
                       @JsonProperty("hostRestriction") String hostRestriction,
                       @JsonProperty("name") String name,
                       @JsonProperty("portRestriction") int portRestriction) {
@@ -52,7 +53,7 @@ public class Credential {
         return description;
     }
 
-    public boolean isEnabled() {
+    public Boolean isEnabled() {
         return enabled;
     }
 
@@ -70,7 +71,7 @@ public class Credential {
 
     private Object account;
     private String description;
-    private boolean enabled;
+    private Boolean enabled;
     private String hostRestriction;
     private String name;
     private int    portRestriction;
