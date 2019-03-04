@@ -20,10 +20,7 @@ import com.ft.http.v3.credential.SharedCredential;
 import com.ft.http.v3.scan.NewScan;
 import com.ft.http.v3.scan.NewScanReturn;
 import com.ft.http.v3.scan.ScanResult;
-import com.ft.http.v3.task.NewTask;
-import com.ft.http.v3.task.NewTaskReturn;
-import com.ft.http.v3.task.ResultCallBackImpl;
-import com.ft.http.v3.task.TaskResult;
+import com.ft.http.v3.task.*;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.util.AsciiString;
 
@@ -39,7 +36,7 @@ import java.util.*;
 
 public class App {
 
-    enum HttpRequestType {
+    public enum HttpRequestType {
         HTTP_UNKNOWN,
         HTTP_GET,
         HTTP_POST,
@@ -73,18 +70,23 @@ public class App {
         return t;
     }
 
-    public byte[] testNormal(HttpClient client, String url, HttpRequestType type, byte[] body) throws Exception {
+    public byte[] testNormal(HttpClient client, String url, HttpRequestType type, Map<String, Object> mapParams, Map<String, Object> mapHeader, byte[] body) throws Exception {
         client.configSSL(true);
         client.configAuth(true, authName, authPassword);
         client.start();
         ResultCallBackImpl call = new ResultCallBackImpl();
 
-        Map<AsciiString, String> mapHeader = new HashMap<>();
-        mapHeader.put(HttpHeaderNames.CONTENT_TYPE, "application/json");
+        //Map<AsciiString, String> mapHeader = new HashMap<>();
+        //mapHeader.put(HttpHeaderNames.CONTENT_TYPE, "application/json");
+
+        if (null == mapHeader) {
+            mapHeader = new HashMap<>();
+            mapHeader.put(HttpHeaderNames.CONTENT_TYPE.toString(), "application/json");
+        }
 
         switch (type) {
             case HTTP_GET: {
-                client.getMessage(url, mapHeader, call);
+                client.getMessage(url, mapParams, mapHeader, call);
                 break;
             }
             case HTTP_POST: {
@@ -102,6 +104,15 @@ public class App {
         System.out.println("============================\n"+jsonString);
 
         return result;
+    }
+
+    public byte[] testNormal(HttpClient client, String url, HttpRequestType type, Map<String, Object> mapHeader, byte[] body) throws Exception {
+        return testNormal(client, url, type, null, mapHeader, body);
+    }
+    public byte[] testNormal(HttpClient client, String url, HttpRequestType type, byte[] body) throws Exception {
+        Map<String, Object> mapHeader = new HashMap<>();
+        mapHeader.put(HttpHeaderNames.CONTENT_TYPE.toString(), "application/json");
+        return testNormal(client, url, type, mapHeader, body);
     }
 
     private NewTaskReturn startTask(NewTask task) throws Exception {
@@ -156,32 +167,83 @@ public class App {
     }
     private TaskResult queryTaskScanResult(NewTaskReturn taskReturn) throws Exception {
         HttpClient client = new HttpClient(host, port);
-        // 查询扫描状态
-        byte[] result = testNormal(client,"/api/v3/tasks/"+taskReturn.getId()+"/scans", HttpRequestType.HTTP_GET, null);
-        TaskResult taskResult = buildResultObject(result, TaskResult.class);
+        // 查询任务扫描状态
+
+        Map<String, Object> mapParams = new HashMap<>();
+        mapParams.put("active", "true");
+        mapParams.put("page", 0);
+        mapParams.put("size", 10);
+
+        String url = "/api/v3/tasks/"+taskReturn.getId()+"/scans";
+        byte[] result = testNormal(client,url, HttpRequestType.HTTP_GET, mapParams, null, null);
         client.stop();
+        TaskResult taskResult = buildResultObject(result, TaskResult.class);
+        pageResource(taskResult, client, url, mapParams, null, null);
         return taskResult;
     }
+    private <T extends PageAndResources> T pageResource(T t, HttpClient client, String url, Map<String, Object> mapParams, Map<String, Object> mapHeader, byte[] body) throws Exception {
+
+        //HttpClient client = new HttpClient(host, port);
+
+//        if (t != null) {
+//            return t;
+//        }
+        Page page = t.getPage();
+        if (page != null) {
+            int pageNum = page.getTotalPages();
+            int curPage = page.getNumber();
+            int perPageSize = page.getSize();
+            int totalResources = page.getTotalResources();
+            for (int num=1; num<pageNum;num++) {
+                mapParams.put("page", String.valueOf(curPage+num));
+                client = new HttpClient(host, port);
+                byte[] result = testNormal(client,url, HttpRequestType.HTTP_GET, mapParams, mapHeader, null);
+                T tmpTaskResult = buildResultObject(result, t.getClass());
+                client.stop();
+                t.getResources().addAll(tmpTaskResult.getResources());
+                t.getPage().setSize(perPageSize*(num+1));
+                t.getPage().setTotalResources(t.getResources().size());
+            }
+        }
+        return t;
+    }
+    private <T extends PageAndResources> T pageResource(T t, HttpClient client, String url, Map<String, Object> mapHeader, byte[] body) throws Exception {
+        return pageResource(t, client, url, null, mapHeader, body);
+    }
+
     private AssetsQueryResult queryAssets() throws Exception {
         HttpClient client = new HttpClient(host, port);
         // 查询资产
-        byte[] result = testNormal(client,"/api/v3/assets", HttpRequestType.HTTP_GET, null);
+        Map<String, Object> mapParams = new HashMap<>();
+        mapParams.put("page", 0);
+        mapParams.put("size", 10);
+
+        String url = "/api/v3/assets";
+        byte[] result = testNormal(client,url, HttpRequestType.HTTP_GET, mapParams, null, null);
         AssetsQueryResult queryResult = buildResultObject(result, AssetsQueryResult.class);
+        pageResource(queryResult, client, url, mapParams, null, null);
         client.stop();
         return queryResult;
     }
     private AssetsQueryVulnerabilitiesResult queryAssetsVulnerabilities(int assetId) throws Exception {
         HttpClient client = new HttpClient(host, port);
         // 查询资产漏洞
-        byte[] result = testNormal(client,"/api/v3/assets/"+assetId+"/vulnerabilities", HttpRequestType.HTTP_GET, null);
+        Map<String, Object> mapParams = new HashMap<>();
+        mapParams.put("page", 0);
+        mapParams.put("size", 10);
+
+        String url = "/api/v3/assets/"+assetId+"/vulnerabilities";
+        byte[] result = testNormal(client,url, HttpRequestType.HTTP_GET, mapParams, null, null);
         AssetsQueryVulnerabilitiesResult queryResult = buildResultObject(result, AssetsQueryVulnerabilitiesResult.class);
+        pageResource(queryResult, client, url, mapParams, null, null);
         client.stop();
         return queryResult;
     }
     private AssetsQueryPortResult queryAssetsPorts(int assetId) throws Exception {
         HttpClient client = new HttpClient(host, port);
         // 查询资产端口
-        byte[] result = testNormal(client,"/api/v3/assets/"+assetId+"/ports", HttpRequestType.HTTP_GET, null);
+        //byte[] result = testNormal(client,"/api/v3/assets/"+assetId+"/ports", HttpRequestType.HTTP_GET, null);
+        byte[] result = testNormal(client,"/api/v3/assets/"+assetId+"/services", HttpRequestType.HTTP_GET, null);
         AssetsQueryPortResult queryResult = buildResultObject(result, AssetsQueryPortResult.class);
         client.stop();
         return queryResult;
@@ -359,26 +421,26 @@ public class App {
             scanReslutMixWithError.setTaskid(String.valueOf(taskId));
 
             // 登录检查
-            for (TaskConfig taskConfig : taskScanConfig.getTaskconfigs()) {
-                if (taskConfig.getCredentials() == null) {
-                    continue;
-                }
-
-                CredentialReturn credentialReturn;
-                // /api/v3/tasks/taskId/task_credentials
-                for (Credential credential : taskConfig.getCredentials()) {
-                    String url = "/api/v3/tasks/"+taskId+"/task_credentials";
-                    try {
-                        credentialReturn = app.createCredential(newTaskReturn, credential);
-                        if (0 == credentialReturn.getId()) {
-                            System.out.println("创建认证失败,"+credentialReturn.getError());
-                            //scanReslutMixWithError.setMessage("创建认证失败,"+newTaskReturn.getError());
-                        }
-                    } catch (Exception e) {
-                        System.out.println("创建认证失败");
-                    }
-                }
-            }
+//            for (TaskConfig taskConfig : taskScanConfig.getTaskconfigs()) {
+//                if (taskConfig.getCredentials() == null) {
+//                    continue;
+//                }
+//
+//                CredentialReturn credentialReturn;
+//                // /api/v3/tasks/taskId/task_credentials
+//                for (Credential credential : taskConfig.getCredentials()) {
+//                    String url = "/api/v3/tasks/"+taskId+"/task_credentials";
+//                    try {
+//                        credentialReturn = app.createCredential(newTaskReturn, credential);
+//                        if (0 == credentialReturn.getId()) {
+//                            System.out.println("创建认证失败,"+credentialReturn.getError());
+//                            //scanReslutMixWithError.setMessage("创建认证失败,"+newTaskReturn.getError());
+//                        }
+//                    } catch (Exception e) {
+//                        System.out.println("创建认证失败");
+//                    }
+//                }
+//            }
 
             // 创建扫描
             scan = new NewScan(task.getEngineId(), task.getScan().getAssets().getIncludedTargets().getAddresses(), task.getScanTemplateId());
@@ -458,8 +520,9 @@ public class App {
                             } catch (Exception e) {
                                 scanReslutMixWithError.setMessage("查询资产端口失败");
                             }
-
-                            AssetsScanResultMix mix = new AssetsScanResultMix(assets.getId(), addr, assetsVulnerabilities.getResources(), assetsPort.getResources());
+                            AssetsScanResultMix mix = new AssetsScanResultMix(assets.getId(), addr,
+                                    (null!=assetsVulnerabilities) ? assetsVulnerabilities.getResources() : null,
+                                    (null!=assetsPort) ? assetsPort.getResources() : null);
                             scanReslutMix.add(mix);
 
                             break;

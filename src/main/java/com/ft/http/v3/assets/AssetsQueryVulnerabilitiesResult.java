@@ -3,6 +3,7 @@ package com.ft.http.v3.assets;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ft.http.v3.task.Page;
+import com.ft.http.v3.task.PageAndResources;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ import java.util.List;
 //      "malware": 0,
 //      "instances": 1
 //  }
-public class AssetsQueryVulnerabilitiesResult {
+public class AssetsQueryVulnerabilitiesResult implements PageAndResources<AssetsScanVulnerabilities> {
     @JsonCreator
     public AssetsQueryVulnerabilitiesResult(@JsonProperty("page") Page page,
                             @JsonProperty("resources") List<AssetsScanVulnerabilities> resources) {

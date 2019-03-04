@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.ft.http.v3.App;
 import com.ft.http.v3.HttpClient;
 import com.ft.http.v3.assets.*;
 import com.ft.http.v3.config.*;
@@ -16,10 +17,7 @@ import com.ft.http.v3.credential.SharedCredential;
 import com.ft.http.v3.scan.NewScan;
 import com.ft.http.v3.scan.NewScanReturn;
 import com.ft.http.v3.scan.ScanResult;
-import com.ft.http.v3.task.NewTask;
-import com.ft.http.v3.task.NewTaskReturn;
-import com.ft.http.v3.task.ResultCallBackImpl;
-import com.ft.http.v3.task.TaskResult;
+import com.ft.http.v3.task.*;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.util.AsciiString;
 import org.junit.Test;
@@ -84,19 +82,22 @@ public class TestHttpClient {
         System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(t));
         return t;
     }
-
     public byte[] testNormal(HttpClient client, String url, HttpRequestType type, byte[] body) throws Exception {
+        return testNormal(client, url, type, null, body);
+    }
+
+    public byte[] testNormal(HttpClient client, String url, HttpRequestType type, Map<String, Object> mapParams, byte[] body) throws Exception {
         client.configSSL(true);
         client.configAuth(true, authName, authPassword);
         client.start();
         ResultCallBackImpl call = new ResultCallBackImpl();
 
-        Map<AsciiString, String> mapHeader = new HashMap<>();
-        mapHeader.put(HttpHeaderNames.CONTENT_TYPE, "application/json");
+        Map<String, Object> mapHeader = new HashMap<>();
+        mapHeader.put(HttpHeaderNames.CONTENT_TYPE.toString(), "application/json");
 
         switch (type) {
             case HTTP_GET: {
-                client.getMessage(url, mapHeader, call);
+                client.getMessage(url, mapParams, mapHeader, call);
                 break;
             }
             case HTTP_POST: {
@@ -141,6 +142,81 @@ public class TestHttpClient {
 
         TaskResult scanResult = buildResultObject(result, TaskResult.class);
         client.stop();
+    }
+
+    @Test
+    public void testQueryAssetsVulnerabilitiesResult() throws Exception {
+
+        host = "10.0.92.95";
+        port = 443;
+        authName = "admin";
+        authPassword = "admin@123";
+        AssetsQueryVulnerabilitiesResult assetsVulnerabilities = null;
+        try {
+            assetsVulnerabilities = queryAssetsVulnerabilities(3);
+            System.out.println("============================"+assetsVulnerabilities.getResources().size()+"============================");
+            System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(assetsVulnerabilities));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private AssetsQueryResult queryAssets() throws Exception {
+        HttpClient client = new HttpClient(host, port);
+        // 查询资产
+        Map<String, Object> mapParams = new HashMap<>();
+        mapParams.put("page", 0);
+        mapParams.put("size", 10);
+
+        String url = "/api/v3/assets";
+        byte[] result = testNormal(client,url, App.HttpRequestType.HTTP_GET, mapParams,null, null);
+        AssetsQueryResult queryResult = buildResultObject(result, AssetsQueryResult.class);
+        pageResource(queryResult, client, url, mapParams, null, null);
+        client.stop();
+        return queryResult;
+    }
+
+    public byte[] testNormal(HttpClient client, String url, App.HttpRequestType type, Map<String, Object> mapParams, Map<String, Object> mapHeader, byte[] body) throws Exception {
+        client.configSSL(true);
+        client.configAuth(true, authName, authPassword);
+        client.start();
+        ResultCallBackImpl call = new ResultCallBackImpl();
+
+        //Map<AsciiString, String> mapHeader = new HashMap<>();
+        //mapHeader.put(HttpHeaderNames.CONTENT_TYPE, "application/json");
+        if (null == mapHeader) {
+            mapHeader = new HashMap<>();
+            mapHeader.put(HttpHeaderNames.CONTENT_TYPE.toString(), "application/json");
+        }
+
+        switch (type) {
+            case HTTP_GET: {
+                client.getMessage(url, mapParams, mapHeader, call);
+                break;
+            }
+            case HTTP_POST: {
+                client.postMessage(url, mapHeader, body, call);
+                break;
+            }
+            case HTTP_PUT: {
+                client.putMessage(url, mapHeader, body, call);
+                break;
+            }
+        }
+
+        byte[] result = call.getResult();
+        String jsonString = new String(result);
+        System.out.println("============================\n"+jsonString);
+
+        return result;
+    }
+    public byte[] testNormal(HttpClient client, String url, App.HttpRequestType type, Map<String, Object> mapHeader, byte[] body) throws Exception {
+        return testNormal(client, url, type, null, mapHeader, body);
+    }
+    public byte[] testNormal(HttpClient client, String url, App.HttpRequestType type, byte[] body) throws Exception {
+        Map<String, Object> mapHeader = new HashMap<>();
+        mapHeader.put(HttpHeaderNames.CONTENT_TYPE.toString(), "application/json");
+        return testNormal(client, url, type, null, mapHeader, body);
     }
 
     public boolean parseRunConfig() throws IOException {
@@ -409,21 +485,41 @@ public class TestHttpClient {
         client.stop();
         return taskResult;
     }
-    private AssetsQueryResult queryAssets() throws Exception {
-        HttpClient client = new HttpClient(host, port);
-        // 查询资产
-        byte[] result = testNormal(client,"/api/v3/assets", HttpRequestType.HTTP_GET, null);
-        AssetsQueryResult queryResult = buildResultObject(result, AssetsQueryResult.class);
-        client.stop();
-        return queryResult;
-    }
     private AssetsQueryVulnerabilitiesResult queryAssetsVulnerabilities(int assetId) throws Exception {
         HttpClient client = new HttpClient(host, port);
         // 查询资产漏洞
-        byte[] result = testNormal(client,"/api/v3/assets/"+assetId+"/vulnerabilities", HttpRequestType.HTTP_GET, null);
+        Map<String, Object> mapParams = new HashMap<>();
+        mapParams.put("page", 0);
+        mapParams.put("size", 10);
+
+        String url = "/api/v3/assets/"+assetId+"/vulnerabilities";
+        byte[] result = testNormal(client,url, App.HttpRequestType.HTTP_GET, mapParams, null, null);
         AssetsQueryVulnerabilitiesResult queryResult = buildResultObject(result, AssetsQueryVulnerabilitiesResult.class);
+        pageResource(queryResult, client, url, mapParams, null, null);
         client.stop();
         return queryResult;
+    }
+    private <T extends PageAndResources> T pageResource(T t, HttpClient client, String url, Map<String, Object> mapHeader, byte[] body) throws Exception {
+        return pageResource(t, client, url, null, mapHeader, body);
+    }
+    private <T extends PageAndResources> T pageResource(T t, HttpClient client, String url, Map<String, Object> mapParams, Map<String, Object> mapHeader, byte[] body) throws Exception {
+        Page page = t.getPage();
+        if (page != null) {
+            int pageNum = page.getTotalPages();
+            int curPage = page.getNumber();
+            int perPageSize = page.getSize();
+            int totalResources = page.getTotalResources();
+            for (int num=1; num<pageNum;num++) {
+                mapParams.put("page", curPage+num);
+                byte[] result = testNormal(client,url, App.HttpRequestType.HTTP_GET, mapParams, mapHeader, null);
+                T tmpTaskResult = buildResultObject(result, t.getClass());
+                t.getResources().addAll(tmpTaskResult.getResources());
+                t.getPage().setSize(perPageSize*(num+1));
+                t.getPage().setTotalResources(t.getResources().size());
+            }
+            t.getPage().setTotalPages(1);
+        }
+        return t;
     }
     private AssetsQueryPortResult queryAssetsPorts(int assetId) throws Exception {
         HttpClient client = new HttpClient(host, port);

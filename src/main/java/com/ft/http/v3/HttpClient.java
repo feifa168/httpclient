@@ -116,20 +116,42 @@ public class HttpClient {
         return this;
     }
 
-    public void getMessage(String url, Map<AsciiString, String> mapHeader, ResultCallBack resultCallback) throws URISyntaxException {
+    public void getMessage(String url, Map<String, Object> mapHeader, ResultCallBack resultCallback) throws URISyntaxException {
         queryMessage(HttpMethod.GET, url, mapHeader, null, resultCallback);
     }
-    public void postMessage(String url, Map<AsciiString, String> mapHeader, byte[] body, ResultCallBack resultCallback) throws URISyntaxException {
+    public void getMessage(String url, Map<String, Object> mapParams, Map<String, Object> mapHeader, ResultCallBack resultCallback) throws URISyntaxException {
+        queryMessage(HttpMethod.GET, url, mapParams, mapHeader, null, resultCallback);
+    }
+    public void postMessage(String url, Map<String, Object> mapHeader, byte[] body, ResultCallBack resultCallback) throws URISyntaxException {
         queryMessage(HttpMethod.POST, url, mapHeader, body, resultCallback);
     }
-    public void putMessage(String url, Map<AsciiString, String> mapHeader, byte[] body, ResultCallBack resultCallback) throws URISyntaxException {
+    public void putMessage(String url, Map<String, Object> mapHeader, byte[] body, ResultCallBack resultCallback) throws URISyntaxException {
         queryMessage(HttpMethod.PUT, url, mapHeader, body, resultCallback);
     }
-    private void queryMessage(HttpMethod method, String url, Map<AsciiString, String> mapHeader, byte[] body, ResultCallBack resultCallback) throws URISyntaxException {
+    private void queryMessage(HttpMethod method, String url, Map<String, Object> mapHeader, byte[] body, ResultCallBack resultCallback) throws URISyntaxException {
+        queryMessage(method, url, null, mapHeader, body, resultCallback);
+    }
+
+    private void queryMessage(HttpMethod method, String url, Map<String, Object> mapParams, Map<String, Object> mapHeader, byte[] body, ResultCallBack resultCallback) throws URISyntaxException {
         this.resultCallback = resultCallback;
 
         URI uri;
-        uri = new URI(url);
+
+        String curUrl;
+        if (null != mapParams) {
+            StringBuilder params = new StringBuilder(128);
+            int i=0;
+            for (Map.Entry<String, Object> param : mapParams.entrySet()) {
+                if (i++ >0) {
+                    params.append("&");
+                }
+                params.append(param.getKey()).append("=").append(param.getValue());
+            }
+            curUrl = (params.length() > 0) ? (url + "?" + params.toString()) : url;
+        } else {
+            curUrl = url;
+        }
+        uri = new URI(curUrl);
         DefaultFullHttpRequest request = new DefaultFullHttpRequest(
                 HttpVersion.HTTP_1_1
                 , method
@@ -150,7 +172,7 @@ public class HttpClient {
 
         // 外部配置的请求头
         if (mapHeader != null) {
-            for (Map.Entry<AsciiString, String> head : mapHeader.entrySet()) {
+            for (Map.Entry<String, Object> head : mapHeader.entrySet()) {
                 headers.set(head.getKey(), head.getValue());
             }
         }
