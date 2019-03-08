@@ -81,15 +81,25 @@ public class HttpClient {
         }
     }
 
+    public boolean isActive() {
+        Channel cn = futtureChannel.channel();
+        System.out.println(" isactive isRegistered " + cn.isRegistered() + ", isopen " + cn.isOpen() + ", iswritable " + cn.isWritable() + ",isactive " + cn.isActive());
+        return cn.isActive();
+    }
+
     public void stop() {
         try {
-            if (futtureChannel.channel().isActive()) {
+            if (isActive()) {
                 futtureChannel.channel().closeFuture().addListener(new GenericFutureListener<Future<? super Void>>() {
                     @Override
                     public void operationComplete(Future<? super Void> future) throws Exception {
                         System.out.println("future.isDone() is " + future.isDone());
                     }
                 });
+            } else {
+                if (running) {
+                    setResult(null);
+                }
             }
         } finally {
             workerGroup.shutdownGracefully();
@@ -188,9 +198,14 @@ public class HttpClient {
         if ((body != null) && body.length>0) {
             request.content().writeBytes(Unpooled.wrappedBuffer(body));
         }
+        Channel cn = futtureChannel.channel();
+        System.out.println("isRegistered " + cn.isRegistered() + ", isopen " + cn.isOpen() + ", iswritable " + cn.isWritable() + ",isactive " + cn.isActive());
 
         // 发送http请求
         futtureChannel.channel().writeAndFlush(request);
+
+        cn = futtureChannel.channel();
+        System.out.println("isRegistered " + cn.isRegistered() + ", isopen " + cn.isOpen() + ", iswritable " + cn.isWritable() + ",isactive " + cn.isActive());
     }
 
     private String  host;

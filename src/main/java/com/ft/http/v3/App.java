@@ -65,6 +65,10 @@ public class App {
     }
 
     public <T> T buildResultObject(byte[] result, Class<?> className) throws IOException {
+        if (null == result) {
+            return null;
+        }
+
         T t = (T)mapper.readValue(result, className);
         System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(t));
         return t;
@@ -99,9 +103,14 @@ public class App {
             }
         }
 
-        byte[] result = call.getResult();
-        String jsonString = new String(result);
-        System.out.println("============================\n"+jsonString);
+        byte[] result = null;
+        if (client.isActive()) {
+            result = call.getResult();
+        }
+        if (result != null) {
+            String jsonString = new String(result);
+            System.out.println("============================\n" + jsonString);
+        }
 
         return result;
     }
@@ -120,10 +129,13 @@ public class App {
 
         // 创建任务
         byte[] postBody = mapper.writeValueAsBytes(task);
-        byte[] result = testNormal(client,"/api/v3/tasks", HttpRequestType.HTTP_POST, postBody);
-        NewTaskReturn taskReturn = buildResultObject(result, NewTaskReturn.class);
-        client.stop();
-        return taskReturn;
+        byte[] result = null;
+        try {
+            result = testNormal(client, "/api/v3/tasks", HttpRequestType.HTTP_POST, postBody);
+        } finally {
+            client.stop();
+        }
+        return buildResultObject(result, NewTaskReturn.class);
     }
     private CredentialReturn createCredential(NewTaskReturn taskReturn, Credential credential) throws Exception {
         HttpClient client = new HttpClient(host, port);
@@ -131,10 +143,13 @@ public class App {
         byte[] postBody = mapper.writeValueAsBytes(credential);
         System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(credential));
         // /api/v3/tasks/taskid/task_credentials
-        byte[] result = testNormal(client,"/api/v3/tasks/"+taskReturn.getId()+"/task_credentials", HttpRequestType.HTTP_POST, postBody);
-        CredentialReturn credentialReturn = buildResultObject(result, CredentialReturn.class);
-        client.stop();
-        return credentialReturn;
+        byte[] result = null;
+        try {
+            result = testNormal(client, "/api/v3/tasks/" + taskReturn.getId() + "/task_credentials", HttpRequestType.HTTP_POST, postBody);
+        } finally {
+            client.stop();
+        }
+        return buildResultObject(result, CredentialReturn.class);
     }
     private SharedCredential createSharedCredential(NewTaskReturn taskReturn, Credential credential) throws Exception {
         HttpClient client = new HttpClient(host, port);
@@ -142,28 +157,37 @@ public class App {
         byte[] postBody = mapper.writeValueAsBytes(credential);
         System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(credential));
         // /api/v3/shared_credentials
-        byte[] result = testNormal(client,"/api/v3/shared_credentials", HttpRequestType.HTTP_POST, postBody);
-        SharedCredential credentialReturn = buildResultObject(result, SharedCredential.class);
-        client.stop();
-        return credentialReturn;
+        byte[] result = null;
+        try {
+            result = testNormal(client, "/api/v3/shared_credentials", HttpRequestType.HTTP_POST, postBody);
+        } finally {
+            client.stop();
+        }
+        return buildResultObject(result, SharedCredential.class);
     }
     private NewScanReturn startScan(NewTaskReturn taskReturn, NewScan scan) throws Exception {
         HttpClient client = new HttpClient(host, port);
         // 创建扫描
         byte[] postBody = mapper.writeValueAsBytes(scan);
         System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(scan));
-        byte[] result = testNormal(client,"/api/v3/tasks/"+taskReturn.getId()+"/scans", HttpRequestType.HTTP_POST, postBody);
-        NewScanReturn scanReturn = buildResultObject(result, NewScanReturn.class);
-        client.stop();
-        return scanReturn;
+        byte[] result = null;
+        try {
+            result = testNormal(client,"/api/v3/tasks/"+taskReturn.getId()+"/scans", HttpRequestType.HTTP_POST, postBody);
+        } finally {
+            client.stop();
+        }
+        return buildResultObject(result, NewScanReturn.class);
     }
     private ScanResult queryScanResult(NewScanReturn scanReturn) throws Exception {
         HttpClient client = new HttpClient(host, port);
         // 查询扫描状态
-        byte[] result = testNormal(client,"/api/v3/scans/"+scanReturn.getId(), HttpRequestType.HTTP_GET, null);
-        ScanResult scanResult = buildResultObject(result, ScanResult.class);
-        client.stop();
-        return scanResult;
+        byte[] result = null;
+        try {
+            result = testNormal(client,"/api/v3/scans/"+scanReturn.getId(), HttpRequestType.HTTP_GET, null);
+        } finally {
+            client.stop();
+        }
+        return buildResultObject(result, ScanResult.class);
     }
     private TaskResult queryTaskScanResult(NewTaskReturn taskReturn) throws Exception {
         HttpClient client = new HttpClient(host, port);
@@ -175,19 +199,27 @@ public class App {
         mapParams.put("size", 10);
 
         String url = "/api/v3/tasks/"+taskReturn.getId()+"/scans";
-        byte[] result = testNormal(client,url, HttpRequestType.HTTP_GET, mapParams, null, null);
-        client.stop();
+        byte[] result = null;
+        try {
+            result = testNormal(client,url, HttpRequestType.HTTP_GET, mapParams, null, null);
+        } finally {
+            client.stop();
+        }
         TaskResult taskResult = buildResultObject(result, TaskResult.class);
         pageResource(taskResult, client, url, mapParams, null, null);
         return taskResult;
     }
-    private <T extends PageAndResources> T pageResource(T t, HttpClient client, String url, Map<String, Object> mapParams, Map<String, Object> mapHeader, byte[] body) throws Exception {
+    private <T extends PageAndResources> T pageResource(T t, HttpClient client, String url, Map<String, Object> mapParams, Map<String, Object> mapHeader, byte[] body) {
 
         //HttpClient client = new HttpClient(host, port);
 
 //        if (t != null) {
 //            return t;
 //        }
+        if (null == t) {
+            return null;
+        }
+
         Page page = t.getPage();
         if (page != null) {
             int pageNum = page.getTotalPages();
@@ -197,10 +229,21 @@ public class App {
             for (int num=1; num<pageNum;num++) {
                 mapParams.put("page", String.valueOf(curPage+num));
                 client = new HttpClient(host, port);
-                byte[] result = testNormal(client,url, HttpRequestType.HTTP_GET, mapParams, mapHeader, null);
-                T tmpTaskResult = buildResultObject(result, t.getClass());
-                client.stop();
-                t.getResources().addAll(tmpTaskResult.getResources());
+                byte[] result = null;
+                try {
+                    result = testNormal(client,url, HttpRequestType.HTTP_GET, mapParams, mapHeader, null);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    client.stop();
+                }
+                T tmpTaskResult = null;
+                try {
+                    tmpTaskResult = buildResultObject(result, t.getClass());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                t.getResources().addAll((null != tmpTaskResult.getResources()) ? tmpTaskResult.getResources() : null);
                 t.getPage().setSize(perPageSize*(num+1));
                 t.getPage().setTotalResources(t.getResources().size());
             }
@@ -219,10 +262,14 @@ public class App {
         mapParams.put("size", 10);
 
         String url = "/api/v3/assets";
-        byte[] result = testNormal(client,url, HttpRequestType.HTTP_GET, mapParams, null, null);
+        byte[] result = null;
+        try {
+            result = testNormal(client,url, HttpRequestType.HTTP_GET, mapParams, null, null);
+        } finally {
+            client.stop();
+        }
         AssetsQueryResult queryResult = buildResultObject(result, AssetsQueryResult.class);
         pageResource(queryResult, client, url, mapParams, null, null);
-        client.stop();
         return queryResult;
     }
     private AssetsQueryVulnerabilitiesResult queryAssetsVulnerabilities(int assetId) throws Exception {
@@ -233,19 +280,27 @@ public class App {
         mapParams.put("size", 10);
 
         String url = "/api/v3/assets/"+assetId+"/vulnerabilities";
-        byte[] result = testNormal(client,url, HttpRequestType.HTTP_GET, mapParams, null, null);
+        byte[] result = null;
+        try {
+            result = testNormal(client,url, HttpRequestType.HTTP_GET, mapParams, null, null);
+        } finally {
+            client.stop();
+        }
         AssetsQueryVulnerabilitiesResult queryResult = buildResultObject(result, AssetsQueryVulnerabilitiesResult.class);
         pageResource(queryResult, client, url, mapParams, null, null);
-        client.stop();
         return queryResult;
     }
     private AssetsQueryPortResult queryAssetsPorts(int assetId) throws Exception {
         HttpClient client = new HttpClient(host, port);
         // 查询资产端口
         //byte[] result = testNormal(client,"/api/v3/assets/"+assetId+"/ports", HttpRequestType.HTTP_GET, null);
-        byte[] result = testNormal(client,"/api/v3/assets/"+assetId+"/services", HttpRequestType.HTTP_GET, null);
+        byte[] result = null;
+        try {
+            result = testNormal(client,"/api/v3/assets/"+assetId+"/services", HttpRequestType.HTTP_GET, null);
+        } finally {
+            client.stop();
+        }
         AssetsQueryPortResult queryResult = buildResultObject(result, AssetsQueryPortResult.class);
-        client.stop();
         return queryResult;
     }
 
@@ -406,8 +461,13 @@ public class App {
             // 创建任务
             try {
                 newTaskReturn = app.startTask(task);
+
+                if (null == newTaskReturn) {
+                    scanReslutMixWithError.setMessage("创建任务失败,返回无效任务");
+                    break;
+                }
             } catch (Exception e) {
-                scanReslutMixWithError.setMessage("创建任务失败");
+                scanReslutMixWithError.setMessage("创建任务失败,"+e.getMessage());
                 break;
             }
 
@@ -520,7 +580,7 @@ public class App {
                             } catch (Exception e) {
                                 scanReslutMixWithError.setMessage("查询资产端口失败");
                             }
-                            AssetsScanResultMix mix = new AssetsScanResultMix(assets.getId(), addr,
+                            AssetsScanResultMix mix = new AssetsScanResultMix(assets.getId(), assets, addr,
                                     (null!=assetsVulnerabilities) ? assetsVulnerabilities.getResources() : null,
                                     (null!=assetsPort) ? assetsPort.getResources() : null);
                             scanReslutMix.add(mix);

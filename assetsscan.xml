@@ -11,9 +11,6 @@
     <taskconfigItems>
         <taskconfig>
             <ip>172.16.39.22</ip>
-        </taskconfig>
-        <taskconfig>
-            <ip>172.16.39.251</ip>
             <Credentials>
                 <account>
                     <service>as400</service>

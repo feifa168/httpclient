@@ -119,11 +119,16 @@ public class TestHttpClient {
 
     @Test
     public void testCreateTask() throws Exception {
+        host = "10.0.92.95";
+        port = 443;
+        authName = "admin";
+        authPassword = "admin@123";
+
         HttpClient client = new HttpClient(host, port);
         byte[] result = testNormal(client,"/api/v3/tasks", HttpRequestType.HTTP_POST, buildNewTask(buildNewTask2()));
+        client.stop();
 
         NewTaskReturn taskReturn = buildResultObject(result, NewTaskReturn.class);
-        client.stop();
     }
 
     @Test
@@ -367,7 +372,7 @@ public class TestHttpClient {
 
                             AssetsQueryPortResult assetsPort = queryAssetsPorts(assets.getId());
 
-                            AssetsScanResultMix mix = new AssetsScanResultMix(assets.getId(), addr, assetsVulnerabilities.getResources(), assetsPort.getResources());
+                            AssetsScanResultMix mix = new AssetsScanResultMix(assets.getId(), assets, addr, assetsVulnerabilities.getResources(), assetsPort.getResources());
                             scanReslutMix.add(mix);
 
                             break;
@@ -540,8 +545,7 @@ public class TestHttpClient {
 
     private NewTask buildNewTask2() throws JsonProcessingException {
         List<String> incAddrs = new ArrayList<>();
-        incAddrs.add("172.16.1.152");
-        incAddrs.add("192.168.0.121");
+        incAddrs.add("172.16.1.22");
         List<String> excAddrs = new ArrayList<>();
         excAddrs.add("172.16.39.254");
 
