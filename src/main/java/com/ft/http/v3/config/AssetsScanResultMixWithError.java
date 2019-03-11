@@ -2,6 +2,7 @@ package com.ft.http.v3.config;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.ft.http.v3.weakpassword.CrackScanResult;
 
 import java.util.List;
 

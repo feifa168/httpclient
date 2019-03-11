@@ -18,6 +18,9 @@ import com.ft.http.v3.scan.NewScan;
 import com.ft.http.v3.scan.NewScanReturn;
 import com.ft.http.v3.scan.ScanResult;
 import com.ft.http.v3.task.*;
+import com.ft.http.v3.weakpassword.CrackScanResult;
+import com.ft.http.v3.weakpassword.CrackScanReturn;
+import com.ft.http.v3.weakpassword.NewCracks;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.util.AsciiString;
 import org.junit.Test;
@@ -181,6 +184,88 @@ public class TestHttpClient {
         return queryResult;
     }
 
+    @Test
+    public void testCreateCracks() throws Exception {
+        host = "10.0.92.95";
+        port = 443;
+        authName = "admin";
+        authPassword = "admin@123";
+
+        byte[] body = ("{\n" +
+                "  \"bfTimeOut\": 3,\n" +
+                "  \"connectTimeOut\": 5,\n" +
+                "  \"models\": [\n" +
+                "    {\n" +
+                "      \"port\": 22,\n" +
+                "      \"service\": \"ssh\"\n" +
+                "    }\n" +
+                "  ],\n" +
+                "  \"name\": \"TaskNamessh4\",\n" +
+                "  \"targets\": \"172.16.39.37\",\n" +
+                "  \"threads\": 15\n" +
+                "}").getBytes();
+        HttpClient client = new HttpClient(host, port);
+        byte[] result = testNormal(client,"/api/v3/cracks", HttpRequestType.HTTP_POST, body);
+        client.stop();
+        int resultId = 0;
+        if (result != null) {
+            try {
+                resultId = Integer.parseInt(new String(result));
+                System.out.println(resultId);
+            } catch (NumberFormatException e) {
+                //e.printStackTrace();
+            }
+            if (resultId == 0) {
+                CrackScanReturn scanReturn = buildResultObject(result, CrackScanReturn.class);
+            }
+        }
+    }
+
+    @Test
+    public void testCreateCracksScan() throws Exception {
+        host = "10.0.92.95";
+        port = 443;
+        authName = "admin";
+        authPassword = "admin@123";
+
+        HttpClient client = new HttpClient(host, port);
+        byte[] result = testNormal(client,"/api/v3/cracks/scan/7", HttpRequestType.HTTP_POST, null);
+        client.stop();
+
+        int resultId = 0;
+        if (result != null) {
+            try {
+                resultId = Integer.parseInt(new String(result));
+                System.out.println(resultId);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+            CrackScanReturn scanReturn = null;
+            if (resultId != 0) {
+                scanReturn = new CrackScanReturn(resultId, null);
+            } else {
+                scanReturn = buildResultObject(result, CrackScanReturn.class);
+            }
+        }
+    }
+
+    @Test
+    public void testQueryCracksScan() throws Exception {
+        host = "10.0.92.95";
+        port = 443;
+        authName = "admin";
+        authPassword = "admin@123";
+
+        HttpClient client = new HttpClient(host, port);
+        byte[] result = testNormal(client,"/api/v3/cracks/scan/6", HttpRequestType.HTTP_GET, null);
+        client.stop();
+
+        int resultId = 0;
+        if (result != null) {
+            CrackScanResult scanResult = buildResultObject(result, CrackScanResult.class);
+        }
+    }
+
     public byte[] testNormal(HttpClient client, String url, App.HttpRequestType type, Map<String, Object> mapParams, Map<String, Object> mapHeader, byte[] body) throws Exception {
         client.configSSL(true);
         client.configAuth(true, authName, authPassword);
@@ -241,6 +326,10 @@ public class TestHttpClient {
         return true;
     }
 
+    @Test
+    public void testWeakPassword() {
+
+    }
     @Test
     public void testAll() throws Exception {
         NewTask       task = null;
@@ -372,7 +461,7 @@ public class TestHttpClient {
 
                             AssetsQueryPortResult assetsPort = queryAssetsPorts(assets.getId());
 
-                            AssetsScanResultMix mix = new AssetsScanResultMix(assets.getId(), assets, addr, assetsVulnerabilities.getResources(), assetsPort.getResources());
+                            AssetsScanResultMix mix = new AssetsScanResultMix("", assets.getId(), assets, addr, null, assetsVulnerabilities.getResources(), assetsPort.getResources());
                             scanReslutMix.add(mix);
 
                             break;
@@ -657,12 +746,19 @@ public class TestHttpClient {
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String name = "SCAN_56_"+formatter.format(new Date());
-        TaskConfig config = new TaskConfig("172.16.39.22", null);
+
+        List<NewCracks.Model> models = new ArrayList<>();
+        models.add(new NewCracks.Model(22, "ssh"));
+        models.add(new NewCracks.Model(21, "telnet"));
+        String crackTaskName = "crack_task_" + formatter.format(new Date());
+        String host = "172.16.39.22";
+        NewCracks cracks = new NewCracks(3, 5, models, crackTaskName, host, 15);
+        TaskConfig config = new TaskConfig("taskid", host, cracks, null);
 
         taskConfigs.add(config);
 
         name = "SCAN_56_"+formatter.format(new Date());
-        config = new TaskConfig("172.16.39.251", credentials);
+        config = new TaskConfig("taskid", "172.16.39.251", null, credentials);
         taskConfigs.add(config);
 
         TaskScanConfig taskScanConfig = new TaskScanConfig(taskConfigs, "description", 3, "normal",

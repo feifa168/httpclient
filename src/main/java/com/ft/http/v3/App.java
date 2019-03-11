@@ -21,6 +21,9 @@ import com.ft.http.v3.scan.NewScan;
 import com.ft.http.v3.scan.NewScanReturn;
 import com.ft.http.v3.scan.ScanResult;
 import com.ft.http.v3.task.*;
+import com.ft.http.v3.weakpassword.CrackScanResult;
+import com.ft.http.v3.weakpassword.CrackScanReturn;
+import com.ft.http.v3.weakpassword.NewCracks;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.util.AsciiString;
 
@@ -33,6 +36,7 @@ import java.nio.channels.FileChannel;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.*;
 
 public class App {
 
@@ -137,6 +141,96 @@ public class App {
         }
         return buildResultObject(result, NewTaskReturn.class);
     }
+
+    private CrackScanReturn startCracks(NewCracks cracks) throws Exception {
+        if (null == cracks) {
+            return null;
+        }
+        HttpClient client = new HttpClient(host, port);
+
+        // 创建弱口令任务
+        byte[] postBody = mapper.writeValueAsBytes(cracks);
+        byte[] result = null;
+        try {
+            result = testNormal(client, "/api/v3/cracks", HttpRequestType.HTTP_POST, postBody);
+        } finally {
+            client.stop();
+        }
+
+        int resultId = 0;
+        CrackScanReturn scanReturn = null;
+        if (result != null) {
+            try {
+                resultId = Integer.parseInt(new String(result));
+                System.out.println(resultId);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+            if (resultId != 0) {
+                scanReturn = new CrackScanReturn(resultId, null);
+            } else {
+                scanReturn = buildResultObject(result, CrackScanReturn.class);
+            }
+        }
+        return scanReturn;
+    }
+
+    private CrackScanReturn startCracksScan(CrackScanReturn ret) throws Exception {
+        if (ret == null || ret.getId() == 0) {
+            return null;
+        }
+
+        HttpClient client = new HttpClient(host, port);
+
+        // 创建弱口令扫描任务
+        byte[] result = null;
+        try {
+            result = testNormal(client, "/api/v3/cracks/scan/"+ret.getId(), HttpRequestType.HTTP_POST, null);
+        } finally {
+            client.stop();
+        }
+
+        int resultId = 0;
+        CrackScanReturn scanReturn = null;
+        if (result != null) {
+            try {
+                resultId = Integer.parseInt(new String(result));
+                System.out.println(resultId);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+            if (resultId != 0) {
+                scanReturn = new CrackScanReturn(resultId, null);
+            } else {
+                scanReturn = buildResultObject(result, CrackScanReturn.class);
+            }
+        }
+        return scanReturn;
+    }
+
+    private CrackScanResult queryCracksScanResult(CrackScanReturn ret) throws Exception {
+        if (ret == null || ret.getId() == 0) {
+            return null;
+        }
+
+        HttpClient client = new HttpClient(host, port);
+
+        // 查询弱口令扫描任务
+        byte[] result = null;
+        try {
+            result = testNormal(client, "/api/v3/cracks/scan/"+ret.getId(), HttpRequestType.HTTP_GET, null);
+        } finally {
+            client.stop();
+        }
+
+        int resultId = 0;
+        CrackScanResult scanResult = null;
+        if (result != null) {
+            scanResult = buildResultObject(result, CrackScanResult.class);
+        }
+        return scanResult;
+    }
+
     private CredentialReturn createCredential(NewTaskReturn taskReturn, Credential credential) throws Exception {
         HttpClient client = new HttpClient(host, port);
         // 创建凭证
@@ -375,6 +469,69 @@ public class App {
         return true;
     }
 
+    public static class CrackScanResultInfo {
+        private CrackScanResult crackScanResult;
+        private CountDownLatch latch;
+
+        public CountDownLatch getLatch() {
+            return latch;
+        }
+
+        public void setLatch(CountDownLatch latch) {
+            this.latch = latch;
+        }
+
+        public CrackScanResult getCrackScanResult() {
+            return crackScanResult;
+        }
+
+        public void setCrackScanResult(CrackScanResult crackScanResult) {
+            this.crackScanResult = crackScanResult;
+        }
+    }
+
+    private CountDownLatch executeWeakPassword(NewCracks cracks, CrackScanResultInfo resultInfo) {
+        if (null == cracks) {
+            return null;
+        }
+
+        int cracksNum = 1;
+        CountDownLatch latch = new CountDownLatch(cracksNum);
+        int processNum = Runtime.getRuntime().availableProcessors();
+        int poolNum = processNum > cracksNum ? cracksNum : processNum;
+
+        ExecutorService pool = Executors.newFixedThreadPool(poolNum);
+
+        pool.execute(()->{
+            CrackScanReturn crackReturn = null;
+            try {
+                // todo 测试使用，要去掉
+                cracks.setName(new Date().toString());
+                crackReturn = startCracks(cracks);
+                if (null != crackReturn) {
+                    if (0 != crackReturn.getId()) {
+                        CrackScanReturn crackScanReturn = startCracksScan(crackReturn);
+                        if (null != crackScanReturn) {
+                            CrackScanResult result = null;
+                            do {
+                                Thread.sleep(1000);
+                                result = queryCracksScanResult(crackScanReturn);
+                            } while((result != null) && (!result.finished()));
+                            resultInfo.setCrackScanResult(result);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                latch.countDown();
+            }
+        });
+        pool.shutdown();
+
+        return latch;
+    }
+
     private ObjectMapper mapper = new ObjectMapper();
     private XmlMapper xmlMapper = new XmlMapper();
     private RunConfig runConfig;
@@ -399,6 +556,7 @@ public class App {
 
         List<AssetsScanResultMix> scanReslutMix = new ArrayList<>();
         AssetsScanResultMixWithError scanReslutMixWithError = new AssetsScanResultMixWithError();
+        Map<String, CrackScanResultInfo> crackResultInfos = new HashMap<>();
         //task = buildNewTask2();
         TaskScanConfig taskScanConfig = null;
 
@@ -480,8 +638,16 @@ public class App {
             // 设置任务ID
             scanReslutMixWithError.setTaskid(String.valueOf(taskId));
 
-            // 登录检查
-//            for (TaskConfig taskConfig : taskScanConfig.getTaskconfigs()) {
+            Map<String, TaskConfig> mapIp2TaskConfig = new HashMap<>();
+            for (TaskConfig taskConfig : taskScanConfig.getTaskconfigs()) {
+                mapIp2TaskConfig.put(taskConfig.getIp(), taskConfig);
+
+                // 弱口令扫描
+                CrackScanResultInfo resultInfo = new CrackScanResultInfo();
+                resultInfo.setLatch(app.executeWeakPassword(taskConfig.getCracks(), resultInfo));
+                crackResultInfos.put(taskConfig.getIp(), resultInfo);
+
+                // 登录检查
 //                if (taskConfig.getCredentials() == null) {
 //                    continue;
 //                }
@@ -500,7 +666,7 @@ public class App {
 //                        System.out.println("创建认证失败");
 //                    }
 //                }
-//            }
+            }
 
             // 创建扫描
             scan = new NewScan(task.getEngineId(), task.getScan().getAssets().getIncludedTargets().getAddresses(), task.getScanTemplateId());
@@ -580,7 +746,9 @@ public class App {
                             } catch (Exception e) {
                                 scanReslutMixWithError.setMessage("查询资产端口失败");
                             }
-                            AssetsScanResultMix mix = new AssetsScanResultMix(assets.getId(), assets, addr,
+                            TaskConfig tc = mapIp2TaskConfig.get(addr);
+                            String subTaskId = (null != tc) ? tc.getId() : "";
+                            AssetsScanResultMix mix = new AssetsScanResultMix(subTaskId, assets.getId(), assets, addr, null,
                                     (null!=assetsVulnerabilities) ? assetsVulnerabilities.getResources() : null,
                                     (null!=assetsPort) ? assetsPort.getResources() : null);
                             scanReslutMix.add(mix);
@@ -594,6 +762,22 @@ public class App {
             if (scanReslutMix.size() == 0) {
                 scanReslutMixWithError.setMessage("没有找到匹配的资产扫描结果");
                 break;
+            }
+
+            for (AssetsScanResultMix mix : scanReslutMix) {
+                if (mix.getAssets() != null) {
+                    CrackScanResultInfo resultInfo = crackResultInfos.get(mix.getAssets().getIp());
+                    if (null != resultInfo) {
+                        if (resultInfo.getLatch() != null) {
+                            try {
+                                resultInfo.getLatch().await();
+                                mix.setCrackScanResult(resultInfo.getCrackScanResult());
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
             }
 
             scanReslutMixWithError.setSuccess(true);

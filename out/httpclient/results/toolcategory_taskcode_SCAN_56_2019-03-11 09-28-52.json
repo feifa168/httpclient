@@ -1,0 +1,118 @@
+{
+  "toolcategory" : "toolcategory",
+  "taskcode" : "taskcode",
+  "success" : true,
+  "taskid" : "42",
+  "scanid" : "13",
+  "result" : [ {
+    "assetId" : 2,
+    "assets" : {
+      "id" : 2,
+      "ip" : "172.16.39.37",
+      "os" : "Linux 3.11",
+      "osFingerprint" : {
+        "description" : "Linux 3.11",
+        "id" : 5,
+        "product" : "Linux",
+        "systemName" : "Linux",
+        "vendor" : "Linux",
+        "version" : "3.11"
+      },
+      "riskScore" : "745.4067993164062",
+      "services" : [ {
+        "configurations" : [ {
+          "name" : "ssh.banner",
+          "value" : "SSH-2.0-OpenSSH_6.6.1"
+        }, {
+          "name" : "ssh.protocol.version",
+          "value" : "2.0"
+        }, {
+          "name" : "ssh.rsa.pubkey.fingerprint",
+          "value" : "0A303AF45D37F49F7AD1C265388FB2A1"
+        } ],
+        "name" : "SSH",
+        "port" : 22,
+        "product" : "OpenSSH",
+        "protocol" : "TCP",
+        "vendor" : "OpenBSD",
+        "version" : "6.6.1"
+      }, {
+        "configurations" : [ {
+          "name" : "protocol-version",
+          "value" : "5.0"
+        }, {
+          "name" : "supported-auth-count",
+          "value" : "-128"
+        } ],
+        "name" : "VNC",
+        "port" : 5900,
+        "protocol" : "TCP"
+      } ],
+      "vulnerabilities" : {
+        "critical" : 1,
+        "exploits" : 0,
+        "malwareKits" : 0,
+        "moderate" : 2,
+        "severe" : 0,
+        "total" : 3
+      },
+      "addresses" : [ {
+        "ip" : "172.16.39.37"
+      } ]
+    },
+    "address" : "172.16.39.37",
+    "crackScanResult" : {
+      "id" : 28,
+      "startTime" : "2019-03-11 09:28:37",
+      "status" : 4,
+      "progress" : 100,
+      "items" : [ {
+        "target" : "172.16.39.37",
+        "service" : "ssh",
+        "username" : "test",
+        "password" : "123456",
+        "port" : 22
+      } ]
+    },
+    "vulnerabilitiesResult" : [ {
+      "id" : "backdoor-vnc-0001",
+      "title" : "VNC远程控制服务已安装",
+      "cvss" : 7,
+      "publishDate" : "2004-11-01",
+      "riskScore" : 745,
+      "severity" : 8,
+      "exploit" : 0,
+      "malware" : 0,
+      "instances" : 1
+    }, {
+      "id" : "generic-icmp-timestamp",
+      "title" : "ICMP时间戳回应",
+      "cvss" : 0,
+      "cve" : "CVE-1999-0524",
+      "publishDate" : "1997-08-01",
+      "riskScore" : 0,
+      "severity" : 1,
+      "exploit" : 0,
+      "malware" : 0,
+      "instances" : 1
+    }, {
+      "id" : "generic-tcp-timestamp",
+      "title" : "TCP时间戳响应",
+      "cvss" : 0,
+      "publishDate" : "1997-08-01",
+      "riskScore" : 0,
+      "severity" : 1,
+      "exploit" : 0,
+      "malware" : 0,
+      "instances" : 1
+    } ],
+    "portResult" : [ {
+      "port" : 22,
+      "protocol" : "TCP"
+    }, {
+      "port" : 5900,
+      "protocol" : "TCP"
+    } ],
+    "subTaskid" : "subTaskid"
+  } ]
+}

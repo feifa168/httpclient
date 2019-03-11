@@ -10,6 +10,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.ft.http.v3.config.*;
 import com.ft.http.v3.credential.Credential;
 import com.ft.http.v3.task.NewTask;
+import com.ft.http.v3.weakpassword.NewCracks;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -51,6 +52,7 @@ public class TestTaskConfig {
     @Test
     public void test() throws IOException {
         String xmlString = createTaskConfig();
+
         TaskScanConfig taskScanConfig = xmlMapper.readValue(xmlString, TaskScanConfig.class);
 
         buildNewTask(taskScanConfig);
@@ -145,12 +147,19 @@ public class TestTaskConfig {
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String name = "SCAN_56_"+formatter.format(new Date());
-        TaskConfig config = new TaskConfig("172.16.39.22", null);
+
+        List<NewCracks.Model> models = new ArrayList<>();
+        models.add(new NewCracks.Model(22, "ssh"));
+        models.add(new NewCracks.Model(21, "telnet"));
+        String crackTaskName = "crack_task_" + formatter.format(new Date());
+        String host = "172.16.39.22";
+        NewCracks cracks = new NewCracks(3, 5, models, crackTaskName, host, 15);
+        TaskConfig config = new TaskConfig("taskid", host, cracks, null);
 
         taskConfigs.add(config);
 
         name = "SCAN_56_"+formatter.format(new Date());
-        config = new TaskConfig("172.16.39.251", credentials);
+        config = new TaskConfig("taskid", "172.16.39.251", null, credentials);
         taskConfigs.add(config);
 
         TaskScanConfig taskScanConfig = new TaskScanConfig(taskConfigs, "description", 3, "normal",

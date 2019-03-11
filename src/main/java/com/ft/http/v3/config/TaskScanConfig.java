@@ -7,6 +7,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.ft.http.v3.credential.Credential;
 import com.ft.http.v3.task.NewTask;
+import com.ft.http.v3.weakpassword.NewCracks;
 
 import java.util.List;
 
