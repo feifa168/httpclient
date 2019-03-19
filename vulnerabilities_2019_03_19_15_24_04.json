@@ -1,0 +1,604 @@
+{
+"total":137672,
+"resource":[{
+  "vulnId" : "7-zip-cve-2008-6536",
+  "cves" : [ "CVE-2008-6536" ],
+  "cvss" : 10.0,
+  "description" : "\n    \n<p>Unspecified vulnerability in 7-zip before 4.5.7 has unknown impact and remote attack vectors, as demonstrated by the PROTOS GENOME test suite for Archive Formats (c10).</p>\n  ",
+  "addDate" : "2018-05-16",
+  "modifyDate" : "2018-06-08",
+  "publishDate" : "2009-03-29",
+  "severity" : "Critical",
+  "title" : "7-Zip: CVE-2008-6536: Unspecified vulnerability in 7-zip before 4.5.7"
+},{
+  "vulnId" : "7-zip-cve-2016-2334",
+  "cves" : [ "CVE-2016-2334" ],
+  "cvss" : 9.3,
+  "description" : "\n    \n<p>Heap-based buffer overflow in the NArchive::NHfs::CHandler::ExtractZlibFile method in 7zip before 16.00 and p7zip allows remote attackers to execute arbitrary code via a crafted HFS+ image.</p>\n  ",
+  "addDate" : "2018-05-16",
+  "modifyDate" : "2018-06-08",
+  "publishDate" : "2016-12-13",
+  "severity" : "Critical",
+  "title" : "7-Zip: CVE-2016-2334: Heap-based buffer overflow vulnerability"
+},{
+  "vulnId" : "7-zip-cve-2016-7804",
+  "cves" : [ "CVE-2016-7804" ],
+  "cvss" : 6.8,
+  "description" : "\n    \n<p>Untrusted search path vulnerability in 7 Zip for Windows 16.02 and earlier allows remote attackers to gain privileges via a Trojan horse DLL in an unspecified directory.</p>\n  ",
+  "addDate" : "2018-05-16",
+  "modifyDate" : "2018-06-08",
+  "publishDate" : "2017-05-22",
+  "severity" : "Severe",
+  "title" : "7-Zip: CVE-2016-7804: Untrusted search path vulnerability"
+},{
+  "vulnId" : "7-zip-cve-2016-9296",
+  "cves" : [ "CVE-2016-9296" ],
+  "cvss" : 5.0,
+  "description" : "\n    \n<p>A null pointer dereference bug affects the 16.02 and many old versions of p7zip. A lack of null pointer check for the variable folders.PackPositions in function CInArchive::ReadAndDecodePackedStreams in CPP/7zip/Archive/7z/7zIn.cpp, as used in the 7z.so library and in 7z applications, will cause a crash and a denial of service when decoding malformed 7z files.</p>\n  ",
+  "addDate" : "2018-05-16",
+  "modifyDate" : "2018-06-08",
+  "publishDate" : "2016-11-11",
+  "severity" : "Severe",
+  "title" : "7-Zip: CVE-2016-9296: Null pointer dereference bug"
+},{
+  "vulnId" : "7-zip-cve-2017-17969",
+  "cves" : [ "CVE-2017-17969" ],
+  "cvss" : 6.8,
+  "description" : "\n    \n<p>Heap-based buffer overflow in the NCompress::NShrink::CDecoder::CodeReal method in 7-Zip before 18.00 and p7zip allows remote attackers to cause a denial of service (out-of-bounds write) or potentially execute arbitrary code via a crafted ZIP archive.</p>\n  ",
+  "addDate" : "2018-05-16",
+  "modifyDate" : "2018-06-08",
+  "publishDate" : "2018-01-30",
+  "severity" : "Severe",
+  "title" : "7-Zip: CVE-2017-17969: Heap-based buffer overflow vulnerability"
+},{
+  "vulnId" : "7-zip-cve-2018-10115",
+  "cves" : [ "CVE-2018-10115" ],
+  "cvss" : 6.8,
+  "description" : "\n    \n<p>Incorrect initialization logic of RAR decoder objects in 7-Zip 18.03 and before can lead to usage of uninitialized memory, allowing remote attackers to cause a denial of service (segmentation fault) or execute arbitrary code via a crafted RAR archive.</p>\n  ",
+  "addDate" : "2018-05-16",
+  "modifyDate" : "2018-06-14",
+  "publishDate" : "2018-05-13",
+  "severity" : "Severe",
+  "title" : "7-Zip: CVE-2018-10115: Denial of Service and Remote Code Execution vuln via crafted RAR archive"
+},{
+  "vulnId" : "7-zip-cve-2018-10172",
+  "cves" : [ "CVE-2018-10172" ],
+  "cvss" : 7.2,
+  "description" : "\n    \n<p>7-Zip through 18.01 on Windows implements the &quot;Large memory pages&quot; option by calling the LsaAddAccountRights function to add the SeLockMemoryPrivilege privilege to the user&#39;s account, which makes it easier for attackers to bypass intended access restrictions by using this privilege in the context of a sandboxed process.</p>\n  ",
+  "addDate" : "2018-06-08",
+  "modifyDate" : "2018-06-11",
+  "publishDate" : "2018-04-16",
+  "severity" : "Severe",
+  "title" : "7-Zip: CVE-2018-10172: Denial of Service and Remote Code Execution vuln via crafted RAR archive"
+},{
+  "vulnId" : "7-zip-cve-2018-5996",
+  "cves" : [ "CVE-2018-5996" ],
+  "cvss" : 6.8,
+  "description" : "\n    \n<p>Insufficient exception handling in the method NCompress::NRar3::CDecoder::Code of 7-Zip before 18.00 and p7zip can lead to multiple memory corruptions within the PPMd code, allows remote attackers to cause a denial of service (segmentation fault) or execute arbitrary code via a crafted RAR archive.</p>\n  ",
+  "addDate" : "2018-05-16",
+  "modifyDate" : "2018-06-08",
+  "publishDate" : "2018-01-31",
+  "severity" : "Severe",
+  "title" : "7-Zip: CVE-2018-5996: Denial of Service and Remote Code Execution vuln via crafted RAR archive"
+},{
+  "vulnId" : "acrobat-apsb17-36",
+  "cves" : [ ],
+  "cvss" : 4.4,
+  "description" : "\n    \n<p>Adobe has released security updates for Adobe Acrobat and Reader for Windows and Macintosh. These updates addresscriticalvulnerabilities that could potentially allow an attacker to take control of the affected system. </p>\n  ",
+  "addDate" : "2017-11-14",
+  "modifyDate" : "2017-11-14",
+  "publishDate" : "2017-11-14",
+  "severity" : "Severe",
+  "title" : "Adobe Acrobat: APSB17-36: 安全更新可用于 Adobe Acrobat 和 Reader | APSB17-36"
+},{
+  "vulnId" : "acrobat-cve-2016-0931",
+  "cves" : [ ],
+  "cvss" : 6.8,
+  "description" : "<p>Windows和OS X系统上的Adobe Reader及Acrobat 11.0.14之前版本,Acrobat及Acrobat Reader DC Classic 15.006.30119之前版本以及Acrobat和Acrobat Reader DC Continuous 15.010.20056之前版本可允许攻击者通过制作的文件附件注释来执行任意代码或导致拒绝服务(内存破坏)，此漏洞与CVE-2016-0933,CVE-2016-0936,CVE-2016-0938,CVE-2016-0939,CVE-2016-0942,CVE-2016-0944,CVE-2016-0945及CVE-2016-0946等漏洞均不同。</p>",
+  "addDate" : "2016-03-04",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-01-07",
+  "severity" : "Severe",
+  "title" : "Adobe Acrobat: APSB16-02 (CVE-2016-0931): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-0932",
+  "cves" : [ ],
+  "cvss" : 6.8,
+  "description" : "<p>Adobe Reader和Acrobat的11.0.14之前版本，Acrobat和Acrobat Reader DC Classic的15.006.30119之前版本，Windows及OS X版Acrobat和Acrobat Reader DC Continuous 15.010.20056之前版本，Doc对象实现中的释放后使用漏洞允许攻击者通过未指定的向量执行任意代码，与这几个漏洞不同：CVE-2016-0934, CVE-2016-0937, CVE-2016-0940, CVE-2016-0941。</p>",
+  "addDate" : "2016-03-04",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-01-07",
+  "severity" : "Severe",
+  "title" : "Adobe Acrobat: APSB16-02 (CVE-2016-0932): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-0933",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Windows和OS X系统上Adobe Reader及Acrobat 11.0.14之前版本,Acrobat及Acrobat Reader DC Classic 15.006.30119之前版本以及Acrobat和Acrobat Reader DC Continuous 15.010.20056之前版本可允许攻击者通过不明向量来执行任意代码或导致拒绝服务(内存破坏)，此漏洞与CVE-2016-0931,CVE-2016-0936,CVE-2016-0938,CVE-2016-0939,CVE-2016-0942,CVE-2016-0944,CVE-2016-0945及CVE-2016-0946等漏洞均不同。</p>",
+  "addDate" : "2016-03-04",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-01-07",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-02 (CVE-2016-0933): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-0934",
+  "cves" : [ ],
+  "cvss" : 6.8,
+  "description" : "<p>Adobe Reader和Acrobat的11.0.14之前版本，Acrobat和Acrobat Reader DC Classic的15.006.30119之前版本，Windows及OS X版Acrobat和Acrobat Reader DC Continuous 15.010.20056之前版本，AGM.dll中释放后使用漏洞允许攻击者通过多层PDF文档执行任意代码，与这几个漏洞不同：CVE-2016-0932, CVE-2016-0937, CVE-2016-0940, CVE-2016-0941。</p>",
+  "addDate" : "2016-03-04",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-01-07",
+  "severity" : "Severe",
+  "title" : "Adobe Acrobat: APSB16-02 (CVE-2016-0934): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-0935",
+  "cves" : [ ],
+  "cvss" : 6.8,
+  "description" : "<p>Windows和OS X系统上Adobe Reader和Acrobat 11.0.14之前版本, Acrobat和Acrobat Reader DC Classic 15.006.30119之前版本和Acrobat和Acrobat Reader DC Continuous 15.010.20056之前版本存在双重释放漏洞。攻击者可通过特制的ExtGState词典执行任意代码。</p>",
+  "addDate" : "2016-03-04",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-01-07",
+  "severity" : "Severe",
+  "title" : "Adobe Acrobat: APSB16-02 (CVE-2016-0935): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-0936",
+  "cves" : [ ],
+  "cvss" : 9.3,
+  "description" : "<p>Windows和OS X系统上Adobe Reader及Acrobat 11.0.14之前版本,Acrobat及Acrobat Reader DC Classic 15.006.30119之前版本以及Acrobat和Acrobat Reader DC Continuous 15.010.20056之前版本可允许攻击者通过制作的JPEG 2000数据来执行任意代码或导致拒绝服务(内存破坏)，此漏洞与CVE-2016-0931,CVE-2016-0933,CVE-2016-0938,CVE-2016-0939,CVE-2016-0942,CVE-2016-0944,CVE-2016-0945及CVE-2016-0946等漏洞均不同。</p>",
+  "addDate" : "2016-03-04",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-01-07",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-02 (CVE-2016-0936): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-0937",
+  "cves" : [ ],
+  "cvss" : 9.3,
+  "description" : "<p>Adobe Reader和Acrobat的11.0.14之前版本，Acrobat和Acrobat Reader DC Classic的15.006.30119之前版本，Windows及OS X版Acrobat和Acrobat Reader DC Continuous 15.010.20056之前版本，OCG对象实现中的释放后使用漏洞允许攻击者通过未指定的向量执行任意代码，与这几个漏洞不同：CVE-2016-0932, CVE-2016-0934, CVE-2016-0940, CVE-2016-0941。</p>",
+  "addDate" : "2016-03-04",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-01-07",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-02 (CVE-2016-0937): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-0938",
+  "cves" : [ ],
+  "cvss" : 9.3,
+  "description" : "<p>Windows和OS X系统上Adobe Reader及Acrobat 11.0.14之前版本,Acrobat及Acrobat Reader DC Classic 15.006.30119之前版本以及Acrobat和Acrobat Reader DC Continuous 15.010.20056之前版本中的AcroForm插件可允许攻击者通过不明向量来执行任意代码或导致拒绝服务(内存破坏)，此漏洞与CVE-2016-0931,CVE-2016-0933,CVE-2016-0936,CVE-2016-0939,CVE-2016-0942,CVE-2016-0944,CVE-2016-0945及CVE-2016-0946等漏洞均不同。</p>",
+  "addDate" : "2016-03-04",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-01-07",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-02 (CVE-2016-0938): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-0939",
+  "cves" : [ ],
+  "cvss" : 6.8,
+  "description" : "<p>基于Windows和OS X系统的Adobe Reader和Acrobat  11.0.14之前版本, Acrobat和Acrobat Reader DC Classic 15.006.30119之前版本和Acrobat和Acrobat Reader DC Continuous 15.010.20056之前版本中存在漏洞。攻击者可通过不明向量执行任意代码或导致拒绝服务（未初始化指针引用和内存破坏）。此漏洞不同于CVE-2016-0931, CVE-2016-0933, CVE-2016-0936, CVE-2016-0938, CVE-2016-0942, CVE-2016-0944, CVE-2016-0945和CVE-2016-0946。</p>",
+  "addDate" : "2016-03-04",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-01-07",
+  "severity" : "Severe",
+  "title" : "Adobe Acrobat: APSB16-02 (CVE-2016-0939): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-0940",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Adobe Reader和Acrobat的11.0.14之前版本，Acrobat和Acrobat Reader DC Classic的15.006.30119之前版本，Windows及OS X版Acrobat和Acrobat Reader DC Continuous 15.010.20056之前版本，释放后使用漏洞允许攻击者通过未指定的向量执行任意代码，与这几个漏洞不同：CVE-2016-0932, CVE-2016-0934, CVE-2016-0937, CVE-2016-0941。</p>",
+  "addDate" : "2016-03-04",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-01-07",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-02 (CVE-2016-0940): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-0941",
+  "cves" : [ ],
+  "cvss" : 6.8,
+  "description" : "<p>Adobe Reader和Acrobat的11.0.14之前版本，Acrobat和Acrobat Reader DC Classic的15.006.30119之前版本，Windows及OS X版Acrobat和Acrobat Reader DC Continuous 15.010.20056之前版本，Search对象实现中的释放后使用漏洞允许攻击者通过未指定的向量执行任意代码，与这几个漏洞不同：CVE-2016-0932, CVE-2016-0934, CVE-2016-0937, CVE-2016-0940。</p>",
+  "addDate" : "2016-03-04",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-01-07",
+  "severity" : "Severe",
+  "title" : "Adobe Acrobat: APSB16-02 (CVE-2016-0941): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-0942",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Windows和OS X系统上Adobe Reader及Acrobat 11.0.14之前版本,Acrobat及Acrobat Reader DC Classic 15.006.30119之前版本以及Acrobat和Acrobat Reader DC Continuous 15.010.20056之前版本可允许攻击者通过不明向量来执行任意代码或导致拒绝服务(内存破坏)，此漏洞与CVE-2016-0931,CVE-2016-0933,CVE-2016-0936,CVE-2016-0938,CVE-2016-0939,CVE-2016-0944,CVE-2016-0945及CVE-2016-0946等漏洞均不同。</p>",
+  "addDate" : "2016-03-04",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-01-07",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-02 (CVE-2016-0942): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-0943",
+  "cves" : [ ],
+  "cvss" : 6.8,
+  "description" : "<p>Windows和OS X系统上Adobe Reader和Acrobat 11.0.14之前版本, Acrobat和Acrobat Reader DC Classic 15.006.30119之前版本和Acrobat和Acrobat Reader DC Continuous 15.010.20056之前版本错误处理全局对象，这允许攻击者通过不明向量绕过JavaScript API执行限制。</p>",
+  "addDate" : "2016-03-04",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-01-07",
+  "severity" : "Severe",
+  "title" : "Adobe Acrobat: APSB16-02 (CVE-2016-0943): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-0944",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Windows和OS X系统上的Adobe Reader及Acrobat 11.0.14之前版本,Acrobat及Acrobat Reader DC Classic 15.006.30119之前版本以及Acrobat和Acrobat Reader DC Continuous 15.010.20056之前版本可允许攻击者通过不明向量来执行任意代码或导致拒绝服务(内存破坏)，此漏洞与CVE-2016-0931,CVE-2016-0933,CVE-2016-0936,CVE-2016-0938,CVE-2016-0939,CVE-2016-0942,CVE-2016-0944及CVE-2016-0946等漏洞均不同。</p>",
+  "addDate" : "2016-03-04",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-01-07",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-02 (CVE-2016-0944): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-0945",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Windows和OS X系统上的Adobe Reader及Acrobat 11.0.14之前版本,Acrobat及Acrobat Reader DC Classic 15.006.30119之前版本以及Acrobat和Acrobat Reader DC Continuous 15.010.20056之前版本可允许攻击者通过不明向量来执行任意代码或导致拒绝服务(内存破坏)，此漏洞与CVE-2016-0931,CVE-2016-0933,CVE-2016-0936,CVE-2016-0938,CVE-2016-0939,CVE-2016-0942,CVE-2016-0944及CVE-2016-0946等漏洞均不同。</p>",
+  "addDate" : "2016-03-04",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-01-07",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-02 (CVE-2016-0945): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-0946",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Windows和OS X系统上的Adobe Reader及Acrobat 11.0.14之前版本,Acrobat及Acrobat Reader DC Classic 15.006.30119之前版本以及Acrobat和Acrobat Reader DC Continuous 15.010.20056之前版本可允许攻击者通过不明向量来执行任意代码或导致拒绝服务(内存破坏)，此漏洞与CVE-2016-0931,CVE-2016-0933,CVE-2016-0936,CVE-2016-0938,CVE-2016-0939,CVE-2016-0942,CVE-2016-0944及CVE-2016-0945等漏洞均不同。</p>",
+  "addDate" : "2016-03-04",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-01-07",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-02 (CVE-2016-0946): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-0947",
+  "cves" : [ ],
+  "cvss" : 7.2,
+  "description" : "<p>如Windows和OS X系统上Adobe Reader和Acrobat 11.0.14之前版本, Acrobat和Acrobat Reader DC Classic 15.006.30119之前版本和Acrobat和Acrobat Reader DC Continuous 15.010.20056之前版本使用的，Adobe Download Manager中存在不信任的搜索路径漏洞。本地用户可通过不明目录中特制的资源获取权限。</p>",
+  "addDate" : "2016-03-04",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-01-07",
+  "severity" : "Severe",
+  "title" : "Adobe Acrobat: APSB16-02 (CVE-2016-0947): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-1007",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Windows和OS X系统上Adobe Reader和Acrobat  11.0.15之前版本, Acrobat和Acrobat Reader DC Classic 15.006.30121之前版本和Acrobat和Acrobat Reader DC Continuous 15.010.20060之前版本存在漏洞。 攻击者可通过不明向量执行任意代码或导致拒绝服务（内存破坏）。此漏洞不同于CVE-2016-1009。</p>",
+  "addDate" : "2016-03-09",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-03-03",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-09 (CVE-2016-1007): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-1008",
+  "cves" : [ ],
+  "cvss" : 7.2,
+  "description" : "<p>Windows和OS X系统上Adobe Reader和Acrobat  11.0.15之前版本, Acrobat和Acrobat Reader DC Classic 15.006.30121之前版本和Acrobat和Acrobat Reader DC Continuous 15.010.20060之前版本存在不信任的搜索路径漏洞。本地用户可通过不明目录内的特洛伊木马DLL获取权限。</p>",
+  "addDate" : "2016-03-09",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-03-03",
+  "severity" : "Severe",
+  "title" : "Adobe Acrobat: APSB16-09 (CVE-2016-1008): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-1009",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Windows和OS X系统上Adobe Reader和Acrobat  11.0.15之前版本, Acrobat和Acrobat Reader DC Classic 15.006.30121之前版本和Acrobat和Acrobat Reader DC Continuous 15.010.20060之前版本存在漏洞。 攻击者可通过不明向量执行任意代码或导致拒绝服务（内存破坏）。此漏洞不同于CVE-2016-1007。</p>",
+  "addDate" : "2016-03-09",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-03-03",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-09 (CVE-2016-1009): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-1037",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Adobe Reader和Acrobat 11.0.16之前版本, Acrobat和 Acrobat Reader DC Classic 15.006.30172之前版本,以及Windows和OS X系统上Acrobat和Acrobat Reader DC Continuous 15.016.20039之前的版本允许攻击者通过不明向量执行任意代码或导致拒绝服务（内存破坏）。此漏洞不同于CVE-2016-1063, CVE-2016-1064, CVE-2016-1071, CVE-2016-1072, CVE-2016-1073, CVE-2016-1074, CVE-2016-1076, CVE-2016-1077, CVE-2016-1078, CVE-2016-1080, CVE-2016-1081, CVE-2016-1082, CVE-2016-1083, CVE-2016-1084, CVE-2016-1085, CVE-2016-1086, CVE-2016-1088, CVE-2016-1093, CVE-2016-1095, CVE-2016-1116, CVE-2016-1118, CVE-2016-1119, CVE-2016-1120, CVE-2016-1123, CVE-2016-1124, CVE-2016-1125, CVE-2016-1126, CVE-2016-1127, CVE-2016-1128, CVE-2016-1129, CVE-2016-1130, CVE-2016-4088, CVE-2016-4089, CVE-2016-4090, CVE-2016-4093, CVE-2016-4094, CVE-2016-4096, CVE-2016-4097, CVE-2016-4098, CVE-2016-4099, CVE-2016-4100, CVE-2016-4101, CVE-2016-4103, CVE-2016-4104和CVE-2016-4105。</p>",
+  "addDate" : "2016-05-17",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-05-05",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-14 (CVE-2016-1037): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-1038",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Windows和OS X上的Adobe Reader和Acrobat的11.0.16之前版本，Acrobat和Acrobat Reader DC Classic的15.006.30172之前版本，以及Acrobat和Acrobat Reader DC Continuous 15.016.20039之前版本，允许攻击者通过未指定的向量绕过JavaScript API执行限制，与这几个漏洞不同：CVE-2016-1039, CVE-2016-1040, CVE-2016-1041, CVE-2016-1042, CVE-2016-1044, CVE-2016-1062, CVE-2016-1117。</p>",
+  "addDate" : "2016-05-17",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-05-05",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-14 (CVE-2016-1038): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-1039",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Windows和OS X上的Adobe Reader和Acrobat的11.0.16之前版本，Acrobat和Acrobat Reader DC Classic的15.006.30172之前版本，以及Acrobat和Acrobat Reader DC Continuous 15.016.20039之前版本，允许攻击者通过未指定的向量绕过JavaScript API执行限制，与这几个漏洞不同：CVE-2016-1038, CVE-2016-1040, CVE-2016-1041, CVE-2016-1042, CVE-2016-1044, CVE-2016-1062, CVE-2016-1117。</p>",
+  "addDate" : "2016-05-17",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-05-05",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-14 (CVE-2016-1039): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-1040",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Windows和OS X上的Adobe Reader和Acrobat的11.0.16之前版本，Acrobat和Acrobat Reader DC Classic的15.006.30172之前版本，以及Acrobat和Acrobat Reader DC Continuous 15.016.20039之前版本，允许攻击者通过未指定的向量绕过JavaScript API执行限制，与这几个漏洞不同：CVE-2016-1038, CVE-2016-1039, CVE-2016-1041, CVE-2016-1042, CVE-2016-1044, CVE-2016-1062, CVE-2016-1117。</p>",
+  "addDate" : "2016-05-17",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-05-05",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-14 (CVE-2016-1040): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-1041",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Windows和OS X上的Adobe Reader和Acrobat的11.0.16之前版本，Acrobat和Acrobat Reader DC Classic的15.006.30172之前版本，以及Acrobat和Acrobat Reader DC Continuous 15.016.20039之前版本，允许攻击者通过未指定的向量绕过JavaScript API执行限制，与这几个漏洞不同：CVE-2016-1038, CVE-2016-1039, CVE-2016-1040, CVE-2016-1042, CVE-2016-1044, CVE-2016-1062, CVE-2016-1117。</p>",
+  "addDate" : "2016-05-17",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-05-05",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-14 (CVE-2016-1041): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-1042",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Windows和OS X上的Adobe Reader和Acrobat的11.0.16之前版本，Acrobat和Acrobat Reader DC Classic的15.006.30172之前版本，以及Acrobat和Acrobat Reader DC Continuous 15.016.20039之前版本，允许攻击者通过未指定的向量绕过JavaScript API执行限制，与这几个漏洞不同：CVE-2016-1038, CVE-2016-1039, CVE-2016-1040, CVE-2016-1041, CVE-2016-1044, CVE-2016-1062, CVE-2016-1117。</p>",
+  "addDate" : "2016-05-17",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-05-05",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-14 (CVE-2016-1042): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-1043",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Windows和OS X系统上Adobe Reader和Acrobat 11.0.16之前版本, Acrobat和Acrobat Reader DC Classic 15.006.30172之前版本和Acrobat和Acrobat Reader DC Continuous 15.016.20039之前版本存在整数溢出漏洞。攻击者可通过不明向量执行任意代码。</p>",
+  "addDate" : "2016-05-17",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-05-05",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-14 (CVE-2016-1043): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-1044",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Windows和OS X上的Adobe Reader和Acrobat的11.0.16之前版本，Acrobat和Acrobat Reader DC Classic的15.006.30172之前版本，以及Acrobat和Acrobat Reader DC Continuous 15.016.20039之前版本，允许攻击者通过未指定的向量绕过JavaScript API执行限制，与这几个漏洞不同：CVE-2016-1038, CVE-2016-1039, CVE-2016-1040, CVE-2016-1041, CVE-2016-1042, CVE-2016-1062, CVE-2016-1117。</p>",
+  "addDate" : "2016-05-17",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-05-05",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-14 (CVE-2016-1044): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-1045",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Windows及OS X中的Adobe Reader和Acrobat 11.0.16之前版本,Acrobat和Acrobat Reader DC Classic 15.006.30172版本以及Acrobat和Acrobat Reader DC Continuous 15.016.20039版本存在use-after-free漏洞，可允许攻击者通过未知向量执行任意代码。此漏洞与漏洞CVE-2016-1046,CVE-2016-1047,CVE-2016-1048,CVE-2016-1049,CVE-2016-1050,CVE-2016-1051,CVE-2016-1052,CVE-2016-1053,CVE-2016-1054,CVE-2016-1055,CVE-2016-1056,CVE-2016-1057,CVE-2016-1058,CVE-2016-1059,CVE-2016-1060,CVE-2016-1061,CVE-2016-1065,CVE-2016-1066,CVE-2016-1067,CVE-2016-1068,CVE-2016-1069,CVE-2016-1070,CVE-2016-1075,CVE-2016-1094,CVE-2016-1121,CVE-2016-1122,CVE-2016-4102及CVE-2016-4107均不同。</p>",
+  "addDate" : "2016-05-17",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-05-05",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-14 (CVE-2016-1045): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-1046",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Windows及OS X中的Adobe Reader和Acrobat 11.0.16之前版本,Acrobat和Acrobat Reader DC Classic 15.006.30172版本以及Acrobat和Acrobat Reader DC Continuous 15.016.20039版本存在use-after-free漏洞，可允许攻击者通过未知向量执行任意代码。此漏洞与漏洞CVE-2016-1045,CVE-2016-1047,CVE-2016-1048,CVE-2016-1049,CVE-2016-1050,CVE-2016-1051,CVE-2016-1052,CVE-2016-1053,CVE-2016-1054,CVE-2016-1055,CVE-2016-1056,CVE-2016-1057,CVE-2016-1058,CVE-2016-1059,CVE-2016-1060,CVE-2016-1061,CVE-2016-1065,CVE-2016-1066,CVE-2016-1067,CVE-2016-1068,CVE-2016-1069,CVE-2016-1070,CVE-2016-1075,CVE-2016-1094,CVE-2016-1121,CVE-2016-1122,CVE-2016-4102及CVE-2016-4107均不同。</p>",
+  "addDate" : "2016-05-17",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-05-05",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-14 (CVE-2016-1046): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-1047",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Windows及OS X中的Adobe Reader和Acrobat 11.0.16之前版本,Acrobat和Acrobat Reader DC Classic 15.006.30172版本以及Acrobat和Acrobat Reader DC Continuous 15.016.20039版本存在use-after-free漏洞，可允许攻击者通过未知向量执行任意代码。此漏洞与漏洞CVE-2016-1045,CVE-2016-1046,CVE-2016-1048,CVE-2016-1049,CVE-2016-1050,CVE-2016-1051,CVE-2016-1052,CVE-2016-1053,CVE-2016-1054,CVE-2016-1055,CVE-2016-1056,CVE-2016-1057,CVE-2016-1058,CVE-2016-1059,CVE-2016-1060,CVE-2016-1061,CVE-2016-1065,CVE-2016-1066,CVE-2016-1067,CVE-2016-1068,CVE-2016-1069,CVE-2016-1070,CVE-2016-1075,CVE-2016-1094,CVE-2016-1121,CVE-2016-1122,CVE-2016-4102及CVE-2016-4107均不同。</p>",
+  "addDate" : "2016-05-17",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-05-05",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-14 (CVE-2016-1047): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-1048",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Windows及OS X中的Adobe Reader和Acrobat 11.0.16之前版本,Acrobat和Acrobat Reader DC Classic 15.006.30172版本以及Acrobat和Acrobat Reader DC Continuous 15.016.20039版本存在use-after-free漏洞，可允许攻击者通过未知向量执行任意代码。此漏洞与漏洞CVE-2016-1045,CVE-2016-1046,CVE-2016-1047,CVE-2016-1049,CVE-2016-1050,CVE-2016-1051,CVE-2016-1052,CVE-2016-1053,CVE-2016-1054,CVE-2016-1055,CVE-2016-1056,CVE-2016-1057,CVE-2016-1058,CVE-2016-1059,CVE-2016-1060,CVE-2016-1061,CVE-2016-1065,CVE-2016-1066,CVE-2016-1067,CVE-2016-1068,CVE-2016-1069,CVE-2016-1070,CVE-2016-1075,CVE-2016-1094,CVE-2016-1121,CVE-2016-1122,CVE-2016-4102及CVE-2016-4107均不同。</p>",
+  "addDate" : "2016-05-17",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-05-05",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-14 (CVE-2016-1048): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-1049",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Windows及OS X中的Adobe Reader和Acrobat 11.0.16之前版本,Acrobat和Acrobat Reader DC Classic 15.006.30172版本以及Acrobat和Acrobat Reader DC Continuous 15.016.20039版本存在use-after-free漏洞，可允许攻击者通过未知向量执行任意代码。此漏洞与漏洞CVE-2016-1045,CVE-2016-1046,CVE-2016-1047,CVE-2016-1048,CVE-2016-1050,CVE-2016-1051,CVE-2016-1052,CVE-2016-1053,CVE-2016-1054,CVE-2016-1055,CVE-2016-1056,CVE-2016-1057,CVE-2016-1058,CVE-2016-1059,CVE-2016-1060,CVE-2016-1061,CVE-2016-1065,CVE-2016-1066,CVE-2016-1067,CVE-2016-1068,CVE-2016-1069,CVE-2016-1070,CVE-2016-1075,CVE-2016-1094,CVE-2016-1121,CVE-2016-1122,CVE-2016-4102及CVE-2016-4107均不同。</p>",
+  "addDate" : "2016-05-17",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-05-05",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-14 (CVE-2016-1049): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-1050",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Windows及OS X中的Adobe Reader和Acrobat 11.0.16之前版本,Acrobat和Acrobat Reader DC Classic 15.006.30172版本以及Acrobat和Acrobat Reader DC Continuous 15.016.20039版本存在use-after-free漏洞，可允许攻击者通过未知向量执行任意代码。此漏洞与漏洞CVE-2016-1045,CVE-2016-1046,CVE-2016-1047,CVE-2016-1048,CVE-2016-1049,CVE-2016-1051,CVE-2016-1052,CVE-2016-1053,CVE-2016-1054,CVE-2016-1055,CVE-2016-1056,CVE-2016-1057,CVE-2016-1058,CVE-2016-1059,CVE-2016-1060,CVE-2016-1061,CVE-2016-1065,CVE-2016-1066,CVE-2016-1067,CVE-2016-1068,CVE-2016-1069,CVE-2016-1070,CVE-2016-1075,CVE-2016-1094,CVE-2016-1121,CVE-2016-1122,CVE-2016-4102及CVE-2016-4107均不同。</p>",
+  "addDate" : "2016-05-17",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-05-05",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-14 (CVE-2016-1050): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-1051",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Windows及OS X中的Adobe Reader和Acrobat 11.0.16之前版本,Acrobat和Acrobat Reader DC Classic 15.006.30172版本以及Acrobat和Acrobat Reader DC Continuous 15.016.20039版本存在use-after-free漏洞，可允许攻击者通过未知向量执行任意代码。此漏洞与漏洞CVE-2016-1045,CVE-2016-1046,CVE-2016-1047,CVE-2016-1048,CVE-2016-1049,CVE-2016-1050,CVE-2016-1052,CVE-2016-1053,CVE-2016-1054,CVE-2016-1055,CVE-2016-1056,CVE-2016-1057,CVE-2016-1058,CVE-2016-1059,CVE-2016-1060,CVE-2016-1061,CVE-2016-1065,CVE-2016-1066,CVE-2016-1067,CVE-2016-1068,CVE-2016-1069,CVE-2016-1070,CVE-2016-1075,CVE-2016-1094,CVE-2016-1121,CVE-2016-1122,CVE-2016-4102及CVE-2016-4107均不同。</p>",
+  "addDate" : "2016-05-17",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-05-05",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-14 (CVE-2016-1051): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-1052",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Windows及OS X中的Adobe Reader和Acrobat 11.0.16之前版本,Acrobat和Acrobat Reader DC Classic 15.006.30172版本以及Acrobat和Acrobat Reader DC Continuous 15.016.20039版本存在use-after-free漏洞，可允许攻击者通过未知向量执行任意代码。此漏洞与漏洞CVE-2016-1045,CVE-2016-1046,CVE-2016-1047,CVE-2016-1048,CVE-2016-1049,CVE-2016-1050,CVE-2016-1051,CVE-2016-1053,CVE-2016-1054,CVE-2016-1055,CVE-2016-1056,CVE-2016-1057,CVE-2016-1058,CVE-2016-1059,CVE-2016-1060,CVE-2016-1061,CVE-2016-1065,CVE-2016-1066,CVE-2016-1067,CVE-2016-1068,CVE-2016-1069,CVE-2016-1070,CVE-2016-1075,CVE-2016-1094,CVE-2016-1121,CVE-2016-1122,CVE-2016-4102及CVE-2016-4107均不同。</p>",
+  "addDate" : "2016-05-17",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-05-05",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-14 (CVE-2016-1052): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-1053",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Windows及OS X中的Adobe Reader和Acrobat 11.0.16之前版本,Acrobat和Acrobat Reader DC Classic 15.006.30172版本以及Acrobat和Acrobat Reader DC Continuous 15.016.20039版本存在use-after-free漏洞，可允许攻击者通过未知向量执行任意代码。此漏洞与漏洞CVE-2016-1045,CVE-2016-1046,CVE-2016-1047,CVE-2016-1048,CVE-2016-1049,CVE-2016-1050,CVE-2016-1051,CVE-2016-1052,CVE-2016-1054,CVE-2016-1055,CVE-2016-1056,CVE-2016-1057,CVE-2016-1058,CVE-2016-1059,CVE-2016-1060,CVE-2016-1061,CVE-2016-1065,CVE-2016-1066,CVE-2016-1067,CVE-2016-1068,CVE-2016-1069,CVE-2016-1070,CVE-2016-1075,CVE-2016-1094,CVE-2016-1121,CVE-2016-1122,CVE-2016-4102及CVE-2016-4107均不同。</p>",
+  "addDate" : "2016-05-17",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-05-05",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-14 (CVE-2016-1053): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-1054",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Windows及OS X中的Adobe Reader和Acrobat 11.0.16之前版本,Acrobat和Acrobat Reader DC Classic 15.006.30172版本以及Acrobat和Acrobat Reader DC Continuous 15.016.20039版本存在use-after-free漏洞，可允许攻击者通过未知向量执行任意代码。此漏洞与漏洞CVE-2016-1045,CVE-2016-1046,CVE-2016-1047,CVE-2016-1048,CVE-2016-1049,CVE-2016-1050,CVE-2016-1051,CVE-2016-1052,CVE-2016-1053,CVE-2016-1055,CVE-2016-1056,CVE-2016-1057,CVE-2016-1058,CVE-2016-1059,CVE-2016-1060,CVE-2016-1061,CVE-2016-1065,CVE-2016-1066,CVE-2016-1067,CVE-2016-1068,CVE-2016-1069,CVE-2016-1070,CVE-2016-1075,CVE-2016-1094,CVE-2016-1121,CVE-2016-1122,CVE-2016-4102及CVE-2016-4107均不同。</p>",
+  "addDate" : "2016-05-17",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-05-05",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-14 (CVE-2016-1054): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-1055",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Windows及OS X中的Adobe Reader和Acrobat 11.0.16之前版本,Acrobat和Acrobat Reader DC Classic 15.006.30172版本以及Acrobat和Acrobat Reader DC Continuous 15.016.20039版本存在use-after-free漏洞，可允许攻击者通过未知向量执行任意代码。此漏洞与漏洞CVE-2016-1045,CVE-2016-1046,CVE-2016-1047,CVE-2016-1048,CVE-2016-1049,CVE-2016-1050,CVE-2016-1051,CVE-2016-1052,CVE-2016-1053,CVE-2016-1054,CVE-2016-1056,CVE-2016-1057,CVE-2016-1058,CVE-2016-1059,CVE-2016-1060,CVE-2016-1061,CVE-2016-1065,CVE-2016-1066,CVE-2016-1067,CVE-2016-1068,CVE-2016-1069,CVE-2016-1070,CVE-2016-1075,CVE-2016-1094,CVE-2016-1121,CVE-2016-1122,CVE-2016-4102及CVE-2016-4107均不同。</p>",
+  "addDate" : "2016-05-17",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-05-05",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-14 (CVE-2016-1055): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-1056",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Windows及OS X中的Adobe Reader和Acrobat 11.0.16之前版本,Acrobat和Acrobat Reader DC Classic 15.006.30172版本以及Acrobat和Acrobat Reader DC Continuous 15.016.20039版本存在use-after-free漏洞，可允许攻击者通过未知向量执行任意代码。此漏洞与漏洞CVE-2016-1045,CVE-2016-1046,CVE-2016-1047,CVE-2016-1048,CVE-2016-1049,CVE-2016-1050,CVE-2016-1051,CVE-2016-1052,CVE-2016-1053,CVE-2016-1054,CVE-2016-1055,CVE-2016-1057,CVE-2016-1058,CVE-2016-1059,CVE-2016-1060,CVE-2016-1061,CVE-2016-1065,CVE-2016-1066,CVE-2016-1067,CVE-2016-1068,CVE-2016-1069,CVE-2016-1070,CVE-2016-1075,CVE-2016-1094,CVE-2016-1121,CVE-2016-1122,CVE-2016-4102及CVE-2016-4107均不同。</p>",
+  "addDate" : "2016-05-17",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-05-05",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-14 (CVE-2016-1056): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-1057",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Windows及OS X中的Adobe Reader和Acrobat 11.0.16之前版本,Acrobat和Acrobat Reader DC Classic 15.006.30172版本以及Acrobat和Acrobat Reader DC Continuous 15.016.20039版本存在use-after-free漏洞，可允许攻击者通过未知向量执行任意代码。此漏洞与漏洞CVE-2016-1045,CVE-2016-1046,CVE-2016-1047,CVE-2016-1048,CVE-2016-1049,CVE-2016-1050,CVE-2016-1051,CVE-2016-1052,CVE-2016-1053,CVE-2016-1054,CVE-2016-1055,CVE-2016-1056,CVE-2016-1058,CVE-2016-1059,CVE-2016-1060,CVE-2016-1061,CVE-2016-1065,CVE-2016-1066,CVE-2016-1067,CVE-2016-1068,CVE-2016-1069,CVE-2016-1070,CVE-2016-1075,CVE-2016-1094,CVE-2016-1121,CVE-2016-1122,CVE-2016-4102及CVE-2016-4107均不同。</p>",
+  "addDate" : "2016-05-17",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-05-05",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-14 (CVE-2016-1057): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-1058",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Windows及OS X中的Adobe Reader和Acrobat 11.0.16之前版本,Acrobat和Acrobat Reader DC Classic 15.006.30172版本以及Acrobat和Acrobat Reader DC Continuous 15.016.20039版本存在use-after-free漏洞，可允许攻击者通过未知向量执行任意代码。此漏洞与漏洞CVE-2016-1045,CVE-2016-1046,CVE-2016-1047,CVE-2016-1048,CVE-2016-1049,CVE-2016-1050,CVE-2016-1051,CVE-2016-1052,CVE-2016-1053,CVE-2016-1054,CVE-2016-1055,CVE-2016-1056,CVE-2016-1057,CVE-2016-1059,CVE-2016-1060,CVE-2016-1061,CVE-2016-1065,CVE-2016-1066,CVE-2016-1067,CVE-2016-1068,CVE-2016-1069,CVE-2016-1070,CVE-2016-1075,CVE-2016-1094,CVE-2016-1121,CVE-2016-1122,CVE-2016-4102及CVE-2016-4107均不同。</p>",
+  "addDate" : "2016-05-17",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-05-05",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-14 (CVE-2016-1058): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-1059",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Windows及OS X中的Adobe Reader和Acrobat 11.0.16之前版本,Acrobat和Acrobat Reader DC Classic 15.006.30172版本以及Acrobat和Acrobat Reader DC Continuous 15.016.20039版本存在use-after-free漏洞，可允许攻击者通过未知向量执行任意代码。此漏洞与漏洞CVE-2016-1045,CVE-2016-1046,CVE-2016-1047,CVE-2016-1048,CVE-2016-1049,CVE-2016-1050,CVE-2016-1051,CVE-2016-1052,CVE-2016-1053,CVE-2016-1054,CVE-2016-1055,CVE-2016-1056,CVE-2016-1057,CVE-2016-1058,CVE-2016-1060,CVE-2016-1061,CVE-2016-1065,CVE-2016-1066,CVE-2016-1067,CVE-2016-1068,CVE-2016-1069,CVE-2016-1070,CVE-2016-1075,CVE-2016-1094,CVE-2016-1121,CVE-2016-1122,CVE-2016-4102及CVE-2016-4107均不同。</p>",
+  "addDate" : "2016-05-17",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-05-05",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-14 (CVE-2016-1059): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-1060",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Windows及OS X中的Adobe Reader和Acrobat 11.0.16之前版本,Acrobat和Acrobat Reader DC Classic 15.006.30172版本以及Acrobat和Acrobat Reader DC Continuous 15.016.20039版本存在use-after-free漏洞，可允许攻击者通过未知向量执行任意代码。此漏洞与漏洞CVE-2016-1045,CVE-2016-1046,CVE-2016-1047,CVE-2016-1048,CVE-2016-1049,CVE-2016-1050,CVE-2016-1051,CVE-2016-1052,CVE-2016-1053,CVE-2016-1054,CVE-2016-1055,CVE-2016-1056,CVE-2016-1057,CVE-2016-1058,CVE-2016-1059,CVE-2016-1061,CVE-2016-1065,CVE-2016-1066,CVE-2016-1067,CVE-2016-1068,CVE-2016-1069,CVE-2016-1070,CVE-2016-1075,CVE-2016-1094,CVE-2016-1121,CVE-2016-1122,CVE-2016-4102及CVE-2016-4107均不同。</p>",
+  "addDate" : "2016-05-17",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-05-05",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-14 (CVE-2016-1060): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-1061",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Windows及OS X中的Adobe Reader和Acrobat 11.0.16之前版本,Acrobat和Acrobat Reader DC Classic 15.006.30172版本以及Acrobat和Acrobat Reader DC Continuous 15.016.20039版本存在use-after-free漏洞，可允许攻击者通过未知向量执行任意代码。此漏洞与漏洞CVE-2016-1045,CVE-2016-1046,CVE-2016-1047,CVE-2016-1048,CVE-2016-1049,CVE-2016-1050,CVE-2016-1051,CVE-2016-1052,CVE-2016-1053,CVE-2016-1054,CVE-2016-1055,CVE-2016-1056,CVE-2016-1057,CVE-2016-1058,CVE-2016-1059,CVE-2016-1060,CVE-2016-1065,CVE-2016-1066,CVE-2016-1067,CVE-2016-1068,CVE-2016-1069,CVE-2016-1070,CVE-2016-1075,CVE-2016-1094,CVE-2016-1121,CVE-2016-1122,CVE-2016-4102及CVE-2016-4107均不同。</p>",
+  "addDate" : "2016-05-17",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-05-05",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-14 (CVE-2016-1061): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-1062",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Windows和OS X上的Adobe Reader和Acrobat的11.0.16之前版本，Acrobat和Acrobat Reader DC Classic的15.006.30172之前版本，以及Acrobat和Acrobat Reader DC Continuous 15.016.20039之前版本，允许攻击者通过未指定的向量绕过JavaScript API执行限制，与这几个漏洞不同：CVE-2016-1038, CVE-2016-1039, CVE-2016-1040, CVE-2016-1041, CVE-2016-1042, CVE-2016-1044, CVE-2016-1117。</p>",
+  "addDate" : "2016-05-17",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-05-05",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-14 (CVE-2016-1062): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-1063",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Adobe Reader和Acrobat 11.0.16之前版本, Acrobat和 Acrobat Reader DC Classic 15.006.30172之前版本,以及Windows和OS X系统上Acrobat和Acrobat Reader DC Continuous 15.016.20039之前的版本允许攻击者通过不明向量执行任意代码或导致拒绝服务（内存破坏）。此漏洞不同于CVE-2016-1037, CVE-2016-1064, CVE-2016-1071, CVE-2016-1072, CVE-2016-1073, CVE-2016-1074, CVE-2016-1076, CVE-2016-1077, CVE-2016-1078, CVE-2016-1080, CVE-2016-1081, CVE-2016-1082, CVE-2016-1083, CVE-2016-1084, CVE-2016-1085, CVE-2016-1086, CVE-2016-1088, CVE-2016-1093, CVE-2016-1095, CVE-2016-1116, CVE-2016-1118, CVE-2016-1119, CVE-2016-1120, CVE-2016-1123, CVE-2016-1124, CVE-2016-1125, CVE-2016-1126, CVE-2016-1127, CVE-2016-1128, CVE-2016-1129, CVE-2016-1130, CVE-2016-4088, CVE-2016-4089, CVE-2016-4090, CVE-2016-4093, CVE-2016-4094, CVE-2016-4096, CVE-2016-4097, CVE-2016-4098, CVE-2016-4099, CVE-2016-4100, CVE-2016-4101, CVE-2016-4103, CVE-2016-4104和CVE-2016-4105。</p>",
+  "addDate" : "2016-05-17",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-05-05",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-14 (CVE-2016-1063): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-1064",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Adobe Reader和Acrobat 11.0.16之前版本, Acrobat和 Acrobat Reader DC Classic 15.006.30172之前版本,以及Windows和OS X系统上Acrobat和Acrobat Reader DC Continuous 15.016.20039之前的版本允许攻击者通过不明向量执行任意代码或导致拒绝服务（内存破坏）。此漏洞不同于CVE-2016-1037, CVE-2016-1063, CVE-2016-1071, CVE-2016-1072, CVE-2016-1073, CVE-2016-1074, CVE-2016-1076, CVE-2016-1077, CVE-2016-1078, CVE-2016-1080, CVE-2016-1081, CVE-2016-1082, CVE-2016-1083, CVE-2016-1084, CVE-2016-1085, CVE-2016-1086, CVE-2016-1088, CVE-2016-1093, CVE-2016-1095, CVE-2016-1116, CVE-2016-1118, CVE-2016-1119, CVE-2016-1120, CVE-2016-1123, CVE-2016-1124, CVE-2016-1125, CVE-2016-1126, CVE-2016-1127, CVE-2016-1128, CVE-2016-1129, CVE-2016-1130, CVE-2016-4088, CVE-2016-4089, CVE-2016-4090, CVE-2016-4093, CVE-2016-4094, CVE-2016-4096, CVE-2016-4097, CVE-2016-4098, CVE-2016-4099, CVE-2016-4100, CVE-2016-4101, CVE-2016-4103, CVE-2016-4104和CVE-2016-4105。</p>",
+  "addDate" : "2016-05-17",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-05-05",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-14 (CVE-2016-1064): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-1065",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Windows及OS X中的Adobe Reader和Acrobat 11.0.16之前版本,Acrobat和Acrobat Reader DC Classic 15.006.30172版本以及Acrobat和Acrobat Reader DC Continuous 15.016.20039版本存在use-after-free漏洞，可允许攻击者通过未知向量执行任意代码。此漏洞与漏洞CVE-2016-1045,CVE-2016-1046,CVE-2016-1047,CVE-2016-1048,CVE-2016-1049,CVE-2016-1050,CVE-2016-1051,CVE-2016-1052,CVE-2016-1053,CVE-2016-1054,CVE-2016-1055,CVE-2016-1056,CVE-2016-1057,CVE-2016-1058,CVE-2016-1059,CVE-2016-1060,CVE-2016-1061,CVE-2016-1066,CVE-2016-1067,CVE-2016-1068,CVE-2016-1069,CVE-2016-1070,CVE-2016-1075,CVE-2016-1094,CVE-2016-1121,CVE-2016-1122,CVE-2016-4102及CVE-2016-4107均不同。</p>",
+  "addDate" : "2016-05-17",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-05-05",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-14 (CVE-2016-1065): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-1066",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Windows及OS X中的Adobe Reader和Acrobat 11.0.16之前版本,Acrobat和Acrobat Reader DC Classic 15.006.30172版本以及Acrobat和Acrobat Reader DC Continuous 15.016.20039版本存在use-after-free漏洞，可允许攻击者通过未知向量执行任意代码。此漏洞与漏洞CVE-2016-1045,CVE-2016-1046,CVE-2016-1047,CVE-2016-1048,CVE-2016-1049,CVE-2016-1050,CVE-2016-1051,CVE-2016-1052,CVE-2016-1053,CVE-2016-1054,CVE-2016-1055,CVE-2016-1056,CVE-2016-1057,CVE-2016-1058,CVE-2016-1059,CVE-2016-1060,CVE-2016-1061,CVE-2016-1065,CVE-2016-1067,CVE-2016-1068,CVE-2016-1069,CVE-2016-1070,CVE-2016-1075,CVE-2016-1094,CVE-2016-1121,CVE-2016-1122,CVE-2016-4102和CVE-2016-4107均不同。</p>",
+  "addDate" : "2016-05-17",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-05-05",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-14 (CVE-2016-1066): 适用于Adobe Acrobat和Reader的安全更新"
+},{
+  "vulnId" : "acrobat-cve-2016-1067",
+  "cves" : [ ],
+  "cvss" : 10.0,
+  "description" : "<p>Windows及OS X中的Adobe Reader和Acrobat 11.0.16之前版本,Acrobat和Acrobat Reader DC Classic 15.006.30172版本以及Acrobat和Acrobat Reader DC Continuous 15.016.20039版本存在use-after-free漏洞，可允许攻击者通过未知向量执行任意代码。此漏洞与漏洞CVE-2016-1045,CVE-2016-1046,CVE-2016-1047,CVE-2016-1048,CVE-2016-1049,CVE-2016-1050,CVE-2016-1051,CVE-2016-1052,CVE-2016-1053,CVE-2016-1054,CVE-2016-1055,CVE-2016-1056,CVE-2016-1057,CVE-2016-1058,CVE-2016-1059,CVE-2016-1060,CVE-2016-1061,CVE-2016-1065,CVE-2016-1066,CVE-2016-1068,CVE-2016-1069,CVE-2016-1070,CVE-2016-1075,CVE-2016-1094,CVE-2016-1121,CVE-2016-1122,CVE-2016-4102及CVE-2016-4107均不同。</p>",
+  "addDate" : "2016-05-17",
+  "modifyDate" : "2018-04-19",
+  "publishDate" : "2016-05-05",
+  "severity" : "Critical",
+  "title" : "Adobe Acrobat: APSB16-14 (CVE-2016-1067): 适用于Adobe Acrobat和Reader的安全更新"
+}]
+}

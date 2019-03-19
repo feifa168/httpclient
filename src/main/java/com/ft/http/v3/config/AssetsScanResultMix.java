@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ft.http.v3.assets.Assets;
 import com.ft.http.v3.assets.AssetsScanVulnerabilities;
 import com.ft.http.v3.assets.Port;
+import com.ft.http.v3.vulnerabilities.VulnerabilitiesMix;
 import com.ft.http.v3.weakpassword.CrackScanResult;
 
 import java.util.List;
@@ -17,14 +18,16 @@ public class AssetsScanResultMix {
                                @JsonProperty("assets") Assets assets,
                                @JsonProperty("address") String address,
                                @JsonProperty("crackScanResult") CrackScanResult crackScanResult,
-                               @JsonProperty("vulnerabilitiesResult") List<AssetsScanVulnerabilities> vulnerabilitiesResult,
+                               //@JsonProperty("vulnerabilitiesResult") List<AssetsScanVulnerabilities> vulnerabilitiesResult,
+                               @JsonProperty("vulnerabilitiesMixs") List<VulnerabilitiesMix>    vulnerabilitiesMixs,
                                @JsonProperty("portResult") List<Port> portResult) {
         this.subTaskid = subTaskid;
         this.assetId = assetId;
         this.assets = assets;
         this.address = address;
         this.crackScanResult = crackScanResult;
-        this.vulnerabilitiesResult = vulnerabilitiesResult;
+        //this.vulnerabilitiesResult = vulnerabilitiesResult;
+        this.vulnerabilitiesMixs = vulnerabilitiesMixs;
         this.portResult = portResult;
     }
 
@@ -33,7 +36,8 @@ public class AssetsScanResultMix {
     private Assets assets;
     private String address;
     private CrackScanResult crackScanResult;
-    private List<AssetsScanVulnerabilities>  vulnerabilitiesResult;
+    //private List<AssetsScanVulnerabilities>  vulnerabilitiesResult;
+    private List<VulnerabilitiesMix>    vulnerabilitiesMixs;
     private List<Port> portResult;
 
     public Assets getAssets() {

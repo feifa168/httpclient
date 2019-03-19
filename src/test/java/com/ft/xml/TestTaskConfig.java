@@ -162,8 +162,15 @@ public class TestTaskConfig {
         config = new TaskConfig("taskid", "172.16.39.251", null, credentials);
         taskConfigs.add(config);
 
+        TaskScanConfig.CustomScanTemplate customConfig = new TaskScanConfig.CustomScanTemplate(true,
+                "22,23,80", "21,43,25", true,
+                "1-100,22", "SYN", "80-88,5",
+                1, 5,
+                450, 15000,
+                20, 10);
         TaskScanConfig taskScanConfig = new TaskScanConfig(taskConfigs, "description", 3, "normal",
-                name,"full-audit-without-web-spider", "toolcategory", "./", "taskcode");
+                name,"full-audit-without-web-spider", "toolcategory", "./", "taskcode", TaskScanConfig.ScanType.SCAN_TYPE_SCAN,
+                customConfig, true, "update1.4.1.dat", false, true, true);
         String xmlString = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" + xmlMapper.writerWithDefaultPrettyPrinter().writeValueAsString(taskScanConfig);
         System.out.println(xmlString);
         taskScanConfig = xmlMapper.readValue(xmlString, TaskScanConfig.class);

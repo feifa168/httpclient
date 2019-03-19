@@ -1,0 +1,168 @@
+{
+  "checks": {
+    "categories": {
+      "disabled": [],
+      "enabled": []
+    },
+    "correlate": false,
+    "individual": {
+      "disabled": [],
+      "enabled": []
+    },
+    "potential": false,
+    "types": {
+      "disabled": [],
+      "enabled": []
+    },
+    "unsafe": false
+  },
+  "database": {
+    "db2": null,
+    "oracle": null,
+    "postgres": null
+  },
+  "description": "只扫描并识别网络上的实时资产信息，包括主机名和操作系统等。不进行漏洞或策略扫描。",
+  "discovery": {
+    "asset": {
+      "collectWhoisInformation": false,
+      "fingerprintMinimumCertainty": 0.16,
+      "fingerprintRetries": 0,
+      "ipFingerprintingEnabled": true,
+      "sendArpPings": true,
+      "sendIcmpPings": true,
+      "tcpPorts": [
+        21,
+        22,
+        23,
+        25,
+        53,
+        80,
+        88,
+        110,
+        111,
+        113,
+        135,
+        139,
+        143,
+        220,
+        264,
+        389,
+        443,
+        445,
+        449,
+        524,
+        585,
+        636,
+        993,
+        995,
+        1433,
+        1521,
+        1723,
+        3306,
+        3389,
+        5900,
+        8080,
+        9100
+      ],
+      "treatTcpResetAsAsset": true,
+      "udpPorts": [
+        53,
+        67,
+        68,
+        69,
+        111,
+        123,
+        135,
+        137,
+        138,
+        139,
+        161,
+        162,
+        445,
+        500,
+        514,
+        520,
+        631,
+        1434,
+        1701,
+        1900,
+        4500,
+        5353,
+        49152
+      ]
+    },
+    "performance": {
+      "packetRate": {
+        "defeatRateLimit": true,
+        "maximum": 15000,
+        "minimum": 450
+      },
+      "parallelism": {
+        "maximum": 0,
+        "minimum": 0
+      },
+      "retryLimit": 3,
+      "scanDelay": {
+        "maximum": "PT0S",
+        "minimum": "PT0S"
+      },
+      "timeout": {
+        "initial": "PT0.5S",
+        "maximum": "PT3S",
+        "minimum": "PT0.5S"
+      }
+    },
+    "service": {
+      "serviceNameFile": "default-services.properties",
+      "tcp": {
+        "additionalPorts": [
+          449,
+          993,
+          995,
+          264,
+          585,
+          139,
+          524,
+          9100,
+          110,
+          143,
+          80,
+          8080,
+          113,
+          1521,
+          21,
+          22,
+          23,
+          25,
+          1433,
+          443,
+          1723,
+          220,
+          445
+        ],
+        "excludedPorts": null,
+        "method": "SYN",
+        "ports": "CUSTOM"
+      },
+      "udp": {
+        "additionalPorts": [
+          161,
+          500,
+          5353,
+          123,
+          1900
+        ],
+        "excludedPorts": null,
+        "ports": "CUSTOM"
+      }
+    }
+  },
+  "discoveryOnly": true,
+  "id": "discovery",
+  "maxParallelAssets": 10,
+  "maxScanProcesses": 10,
+  "name": "发现扫描",
+  "vulnerabilityEnabled": false,
+  "web": null,
+  "webEnabled": false
+}

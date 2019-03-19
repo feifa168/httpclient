@@ -133,6 +133,10 @@ public class NewTask {
         return scanTemplateId;
     }
 
+    public void setScanTemplateId(String scanTemplateId) {
+        this.scanTemplateId = scanTemplateId;
+    }
+
     private String description;
     private int    engineId;
     private String importance;

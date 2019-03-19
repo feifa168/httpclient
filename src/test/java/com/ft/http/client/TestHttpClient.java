@@ -461,7 +461,11 @@ public class TestHttpClient {
 
                             AssetsQueryPortResult assetsPort = queryAssetsPorts(assets.getId());
 
-                            AssetsScanResultMix mix = new AssetsScanResultMix("", assets.getId(), assets, addr, null, assetsVulnerabilities.getResources(), assetsPort.getResources());
+                            AssetsScanResultMix mix = new AssetsScanResultMix("", assets.getId(), assets,
+                                    addr, null,
+                                    //assetsVulnerabilities.getResources(),
+                                    null,
+                                    assetsPort.getResources());
                             scanReslutMix.add(mix);
 
                             break;
@@ -476,7 +480,7 @@ public class TestHttpClient {
             }
 
             scanReslutMixWithError.setSuccess(true);
-            scanReslutMixWithError.setResult(scanReslutMix);
+            scanReslutMixWithError.setScanResult(null/*scanReslutMix*/);
 
         } while (false);
 
@@ -762,7 +766,8 @@ public class TestHttpClient {
         taskConfigs.add(config);
 
         TaskScanConfig taskScanConfig = new TaskScanConfig(taskConfigs, "description", 3, "normal",
-                name,"full-audit-without-web-spider", "toolcategory", ".\\results", "taskcode");
+                name,"full-audit-without-web-spider", "toolcategory", ".\\results", "taskcode", TaskScanConfig.ScanType.SCAN_TYPE_SCAN,
+                null, false, "update1.4.1.dat", false, false, false);
         String xmlString = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" + xmlMapper.writerWithDefaultPrettyPrinter().writeValueAsString(taskScanConfig);
         System.out.println(xmlString);
         taskScanConfig = xmlMapper.readValue(xmlString, TaskScanConfig.class);

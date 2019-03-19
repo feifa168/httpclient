@@ -1,0 +1,153 @@
+{
+"total":2,
+"resources":[{
+  "id" : "discovery",
+  "checks" : {
+    "categories" : {
+      "disabled" : [ ],
+      "enabled" : [ ]
+    },
+    "correlate" : false,
+    "individual" : {
+      "disabled" : [ ],
+      "enabled" : [ ]
+    },
+    "potential" : false,
+    "types" : {
+      "disabled" : [ ],
+      "enabled" : [ ]
+    },
+    "unsafe" : false
+  },
+  "database" : { },
+  "description" : "只扫描并识别网络上的实时资产信息，包括主机名和操作系统等。不进行漏洞或策略扫描。",
+  "discovery" : {
+    "asset" : {
+      "collectWhoisInformation" : false,
+      "fingerprintMinimumCertainty" : 0.16,
+      "fingerprintRetries" : 0,
+      "ipFingerprintingEnabled" : true,
+      "sendArpPings" : true,
+      "sendIcmpPings" : true,
+      "tcpPorts" : [ 21, 22, 23, 25, 53, 80, 88, 110, 111, 113, 135, 139, 143, 220, 264, 389, 443, 445, 449, 524, 585, 636, 993, 995, 1433, 1521, 1723, 3306, 3389, 5900, 8080, 9100 ],
+      "treatTcpResetAsAsset" : true,
+      "udpPorts" : [ 53, 67, 68, 69, 111, 123, 135, 137, 138, 139, 161, 162, 445, 500, 514, 520, 631, 1434, 1701, 1900, 4500, 5353, 49152 ]
+    },
+    "performance" : {
+      "packetRate" : {
+        "defeatRateLimit" : true,
+        "maximum" : 15000,
+        "minimum" : 450
+      },
+      "parallelism" : {
+        "maximum" : 0,
+        "minimum" : 0
+      },
+      "retryLimit" : 3,
+      "scanDelay" : {
+        "maximum" : "PT0S",
+        "minimum" : "PT0S"
+      },
+      "timeout" : {
+        "initial" : "PT0.5S",
+        "maximum" : "PT3S",
+        "minimum" : "PT0.5S"
+      }
+    },
+    "service" : {
+      "serviceNameFile" : "default-services.properties",
+      "tcp" : {
+        "additionalPorts" : [ "449.0", "993.0", "995.0", "264.0", "585.0", "139.0", "524.0", "9100.0", "110.0", "143.0", "80.0", "8080.0", "113.0", "1521.0", "21.0", "22.0", "23.0", "25.0", "1433.0", "443.0", "1723.0", "220.0", "445.0" ],
+        "method" : "SYN",
+        "ports" : "CUSTOM"
+      },
+      "udp" : {
+        "additionalPorts" : [ "161.0", "500.0", "5353.0", "123.0", "1900.0" ],
+        "ports" : "CUSTOM"
+      }
+    }
+  },
+  "discoveryOnly" : true,
+  "maxParallelAssets" : 10,
+  "maxScanProcesses" : 10,
+  "name" : "发现扫描",
+  "vulnerabilityEnabled" : false,
+  "webEnabled" : false
+},
+{
+  "id" : "full-audit-without-web-spider",
+  "checks" : {
+    "categories" : {
+      "disabled" : [ ],
+      "enabled" : [ ]
+    },
+    "correlate" : true,
+    "individual" : {
+      "disabled" : [ ],
+      "enabled" : [ ]
+    },
+    "potential" : false,
+    "types" : {
+      "disabled" : [ "Policy" ],
+      "enabled" : [ ]
+    },
+    "unsafe" : false
+  },
+  "database" : {
+    "oracle" : [ "ORCL", "IASDB", "OEMREP", "XE", "ixos", "CTM4_0", "CTM4_1", "CTM4_6", "CTM4_7", "ARIS", "MSAM", "VPX", "OPENVIEW", "OVO", "SA0", "SA1", "SA2", "SA3", "SA4", "SA5", "SA6", "SA7", "SA8", "SA9", "SAA", "SAB", "SAC", "SAD", "SAE", "SAF", "SAG", "SAH", "SAI", "SAJ", "SAK", "SAL", "SAM", "SAN", "SAO", "SAP", "SAQ", "SAR", "SAS", "SAT", "SAU", "SAV", "SAW", "SAX", "SAY", "SAZ" ],
+    "postgres" : "template1"
+  },
+  "description" : "对所有系统执行默认的网络审计，包括基于网络的漏洞、补丁/修复程序检查。只扫描默认端口，不进行策略检查和Web扫描。Web扫描建议单独进行。",
+  "discovery" : {
+    "asset" : {
+      "collectWhoisInformation" : false,
+      "fingerprintMinimumCertainty" : 0.16,
+      "fingerprintRetries" : 0,
+      "ipFingerprintingEnabled" : true,
+      "sendArpPings" : true,
+      "sendIcmpPings" : true,
+      "tcpPorts" : [ 21, 22, 23, 25, 53, 80, 110, 111, 135, 139, 143, 443, 445, 993, 995, 1723, 3306, 3389, 5900, 8080 ],
+      "treatTcpResetAsAsset" : true,
+      "udpPorts" : [ 53, 67, 68, 69, 123, 135, 137, 138, 139, 161, 162, 445, 500, 514, 520, 631, 1434, 1900, 4500, 5353, 49152 ]
+    },
+    "performance" : {
+      "packetRate" : {
+        "defeatRateLimit" : true,
+        "maximum" : 15000,
+        "minimum" : 450
+      },
+      "parallelism" : {
+        "maximum" : 0,
+        "minimum" : 0
+      },
+      "retryLimit" : 3,
+      "scanDelay" : {
+        "maximum" : "PT0S",
+        "minimum" : "PT0S"
+      },
+      "timeout" : {
+        "initial" : "PT0.5S",
+        "maximum" : "PT3S",
+        "minimum" : "PT0.5S"
+      }
+    },
+    "service" : {
+      "serviceNameFile" : "default-services.properties",
+      "tcp" : {
+        "additionalPorts" : [ "1-1040" ],
+        "method" : "SYN",
+        "ports" : "WELL_KNOWN"
+      },
+      "udp" : {
+        "ports" : "WELL_KNOWN"
+      }
+    }
+  },
+  "discoveryOnly" : false,
+  "maxParallelAssets" : 10,
+  "maxScanProcesses" : 10,
+  "name" : "默认扫描",
+  "vulnerabilityEnabled" : true,
+  "webEnabled" : false
+}]
+}

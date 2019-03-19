@@ -9,10 +9,7 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.ft.http.v3.assets.Assets;
-import com.ft.http.v3.assets.AssetsQueryPortResult;
-import com.ft.http.v3.assets.AssetsQueryResult;
-import com.ft.http.v3.assets.AssetsQueryVulnerabilitiesResult;
+import com.ft.http.v3.assets.*;
 import com.ft.http.v3.config.*;
 import com.ft.http.v3.credential.Credential;
 import com.ft.http.v3.credential.CredentialReturn;
@@ -20,20 +17,24 @@ import com.ft.http.v3.credential.SharedCredential;
 import com.ft.http.v3.scan.NewScan;
 import com.ft.http.v3.scan.NewScanReturn;
 import com.ft.http.v3.scan.ScanResult;
+import com.ft.http.v3.scanengine.ScanEngine;
+import com.ft.http.v3.scanengine.ScanEngineResult;
+import com.ft.http.v3.scantemplate.*;
 import com.ft.http.v3.task.*;
+import com.ft.http.v3.update.OfflineUpdateResult;
+import com.ft.http.v3.vulnerabilities.*;
 import com.ft.http.v3.weakpassword.CrackScanResult;
 import com.ft.http.v3.weakpassword.CrackScanReturn;
 import com.ft.http.v3.weakpassword.NewCracks;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.util.AsciiString;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.*;
@@ -128,7 +129,7 @@ public class App {
         return testNormal(client, url, type, mapHeader, body);
     }
 
-    private NewTaskReturn startTask(NewTask task) throws Exception {
+    public NewTaskReturn startTask(NewTask task) throws Exception {
         HttpClient client = new HttpClient(host, port);
 
         // 创建任务
@@ -142,7 +143,7 @@ public class App {
         return buildResultObject(result, NewTaskReturn.class);
     }
 
-    private CrackScanReturn startCracks(NewCracks cracks) throws Exception {
+    public CrackScanReturn startCracks(NewCracks cracks) throws Exception {
         if (null == cracks) {
             return null;
         }
@@ -304,6 +305,9 @@ public class App {
         return taskResult;
     }
     private <T extends PageAndResources> T pageResource(T t, HttpClient client, String url, Map<String, Object> mapParams, Map<String, Object> mapHeader, byte[] body) {
+        return pageResource(t, client, url, mapParams, mapHeader, body, null);
+    }
+    private <T extends PageAndResources> T pageResource(T t, HttpClient client, String url, Map<String, Object> mapParams, Map<String, Object> mapHeader, byte[] body, FileChannel fc) {
 
         //HttpClient client = new HttpClient(host, port);
 
@@ -321,6 +325,9 @@ public class App {
             int perPageSize = page.getSize();
             int totalResources = page.getTotalResources();
             for (int num=1; num<pageNum;num++) {
+                if (num > 5) {
+                    break;
+                }
                 mapParams.put("page", String.valueOf(curPage+num));
                 client = new HttpClient(host, port);
                 byte[] result = null;
@@ -337,9 +344,29 @@ public class App {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                t.getResources().addAll((null != tmpTaskResult.getResources()) ? tmpTaskResult.getResources() : null);
-                t.getPage().setSize(perPageSize*(num+1));
-                t.getPage().setTotalResources(t.getResources().size());
+                List<T> resultResources = tmpTaskResult.getResources();
+                if (null != resultResources) {
+                    t.getPage().setSize(perPageSize * (num + 1));
+                    t.getPage().setTotalResources(perPageSize*num + resultResources.size());
+                }
+
+                if (null == fc) {
+                    t.getResources().addAll((null != tmpTaskResult.getResources()) ? tmpTaskResult.getResources() : null);
+//                    t.getPage().setSize(perPageSize * (num + 1));
+//                    t.getPage().setTotalResources(t.getResources().size());
+                } else {
+                    try {
+                        for (Object tmpt : resultResources) {
+                            fc.write(ByteBuffer.wrap(",".getBytes()));
+                            write2File(fc, mapper.writerWithDefaultPrettyPrinter().writeValueAsString(tmpt), true);
+                        }
+                        //fc.write(ByteBuffer.wrap(mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(resultResources)));
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
         return t;
@@ -398,6 +425,319 @@ public class App {
         return queryResult;
     }
 
+    public VulnerabilityResult  queryAllVulnerabilities() throws Exception {
+        return queryAllVulnerabilities(null);
+    }
+
+    public <T extends PageAndResources> T  queryPageAndResources(String url, Map<String, Object> mapParams, Class clazz, FileChannel fc) throws Exception {
+        HttpClient client = new HttpClient(host, port);
+
+        byte[] result = null;
+        try {
+            result = testNormal(client,url, HttpRequestType.HTTP_GET, mapParams, null, null);
+        } finally {
+            client.stop();
+        }
+        T queryResult = buildResultObject(result, clazz);
+        if (null != fc && null != queryResult && null != queryResult.getResources()) {
+            write2File(fc, "{\n\"total\":"+queryResult.getPage().getTotalResources()+",\n\"resource\":[", true);
+            List<VulnerabilityInfo> resultResources = queryResult.getResources();
+            for (int i=0; i<resultResources.size(); i++) {
+                if (i > 0) {
+                    fc.write(ByteBuffer.wrap(",".getBytes()));
+                }
+                write2File(fc, mapper.writerWithDefaultPrettyPrinter().writeValueAsString(resultResources.get(i)), true);
+            }
+            //fc.write(ByteBuffer.wrap(mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(queryResult.getResources())));
+        }
+        T tmpt = pageResource(queryResult, client, url, mapParams, null, null, fc);
+        if (null != fc) {
+            fc.write(ByteBuffer.wrap("]\n}".getBytes()));
+        }
+        return queryResult;
+    }
+
+    public ScanEngineResult queryScanEngine(FileChannel fc) throws Exception {
+        HttpClient client = new HttpClient(host, port);
+        // 查询资产端口
+        //byte[] result = testNormal(client,"/api/v3/assets/"+assetId+"/ports", HttpRequestType.HTTP_GET, null);
+        byte[] result = null;
+        try {
+            result = testNormal(client,"/api/v3/scan_engiens", HttpRequestType.HTTP_GET, null);
+        } finally {
+            client.stop();
+        }
+        ScanEngineResult queryResult = buildResultObject(result, ScanEngineResult.class);
+        if (null!=fc && null!=result && null!=queryResult && null!=queryResult.getResources()) {
+            int size = queryResult.getResources().size();
+            queryResult.setTotal(size);
+            write2File(fc, mapper.writerWithDefaultPrettyPrinter().writeValueAsString(queryResult), true);
+        }
+        return queryResult;
+    }
+
+    public VulnerabilityResult  queryAllVulnerabilities(FileChannel fc) throws Exception {
+        HttpClient client = new HttpClient(host, port);
+        // 查询所有漏洞
+        Map<String, Object> mapParams = new HashMap<>();
+        mapParams.put("page", 0);
+        mapParams.put("size", 10);
+
+        String url = "/api/v3/vulnerabilities/all";
+        return queryPageAndResources(url, mapParams,VulnerabilityResult.class, fc);
+
+//        byte[] result = null;
+//        try {
+//            result = testNormal(client,url, HttpRequestType.HTTP_GET, mapParams, null, null);
+//        } finally {
+//            client.stop();
+//        }
+//        VulnerabilityResult queryResult = buildResultObject(result, VulnerabilityResult.class);
+//        if (null != fc && null != queryResult && null != queryResult.getResources()) {
+//            write2File(fc, "{\n\"total\":"+queryResult.getPage().getTotalResources()+",\n\"resource\":[", true);
+//            List<VulnerabilityInfo> resultResources = queryResult.getResources();
+//            for (int i=0; i<resultResources.size(); i++) {
+//                if (i > 0) {
+//                    fc.write(ByteBuffer.wrap(",".getBytes()));
+//                }
+//                write2File(fc, mapper.writerWithDefaultPrettyPrinter().writeValueAsString(resultResources.get(i)), true);
+//            }
+//            //fc.write(ByteBuffer.wrap(mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(queryResult.getResources())));
+//        }
+//        VulnerabilityResult tmpQueryResult = pageResource(queryResult, client, url, mapParams, null, null, fc);
+//        if (null != fc) {
+//            fc.write(ByteBuffer.wrap("]\n}".getBytes()));
+//        }
+//        return queryResult;
+    }
+
+    public VulnerabilitiesDetail  queryVulnerabilitiesDetail(String vulnerabId) throws Exception {
+        HttpClient client = new HttpClient(host, port);
+        // 查询漏洞详情
+        String url = "/api/v3/vulnerabilities/"+vulnerabId;
+        byte[] result = null;
+        try {
+            result = testNormal(client,url, HttpRequestType.HTTP_GET, null);
+        } finally {
+            client.stop();
+        }
+        VulnerabilitiesDetail queryResult = buildResultObject(result, VulnerabilitiesDetail.class);
+        return queryResult;
+    }
+
+    public void write2File(FileChannel fc, String buf, boolean conv2Utf8) {
+        if (conv2Utf8) {
+            try {
+                fc.write(ByteBuffer.wrap(new String(buf.getBytes("utf-8"), "utf-8").getBytes()));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            try {
+                fc.write(ByteBuffer.wrap(buf.getBytes()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    public VulnerabilitiesSolutions queryVulnerabilitiesSolutions(String vulnerabId) throws Exception {
+        HttpClient client = new HttpClient(host, port);
+        // 查询漏洞解决方案
+        String url = "/api/v3/vulnerabilities/"+vulnerabId+"/solutions";
+        byte[] result = null;
+        try {
+            result = testNormal(client,url, HttpRequestType.HTTP_GET, null);
+        } finally {
+            client.stop();
+        }
+        VulnerabilitiesSolutions queryResult = buildResultObject(result, VulnerabilitiesSolutions.class);
+        return queryResult;
+    }
+
+    public SingleSolutions querySingleSolutions(String vulnerabId) throws Exception {
+        HttpClient client = new HttpClient(host, port);
+        // 查询单个解决方案
+        String url = "/api/v3/solutions/" + vulnerabId;
+        byte[] result = null;
+        try {
+            result = testNormal(client,url, HttpRequestType.HTTP_GET, null);
+        } finally {
+            client.stop();
+        }
+        SingleSolutions queryResult = buildResultObject(result, SingleSolutions.class);
+        return queryResult;
+    }
+
+    public CreateScanTemplateResult createScanTemplate(ScanTemplate template) throws Exception {
+        HttpClient client = new HttpClient(host, port);
+        // 创建扫描模板
+        byte[] postBody = mapper.writeValueAsBytes(template);
+        System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(template));
+        byte[] result = null;
+        try {
+            result = testNormal(client,"/api/v3/scan_templates", HttpRequestType.HTTP_POST, postBody);
+        } finally {
+            client.stop();
+        }
+        return buildResultObject(result, CreateScanTemplateResult.class);
+    }
+
+    public OfflineUpdateResult offlineUpdate2(String updateFile) throws Exception {
+//        host = "120.55.40.41";
+//        port = 80;
+        HttpClient client = new HttpClient(host, port);
+//        client.configSSL(false);
+        // 离线升级
+        Map<String, Object> mapParams = new HashMap<>();
+        String boundary = "----------------------------3100370521406576521AXFEW";//"-----------------"+new Date().getTime();//"--------------------------395956373148364292469995";
+        String boundaryEnd = boundary+"--";
+        String splitTag = "\r\n";
+        mapParams.put("Content-Type", "multipart/form-data; boundary="+boundary);
+        mapParams.put("cache-control", "no-cache");
+        byte[] postBody = null;
+        byte[] result = null;
+        try {
+            FileChannel fc = FileChannel.open(Paths.get(updateFile), StandardOpenOption.READ);
+            ByteBuffer buf = ByteBuffer.allocate((int) fc.size());
+            int readLen = fc.read(buf);
+            fc.close();
+
+            postBody = buf.array();
+            result = testNormal(client,"/api/v3/admin/updates", HttpRequestType.HTTP_POST, mapParams, postBody);
+        } finally {
+            client.stop();
+        }
+        return buildResultObject(result, OfflineUpdateResult.class);
+    }
+    public OfflineUpdateResult offlineUpdate(String updateFile) throws Exception {
+//        host = "120.55.40.41";
+//        port = 80;
+        HttpClient client = new HttpClient(host, port);
+//        client.configSSL(false);
+        // 离线升级
+        Map<String, Object> mapParams = new HashMap<>();
+        String boundary = String.valueOf(new Date().getTime());//"ZH76Tqas4FOGv4OmMaLEjevT1kLsVPiQE";//"-----------------"+new Date().getTime();//"--------------------------395956373148364292469995";
+        String boundaryBegin = "--" + boundary;
+        String boundaryEnd = boundaryBegin+"--";
+        String splitTag = "\r\n";
+        mapParams.put("Content-Type", "multipart/form-data; boundary="+boundary);
+        mapParams.put("cache-control", "no-cache");
+        byte[] postBody = null;
+        byte[] result = null;
+        try {
+            FileChannel fc = FileChannel.open(Paths.get(updateFile), StandardOpenOption.READ);
+            ByteBuffer buf = ByteBuffer.allocate((int) fc.size());
+            int readLen = fc.read(buf);
+            fc.close();
+            StringBuilder sbd = new StringBuilder(64);
+            sbd.append(boundaryBegin).append(splitTag)
+                    .append("Content-Disposition: form-data; name=\"file\"; filename=\""
+                            +updateFile+"\""+splitTag+ "Content-Type: application/octet-stream").append(splitTag).append(splitTag);
+            String afterTag = splitTag+boundaryEnd+splitTag;
+            ByteBuffer postBuf = ByteBuffer.allocate(sbd.length()+buf.limit()+afterTag.length());
+            postBuf.put(sbd.toString().getBytes()).put(buf.array()).put(afterTag.getBytes());
+
+            postBody = postBuf.array();//tiy/t.asp  // /api/v3/admin/updates
+            result = testNormal(client,"/api/v3/admin/updates", HttpRequestType.HTTP_POST, mapParams, postBody);
+        } finally {
+            client.stop();
+        }
+        return buildResultObject(result, OfflineUpdateResult.class);
+    }
+
+    public ScanTemplate queryScanTemplate(String templateId) throws Exception {
+        HttpClient client = new HttpClient(host, port);
+        // 查询单个模板
+        String url = "/api/v3/scan_templates/" + templateId;
+        byte[] result = null;
+        try {
+            result = testNormal(client,url, HttpRequestType.HTTP_GET, null);
+        } finally {
+            client.stop();
+        }
+        ScanTemplate queryResult = buildResultObject(result, ScanTemplate.class);
+        return queryResult;
+    }
+
+    public void buildCustomTemplate(ScanTemplate template, TaskScanConfig.CustomScanTemplate customConfig) {
+        if (null == template || null == customConfig) {
+            return;
+        }
+        ScanTemplateDiscovery discovery = template.getDiscovery();
+        if (null == discovery) {
+            return;
+        }
+
+        ScanTemplateAssetDiscovery       asset = discovery.getAsset();
+        ScanTemplateServiceDiscovery     service = discovery.getService();
+        ScanTemplateDiscoveryPerformance performance = discovery.getPerformance();
+        if (null == asset || null == performance || null == service) {
+            return;
+        }
+
+        // 资产发现配置
+        asset.setSendIcmpPings(customConfig.isSendIcmpPings());
+        String sPorts = customConfig.getTcpPorts();
+        if (null != sPorts) {
+            String[] splitS = sPorts.split("\\s*,\\s*");
+            if (null != splitS) {
+                List<String> listPorts = Arrays.asList(splitS);
+                if (null != listPorts) {
+                    List<Integer> intPorts = new ArrayList<>();
+                    for (String port : listPorts) {
+                        intPorts.add(Integer.valueOf(port));
+                    }
+                    asset.setTcpPorts(intPorts);
+                }
+            }
+        }
+
+        sPorts = customConfig.getUdpPorts();
+        if (null != sPorts) {
+            String[] splitS = sPorts.split("\\s*,\\s*");
+            if (null != splitS) {
+                List<String> listPorts = Arrays.asList(splitS);
+                if (null != listPorts) {
+                    List<Integer> intPorts = new ArrayList<>();
+                    for (String port : listPorts) {
+                        intPorts.add(Integer.valueOf(port));
+                    }
+                    asset.setUdpPorts(intPorts);
+                }
+            }
+        }
+        asset.setIpFingerprintingEnabled(customConfig.isIpFingerprintingEnabled());
+
+        // 服务发现配置
+        sPorts = customConfig.getTcpAdditionalPorts();
+        if (null != sPorts) {
+            String[] splitS = sPorts.split("\\s*,\\s*");
+            if (null != splitS) {
+                List<String> listPorts = Arrays.asList(splitS);
+                service.getTcp().setAdditionalPorts(listPorts);
+            }
+        }
+        sPorts = customConfig.getUdpAdditionalPorts();
+        if (null != sPorts) {
+            String[] splitS = sPorts.split("\\s*,\\s*");
+            if (null != splitS) {
+                List<String> listPorts = Arrays.asList(splitS);
+                service.getUdp().setAdditionalPorts(listPorts);
+            }
+        }
+
+        // 性能配置
+        performance.getParallelism().setMinimum(customConfig.getParallelismMininum());
+        performance.getParallelism().setMaximum(customConfig.getParallelismMaxinum());
+        performance.getPacketRate().setMinimum(customConfig.getPacketRateMininum());
+        performance.getPacketRate().setMaximum(customConfig.getPacketRateMaxinum());
+
+        template.setMaxParallelAssets(customConfig.getMaxParallelAssets());
+        template.setMaxScanProcesses(customConfig.getMaxScanProcesses());
+    }
+
     private byte[] buildNewTask(NewTask nt) throws JsonProcessingException {
 
         String jsonString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(nt);
@@ -427,16 +767,19 @@ public class App {
         return nt;
     }
 
-    private TaskScanConfig buildTaskConfig(String configFile) throws IOException {
+    public TaskScanConfig buildTaskConfig(String configFile) throws IOException {
         TaskScanConfig taskScanConfig = xmlMapper.readValue(new File(configFile), TaskScanConfig.class);
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String name = "SCAN_56_"+formatter.format(new Date());
         taskScanConfig.setName(name);
+        TaskScanConfig.CustomScanTemplate customConfig = taskScanConfig.getCustomConfig();
+        if (null != customConfig) {
+        }
 
         return taskScanConfig;
     }
 
-    private NewTask buildNewTask(TaskScanConfig taskScanConfig) throws JsonProcessingException {
+    public NewTask buildNewTask(TaskScanConfig taskScanConfig) throws JsonProcessingException {
         List<String> address = new ArrayList<>();
         for (TaskConfig tmpconfig : taskScanConfig.getTaskconfigs()) {
             address.add(tmpconfig.getIp());
@@ -532,6 +875,14 @@ public class App {
         return latch;
     }
 
+    public ObjectMapper getMapper() {
+        return mapper;
+    }
+
+    public XmlMapper getXmlMapper() {
+        return xmlMapper;
+    }
+
     private ObjectMapper mapper = new ObjectMapper();
     private XmlMapper xmlMapper = new XmlMapper();
     private RunConfig runConfig;
@@ -555,6 +906,7 @@ public class App {
         NewScanReturn newScanReturn = null;
 
         List<AssetsScanResultMix> scanReslutMix = new ArrayList<>();
+        List<VulnerabilitiesMix> vulnerabilitiesMixs = new ArrayList<>();
         AssetsScanResultMixWithError scanReslutMixWithError = new AssetsScanResultMixWithError();
         Map<String, CrackScanResultInfo> crackResultInfos = new HashMap<>();
         //task = buildNewTask2();
@@ -580,7 +932,13 @@ public class App {
             }
 
             // 设置工具类型
-            scanReslutMixWithError.setToolcategory(taskScanConfig.getToolcategory());
+            String toolcategory = taskScanConfig.getToolcategory();
+            if (null == toolcategory) {
+                scanReslutMixWithError.setMessage("没有配置toolcategory");
+                break;
+            }
+            scanReslutMixWithError.setToolcategory(toolcategory);
+
             // 设置下发的taskcode
             String code = taskScanConfig.getTaskcode();
             if (code == null) {
@@ -588,6 +946,170 @@ public class App {
                 break;
             }
             scanReslutMixWithError.setTaskcode(code);
+
+            // 设置扫描类型
+            TaskScanConfig.ScanType scanType = taskScanConfig.getScanType();
+            if (scanType == null) {
+                scanReslutMixWithError.setMessage("没有配置scanType");
+                break;
+            }
+            scanReslutMixWithError.setScanType(scanType);
+
+            switch (scanType) {
+                case SCAN_TYPE_SCAN: {
+                    break;
+                }
+                case SCAN_TYPE_TEMPLATE: {
+                    break;
+                }
+                case SCAN_TYPE_ENGINE: {
+                    break;
+                }
+                case SCAN_TYPE_VULNERABILITIES: {
+                    break;
+                }
+            }
+            // 获取模板
+            if(taskScanConfig.isAcquireTemplate()) {
+                String scanTemplate[] = {"discovery", "full-audit-without-web-spider"};
+
+                FileChannel fc = null;
+                RandomAccessFile raf = null;
+                try {
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+                    String name = "template_"+formatter.format(new Date())+".json";
+
+                    raf = new RandomAccessFile(name, "rw");
+                    fc = raf.getChannel();
+                    fc.write(ByteBuffer.wrap(("{\n\"total\":"+scanTemplate.length+",\n\"resources\":[").getBytes()));
+                    List<ScanTemplate> scanTemplates = new ArrayList<>();
+                    for (int i=0; i<scanTemplate.length; i++) {
+                        try {
+                            ScanTemplate writeScanTemplate = app.queryScanTemplate(scanTemplate[i]);
+                            if (null != writeScanTemplate) {
+                                if (i>0) {
+                                    fc.write(ByteBuffer.wrap(",\n".getBytes()));
+                                }
+                                app.write2File(fc, app.mapper.writerWithDefaultPrettyPrinter().writeValueAsString(writeScanTemplate), true);
+                                scanTemplates.add(writeScanTemplate);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    fc.write(ByteBuffer.wrap("]\n}".getBytes()));
+                    ScanTemplateResult scanTemplateResult = new ScanTemplateResult(scanTemplates.size(), scanTemplates);
+                    scanReslutMixWithError.setScanTemplateResult(scanTemplateResult);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if (null != fc) {
+                        try {
+                            fc.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (null != raf) {
+                        try {
+                            raf.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+
+            // 获取引擎
+            if (taskScanConfig.isAcquireEngine()) {
+                try {
+                    FileChannel fc = null;
+                    RandomAccessFile raf = null;
+                    try {
+                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+                        String name = "engine_"+formatter.format(new Date())+".json";
+
+                        raf = new RandomAccessFile(name, "rw");
+                        fc = raf.getChannel();
+                        scanReslutMixWithError.setScanEnginResult(app.queryScanEngine(fc));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            // 获取所有漏洞
+            if (taskScanConfig.isAcquireVulnerabilities()) {
+                FileChannel fc = null;
+                RandomAccessFile raf = null;
+                try {
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+                    String name = "vulnerabilities_"+formatter.format(new Date())+".json";
+
+                    raf = new RandomAccessFile(name, "rw");
+                    fc = raf.getChannel();
+                    VulnerabilityResult vulnerabilityResult = app.queryAllVulnerabilities(fc);
+                    if (null != vulnerabilityResult) {
+                        ScanVulnerabilityResult scanVulnerabilityResult = new ScanVulnerabilityResult(vulnerabilityResult.getPage().getSize(), vulnerabilityResult.getResources());
+                        scanReslutMixWithError.setScanVulnerabilityResult(scanVulnerabilityResult);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if (null != fc) {
+                        try {
+                            fc.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (null != raf) {
+                        try {
+                            raf.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+
+            // 判断是否启用自定义模板
+            TaskScanConfig.CustomScanTemplate customScanTemplate = taskScanConfig.getCustomConfig();
+            if (null != customScanTemplate) {
+                // 获取模板
+                try {
+                    ScanTemplate template = app.queryScanTemplate(taskScanConfig.getScanTemplateId());
+                    if (null == template) {
+                        scanReslutMixWithError.setMessage("查询模板"+taskScanConfig.getScanTemplateId()+"失败");
+                        break;
+                    }
+
+                    // 修改模板配置内容
+                    app.buildCustomTemplate(template, customScanTemplate);
+                    template.setId(null);
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+                    String templateName = "template_"+formatter.format(new Date());
+                    template.setName(templateName);
+
+                    // 创建模板
+                    CreateScanTemplateResult templateResult = app.createScanTemplate(template);
+                    if ((null == templateResult) || (null != templateResult.getError())) {
+                        scanReslutMixWithError.setMessage("自定义扫描模板无效");
+                        break;
+                    }
+                    taskScanConfig.setScanTemplateId(templateResult.getId());
+                } catch (Exception e) {
+                    //e.printStackTrace();
+                    scanReslutMixWithError.setMessage("创建自定义扫描模板失败，原因是"+e.getMessage());
+                    break;
+                }
+            }
+//            boolean ret = true;
+//            if (ret==true) {
+//                break;
+//            }
 
             // 构造任务
             try {
@@ -736,6 +1258,42 @@ public class App {
                             AssetsQueryVulnerabilitiesResult assetsVulnerabilities = null;
                             try {
                                 assetsVulnerabilities = app.queryAssetsVulnerabilities(assets.getId());
+                                if (null != assetsVulnerabilities) {
+                                    List<AssetsScanVulnerabilities> asvs = assetsVulnerabilities.getResources();
+                                    if (null != asvs) {
+                                        for (AssetsScanVulnerabilities asv : asvs) {
+                                            if (asv != null) {
+                                                VulnerabilitiesDetail detail = null;
+                                                try {
+                                                    detail = app.queryVulnerabilitiesDetail(asv.getId());
+                                                } catch (Exception e) {
+                                                    // todo
+                                                }
+
+                                                List<SingleSolutions> singleSolutionss = new ArrayList<>();
+                                                try {
+                                                    VulnerabilitiesSolutions solutions = app.queryVulnerabilitiesSolutions(asv.getId());
+                                                    if (null != solutions) {
+                                                        List<String> solutionIds = solutions.getResources();
+                                                        if (null != solutionIds) {
+                                                            for (String id : solutionIds) {
+                                                                try {
+                                                                    singleSolutionss.add(app.querySingleSolutions(id));
+                                                                } catch (Exception e) {
+                                                                    // todo
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                } catch (Exception e) {
+                                                    // todo
+                                                }
+                                                vulnerabilitiesMixs.add(new VulnerabilitiesMix(asv, detail, singleSolutionss));
+                                            }
+                                        }
+                                    }
+                                }
+
                             } catch (Exception e) {
                                 scanReslutMixWithError.setMessage("查询资产漏洞失败");
                             }
@@ -749,7 +1307,8 @@ public class App {
                             TaskConfig tc = mapIp2TaskConfig.get(addr);
                             String subTaskId = (null != tc) ? tc.getId() : "";
                             AssetsScanResultMix mix = new AssetsScanResultMix(subTaskId, assets.getId(), assets, addr, null,
-                                    (null!=assetsVulnerabilities) ? assetsVulnerabilities.getResources() : null,
+                                    //(null!=assetsVulnerabilities) ? assetsVulnerabilities.getResources() : null,
+                                    (null!=vulnerabilitiesMixs) ? vulnerabilitiesMixs : null,
                                     (null!=assetsPort) ? assetsPort.getResources() : null);
                             scanReslutMix.add(mix);
 
@@ -781,7 +1340,23 @@ public class App {
             }
 
             scanReslutMixWithError.setSuccess(true);
-            scanReslutMixWithError.setResult(scanReslutMix);
+            AssetsScanResultMixWithError.MixResult mixResult = new AssetsScanResultMixWithError.MixResult(scanReslutMix.size(), scanReslutMix);
+            scanReslutMixWithError.setScanResult(mixResult);
+
+            // 更新
+            if (taskScanConfig.isUpdate()) {
+                try {
+                    OfflineUpdateResult updateResult = app.offlineUpdate(taskScanConfig.getUpdateFile());
+                    if (null==updateResult) {
+                        scanReslutMixWithError.setMessage("更新文件"+taskScanConfig.getUpdateFile()+"返回空");
+                    } else if (!updateResult.isSuccess()) {
+                        scanReslutMixWithError.setMessage("更新文件"+taskScanConfig.getUpdateFile()+"失败，错误原因"+updateResult.getMsg()+" | " + updateResult.getError());
+                    }
+                    scanReslutMixWithError.setOfflineUpdateResult(updateResult);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
 
         } while (false);
 
@@ -825,8 +1400,9 @@ public class App {
             f1 = new RandomAccessFile(vulnerabilitiesFile, "rw");
 
             String mixResult = app.mapper.writerWithDefaultPrettyPrinter().writeValueAsString(scanReslutMixWithError);
+            String mixResultUtf8 = new String(mixResult.getBytes("utf-8"), "utf-8");
             System.out.println(mixResult);
-            f1.write(mixResult.getBytes());
+            f1.write(mixResultUtf8.getBytes());
             f1.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
