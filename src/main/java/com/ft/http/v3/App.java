@@ -69,6 +69,19 @@ public class App {
         xmlMapper.enable(MapperFeature.USE_STD_BEAN_NAMING);
     }
 
+
+    /**
+     * 转换byte数组内容为指定类型对象
+     *
+     * @param  result     待转换的字节
+     *
+     * @param  className     字节要转换的类型
+     *
+     * @return  字节转换的类型对象
+     *
+     * @throws  IOException  对象转换失败
+     *
+     */
     public <T> T buildResultObject(byte[] result, Class<?> className) throws IOException {
         if (null == result) {
             return null;
@@ -79,6 +92,26 @@ public class App {
         return t;
     }
 
+    /**
+     * 获取HTTP请求结果
+     *
+     * @param  client  HTTP客户端
+     *
+     * @param  url     HTTP URL路径
+     *
+     * @param  type    HTTP请求类型 GET，POST
+     *
+     * @param  mapParams     URL后面带的参数
+     *
+     * @param  mapHeader     HTTP头信息
+     *
+     * @param  body     HTTP发送的body
+     *
+     * @return  返回结果的数组
+     *
+     * @throws  IOException  抛出的异常
+     *
+     */
     public byte[] testNormal(HttpClient client, String url, HttpRequestType type, Map<String, Object> mapParams, Map<String, Object> mapHeader, byte[] body) throws Exception {
         client.configSSL(true);
         client.configAuth(true, authName, authPassword);
@@ -132,6 +165,18 @@ public class App {
         return testNormal(client, url, type, mapHeader, body);
     }
 
+    /**
+     * 处理弱口令扫描
+     *
+     * @param  taskconfigs  弱口令扫描的配置信息
+     *
+     * @param  crackResultInfos     弱口令扫描结果的集合，IP与结果的对应
+     *
+     * @param  mapIp2TaskConfig    IP与扫描资产信息的对应集合
+     *
+     * @return  无
+     *
+     */
     public void handleCracks(List<TaskConfig> taskconfigs, Map<String, CrackScanResultInfo> crackResultInfos, Map<String, TaskConfig> mapIp2TaskConfig) {
         int corePoolSize = Runtime.getRuntime().availableProcessors();
         threadPool = new ThreadPoolExecutor(corePoolSize, corePoolSize*2, 60, TimeUnit.SECONDS, new LinkedBlockingDeque<>(1024));
@@ -193,6 +238,18 @@ public class App {
         threadPool.shutdown();
     }
 
+    /**
+     * 处理扫描结果文件
+     *
+     * @param  task  任务信息
+     *
+     * @param  scanReslutMixWithError     任务扫描结果
+     *
+     * @param  taskScanConfig    扫描配置信息
+     *
+     * @return  无
+     *
+     */
     public void handleResult(NewTask task, AssetsScanResultMixWithError scanReslutMixWithError, TaskScanConfig taskScanConfig) {
         // 处理检查结果
         String output = null;
@@ -289,6 +346,16 @@ public class App {
         }
     }
 
+    /**
+     * 创建任务
+     *
+     * @param  task     所要创建的任务信息
+     *
+     * @return  任务创建返回结果
+     *
+     * @throws  Exception  异常情况
+     *
+     */
     public NewTaskReturn startTask(NewTask task) throws Exception {
         HttpClient client = new HttpClient(host, port);
 
@@ -303,6 +370,16 @@ public class App {
         return buildResultObject(result, NewTaskReturn.class);
     }
 
+    /**
+     * 创建弱口令任务
+     *
+     * @param  cracks     所要创建的弱口令信息
+     *
+     * @return  任务创建返回结果
+     *
+     * @throws  Exception  异常情况
+     *
+     */
     public CrackScanReturn startCracks(NewCracks cracks) throws Exception {
         if (null == cracks) {
             return null;
@@ -339,6 +416,16 @@ public class App {
         return scanReturn;
     }
 
+    /**
+     * 启动弱口令扫描
+     *
+     * @param  ret     创建的弱口令返回结果
+     *
+     * @return  任务创建返回结果
+     *
+     * @throws  Exception  异常情况
+     *
+     */
     private CrackScanReturn startCracksScan(CrackScanReturn ret) throws Exception {
         if (ret == null || ret.getId() == 0) {
             return null;
@@ -372,6 +459,16 @@ public class App {
         return scanReturn;
     }
 
+    /**
+     * 查询弱口令结果
+     *
+     * @param  ret     启动弱口令扫描的结果
+     *
+     * @return  查询结果
+     *
+     * @throws  Exception  异常情况
+     *
+     */
     private CrackScanResult queryCracksScanResult(CrackScanReturn ret) throws Exception {
         if (ret == null || ret.getId() == 0) {
             return null;
@@ -395,6 +492,18 @@ public class App {
         return scanResult;
     }
 
+    /**
+     * 创建扫描凭证
+     *
+     * @param  taskReturn     任务扫描结果
+     *
+     * @param  credential     认证信息
+     *
+     * @return  认证返回结果
+     *
+     * @throws  Exception  异常情况
+     *
+     */
     private CredentialReturn createCredential(NewTaskReturn taskReturn, Credential credential) throws Exception {
         HttpClient client = new HttpClient(host, port);
         // 创建凭证
@@ -409,6 +518,18 @@ public class App {
         }
         return buildResultObject(result, CredentialReturn.class);
     }
+    /**
+     * 创建共享凭证
+     *
+     * @param  taskReturn     任务扫描结果
+     *
+     * @param  credential     认证信息
+     *
+     * @return  认证返回结果
+     *
+     * @throws  Exception  异常情况
+     *
+     */
     private SharedCredential createSharedCredential(NewTaskReturn taskReturn, Credential credential) throws Exception {
         HttpClient client = new HttpClient(host, port);
         // 创建共享凭证
@@ -423,6 +544,19 @@ public class App {
         }
         return buildResultObject(result, SharedCredential.class);
     }
+
+    /**
+     * 启动任务
+     *
+     * @param  taskReturn     创建任务返回的结果
+     *
+     * @param  scan     扫描所需的信息
+     *
+     * @return  任务启动返回结果
+     *
+     * @throws  Exception  异常情况
+     *
+     */
     private NewScanReturn startScan(NewTaskReturn taskReturn, NewScan scan) throws Exception {
         HttpClient client = new HttpClient(host, port);
         // 创建扫描
@@ -436,6 +570,17 @@ public class App {
         }
         return buildResultObject(result, NewScanReturn.class);
     }
+
+    /**
+     * 查询扫描结果
+     *
+     * @param  scanReturn     启动扫描任务返回的结果
+     *
+     * @return  扫描的返回结果
+     *
+     * @throws  Exception  异常情况
+     *
+     */
     private ScanResult queryScanResult(NewScanReturn scanReturn) throws Exception {
         HttpClient client = new HttpClient(host, port);
         // 查询扫描状态
@@ -447,6 +592,16 @@ public class App {
         }
         return buildResultObject(result, ScanResult.class);
     }
+    /**
+     * 查询任务扫描结果
+     *
+     * @param  taskReturn     创建任务返回的结果
+     *
+     * @return  扫描的返回结果
+     *
+     * @throws  Exception  异常情况
+     *
+     */
     private TaskResult queryTaskScanResult(NewTaskReturn taskReturn) throws Exception {
         HttpClient client = new HttpClient(host, port);
         // 查询任务扫描状态
@@ -470,6 +625,28 @@ public class App {
     private <T extends PageAndResources> T pageResource(T t, HttpClient client, String url, Map<String, Object> mapParams, Map<String, Object> mapHeader, byte[] body) {
         return pageResource(t, client, url, mapParams, mapHeader, body, null);
     }
+    /**
+     * 处理翻页的结果
+     *
+     * @param  t     创建任务返回的结果
+     *
+     * @param  client  HTTP客户端
+     *
+     * @param  url     HTTP URL路径
+     *
+     * @param  mapParams     URL后面带的参数
+     *
+     * @param  mapHeader     HTTP头信息
+     *
+     * @param  body     HTTP发送的body
+     *
+     * @param  fc     对于翻页的，可以不用等到返回所有结果再处理，可以直接写入文件
+     *
+     * @return  翻页结果集
+     *
+     * @throws  Exception  异常情况
+     *
+     */
     private <T extends PageAndResources> T pageResource(T t, HttpClient client, String url, Map<String, Object> mapParams, Map<String, Object> mapHeader, byte[] body, FileChannel fc) {
 
         //HttpClient client = new HttpClient(host, port);
@@ -538,6 +715,14 @@ public class App {
         return pageResource(t, client, url, null, mapHeader, body);
     }
 
+    /**
+     * 查询资产信息
+     *
+     * @return  资产信息
+     *
+     * @throws  Exception  异常情况
+     *
+     */
     private AssetsQueryResult queryAssets() throws Exception {
         HttpClient client = new HttpClient(host, port);
         // 查询资产
@@ -556,6 +741,16 @@ public class App {
         pageResource(queryResult, client, url, mapParams, null, null);
         return queryResult;
     }
+    /**
+     * 查询资产漏洞
+     *
+     * @param  assetId     资产ID
+     *
+     * @return  资产漏洞集合
+     *
+     * @throws  Exception  异常情况
+     *
+     */
     private AssetsQueryVulnerabilitiesResult queryAssetsVulnerabilities(int assetId) throws Exception {
         HttpClient client = new HttpClient(host, port);
         // 查询资产漏洞
@@ -574,6 +769,16 @@ public class App {
         pageResource(queryResult, client, url, mapParams, null, null);
         return queryResult;
     }
+    /**
+     * 查询资产端口
+     *
+     * @param  assetId     资产ID
+     *
+     * @return  资产端口集合
+     *
+     * @throws  Exception  异常情况
+     *
+     */
     private AssetsQueryPortResult queryAssetsPorts(int assetId) throws Exception {
         HttpClient client = new HttpClient(host, port);
         // 查询资产端口
@@ -588,10 +793,34 @@ public class App {
         return queryResult;
     }
 
+    /**
+     * 查询所有漏洞
+     *
+     * @return  资产漏洞集合
+     *
+     * @throws  Exception  异常情况
+     *
+     */
     public VulnerabilityResult  queryAllVulnerabilities() throws Exception {
         return queryAllVulnerabilities(null);
     }
 
+    /**
+     * 处理翻页的结果
+     *
+     * @param  url     HTTP URL路径
+     *
+     * @param  mapParams     URL后面带的参数
+     *
+     * @param  clazz     翻页资源类型
+     *
+     * @param  fc     对于翻页的，可以不用等到返回所有结果再处理，可以直接写入文件
+     *
+     * @return  翻页结果集
+     *
+     * @throws  Exception  异常情况
+     *
+     */
     public <T extends PageAndResources> T  queryPageAndResources(String url, Map<String, Object> mapParams, Class clazz, FileChannel fc) throws Exception {
         HttpClient client = new HttpClient(host, port);
 
@@ -620,6 +849,16 @@ public class App {
         return queryResult;
     }
 
+    /**
+     * 查询扫描引擎
+     *
+     * @param  fc     查询结果可以直接写入文件
+     *
+     * @return  翻页结果集
+     *
+     * @throws  Exception  异常情况
+     *
+     */
     public ScanEngineResult queryScanEngine(FileChannel fc) throws Exception {
         HttpClient client = new HttpClient(host, port);
         // 查询资产端口
@@ -641,6 +880,16 @@ public class App {
         return queryResult;
     }
 
+    /**
+     * 查询所有漏洞
+     *
+     * @param  fc     对于翻页的，可以不用等到返回所有结果再处理，可以直接写入文件
+     *
+     * @return  翻页结果集
+     *
+     * @throws  Exception  异常情况
+     *
+     */
     public VulnerabilityResult  queryAllVulnerabilities(FileChannel fc) throws Exception {
         HttpClient client = new HttpClient(host, port);
         // 查询所有漏洞
@@ -676,6 +925,16 @@ public class App {
 //        return queryResult;
     }
 
+    /**
+     * 查询漏洞详情
+     *
+     * @param  vulnerabId     漏洞ID
+     *
+     * @return  漏洞详情
+     *
+     * @throws  Exception  异常情况
+     *
+     */
     public VulnerabilitiesDetail  queryVulnerabilitiesDetail(String vulnerabId) throws Exception {
         HttpClient client = new HttpClient(host, port);
         // 查询漏洞详情
@@ -690,6 +949,18 @@ public class App {
         return queryResult;
     }
 
+    /**
+     * 将字符串以默认或utf8格式写入文件
+     *
+     * @param  fc     待写入的文件通道
+     *
+     * @param  buf     待写入的字符串
+     *
+     * @param  conv2Utf8     true则为utf8格式，false则为系统默认格式
+     *
+     * @return  无
+     *
+     */
     public void write2File(FileChannel fc, String buf, boolean conv2Utf8) {
         if (conv2Utf8) {
             try {
@@ -707,6 +978,16 @@ public class App {
             }
         }
     }
+    /**
+     * 查询漏洞解决方案
+     *
+     * @param  vulnerabId     漏洞ID
+     *
+     * @return  漏洞解决方案
+     *
+     * @throws  Exception  异常情况
+     *
+     */
     public VulnerabilitiesSolutions queryVulnerabilitiesSolutions(String vulnerabId) throws Exception {
         HttpClient client = new HttpClient(host, port);
         // 查询漏洞解决方案
@@ -721,6 +1002,16 @@ public class App {
         return queryResult;
     }
 
+    /**
+     * 查询漏洞单个解决方案
+     *
+     * @param  vulnerabId     漏洞ID
+     *
+     * @return  漏洞解决方案
+     *
+     * @throws  Exception  异常情况
+     *
+     */
     public SingleSolutions querySingleSolutions(String vulnerabId) throws Exception {
         HttpClient client = new HttpClient(host, port);
         // 查询单个解决方案
@@ -735,6 +1026,16 @@ public class App {
         return queryResult;
     }
 
+    /**
+     * 创建扫描模板
+     *
+     * @param  template     扫描模板信息
+     *
+     * @return  创建模板返回结果
+     *
+     * @throws  Exception  异常情况
+     *
+     */
     public CreateScanTemplateResult createScanTemplate(ScanTemplate template) throws Exception {
         HttpClient client = new HttpClient(host, port);
         // 创建扫描模板
@@ -749,33 +1050,16 @@ public class App {
         return buildResultObject(result, CreateScanTemplateResult.class);
     }
 
-    public OfflineUpdateResult offlineUpdate2(String updateFile) throws Exception {
-//        host = "120.55.40.41";
-//        port = 80;
-        HttpClient client = new HttpClient(host, port);
-//        client.configSSL(false);
-        // 离线升级
-        Map<String, Object> mapParams = new HashMap<>();
-        String boundary = "----------------------------3100370521406576521AXFEW";//"-----------------"+new Date().getTime();//"--------------------------395956373148364292469995";
-        String boundaryEnd = boundary+"--";
-        String splitTag = "\r\n";
-        mapParams.put("Content-Type", "multipart/form-data; boundary="+boundary);
-        mapParams.put("cache-control", "no-cache");
-        byte[] postBody = null;
-        byte[] result = null;
-        try {
-            FileChannel fc = FileChannel.open(Paths.get(updateFile), StandardOpenOption.READ);
-            ByteBuffer buf = ByteBuffer.allocate((int) fc.size());
-            int readLen = fc.read(buf);
-            fc.close();
-
-            postBody = buf.array();
-            result = testNormal(client,"/api/v3/admin/updates", HttpRequestType.HTTP_POST, mapParams, postBody);
-        } finally {
-            client.stop();
-        }
-        return buildResultObject(result, OfflineUpdateResult.class);
-    }
+    /**
+     * 离线更新
+     *
+     * @param  updateFile     更新文件名
+     *
+     * @return  更新结果
+     *
+     * @throws  Exception  异常情况
+     *
+     */
     public OfflineUpdateResult offlineUpdate(String updateFile) throws Exception {
 //        host = "120.55.40.41";
 //        port = 80;
@@ -812,6 +1096,16 @@ public class App {
         return buildResultObject(result, OfflineUpdateResult.class);
     }
 
+    /**
+     * 查询单个模板
+     *
+     * @param  templateId     模板ID
+     *
+     * @return  模板信息
+     *
+     * @throws  Exception  异常情况
+     *
+     */
     public ScanTemplate queryScanTemplate(String templateId) throws Exception {
         HttpClient client = new HttpClient(host, port);
         // 查询单个模板
@@ -826,6 +1120,16 @@ public class App {
         return queryResult;
     }
 
+    /**
+     * 构造自定义模板
+     *
+     * @param  template     模板信息
+     *
+     * @param  customConfig     模板自定义信息
+     *
+     * @return  无
+     *
+     */
     public void buildCustomTemplate(ScanTemplate template, TaskScanConfig.CustomScanTemplate customConfig) {
         if (null == template || null == customConfig) {
             return;
@@ -907,6 +1211,16 @@ public class App {
         template.setMaxScanProcesses(customConfig.getMaxScanProcesses());
     }
 
+    /**
+     * 任务转数组
+     *
+     * @param  nt     任务信息
+     *
+     * @return  任务对象转数组的结果
+     *
+     * @throws  JsonProcessingException  转换异常
+     *
+     */
     private byte[] buildNewTask(NewTask nt) throws JsonProcessingException {
 
         String jsonString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(nt);
@@ -915,6 +1229,14 @@ public class App {
         return jsonString.getBytes();
     }
 
+    /**
+     * 构造任务，用于测试
+     *
+     * @return  创建的任务信息
+     *
+     * @throws  JsonProcessingException  转换异常
+     *
+     */
     private NewTask buildNewTask2() throws JsonProcessingException {
         List<String> incAddrs = new ArrayList<>();
         incAddrs.add("172.16.1.152");
@@ -936,6 +1258,16 @@ public class App {
         return nt;
     }
 
+    /**
+     * 配置文件转对象
+     *
+     * @param  configFile     配置文件
+     *
+     * @return  配置文件转对象
+     *
+     * @throws  IOException  转换异常
+     *
+     */
     public TaskScanConfig buildTaskConfig(String configFile) throws IOException {
         TaskScanConfig taskScanConfig = xmlMapper.readValue(new File(configFile), TaskScanConfig.class);
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -948,6 +1280,16 @@ public class App {
         return taskScanConfig;
     }
 
+    /**
+     * 根据配置信息生成新任务
+     *
+     * @param  taskScanConfig     配置文件
+     *
+     * @return  新任务
+     *
+     * @throws  JsonProcessingException  转换异常
+     *
+     */
     public NewTask buildNewTask(TaskScanConfig taskScanConfig) throws JsonProcessingException {
         if (null == taskScanConfig.getTaskconfigs()) {
             return null;
@@ -968,6 +1310,14 @@ public class App {
         return mewTask;
     }
 
+    /**
+     * 解析连接的服务器配置信息
+     *
+     * @return  true为有效，false为失败
+     *
+     * @throws  IOException  转换异常
+     *
+     */
     public boolean parseRunConfig() throws IOException {
 
         runConfig =  mapper.readValue(new File("config/runConfig.json"), RunConfig.class);
@@ -985,6 +1335,9 @@ public class App {
         return true;
     }
 
+    /**
+     * 弱口令扫描结果信息
+     */
     public static class CrackScanResultInfo {
         private CrackScanResult crackScanResult;
         private CountDownLatch latch;
@@ -1015,6 +1368,9 @@ public class App {
         }
     }
 
+    /**
+     * 弱口令扫描线程
+     */
     public static class CrackThread implements Runnable {
         private NewCracks cracks;
         private App app;
@@ -1054,6 +1410,16 @@ public class App {
         }
     }
 
+    /**
+     * 提交给线程池执行的弱口令扫描任务
+     *
+     * @param  cracks     弱口令信息
+     *
+     * @param  resultInfo     若口令返回结果信息
+     *
+     * @return  返回线程池信息，异步的，后面要根据线程池状态判断是否结束
+     *
+     */
     private ThreadPoolExecutor executeWeakPasswordPool(NewCracks cracks, CrackScanResultInfo resultInfo) {
         if (null == cracks) {
             return null;
@@ -1096,6 +1462,16 @@ public class App {
         return (ThreadPoolExecutor)pool;
     }
 
+    /**
+     * 提交给线程池执行的弱口令扫描任务
+     *
+     * @param  cracks     弱口令信息
+     *
+     * @param  resultInfo     若口令返回结果信息
+     *
+     * @return  异步的，后面要等待CountDownLatch表示执行结束
+     *
+     */
     private CountDownLatch executeWeakPassword(NewCracks cracks, CrackScanResultInfo resultInfo) {
         if (null == cracks || null == cracks.getModels()) {
             return null;
@@ -1144,10 +1520,22 @@ public class App {
         return latch;
     }
 
+    /**
+     * 获取处理json格式的mapper
+     *
+     * @return  用于处理json数据与对象转换
+     *
+     */
     public ObjectMapper getMapper() {
         return mapper;
     }
 
+    /**
+     * 获取处理xml格式的mapper
+     *
+     * @return  用于处理xml数据与对象转换
+     *
+     */
     public XmlMapper getXmlMapper() {
         return xmlMapper;
     }
