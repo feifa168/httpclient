@@ -16,6 +16,49 @@ public class HttpClientHandler extends ChannelInboundHandlerAdapter {
         this.client = client;
     }
 
+    private void displayBufHex(byte[] buf, boolean hex) {
+        int len = buf.length;
+        for (int i=0; i<len; i++) {
+            if (0 == (i & 0xF )) {
+                if (i != 0) {
+                    System.out.println("");
+                }
+                System.out.printf("%08X ", i);
+            }
+            if (hex) {
+                System.out.printf("%02X ", buf[i]);
+            } else {
+                System.out.printf("%c ", buf[i]);
+            }
+        }
+        System.out.println("");
+    }
+
+    public void testDisplay() {
+        displayBufHex("abcdeferetesdvfsxrtwetwetwetwgsdgsdg".getBytes(), false);
+        displayBufHex("abcdeferetesdvfsxrtwetwetwetwgsdgsdg".getBytes(), true);
+    }
+
+    private void displayByteBuf(ByteBuf buf, boolean hex) {
+        if (buf.hasArray()) {
+            byte[] arrs = buf.array();
+            int offset = buf.arrayOffset() + buf.readerIndex();
+            int len = buf.readableBytes();
+            System.out.println(buf.toString());
+            System.out.println("len is " + len + ", offset is " + offset + "array is ");
+            displayBufHex(arrs, hex);
+        } else if (!buf.hasArray()) {
+            int len = buf.readableBytes();
+            byte[] arrs = new byte[len];
+            int offset = buf.readerIndex();
+            buf.getBytes(buf.readerIndex(), arrs);
+            System.out.println(buf.toString());
+            System.out.println("len is " + len + ", offset is " + offset + "array is ");
+            displayBufHex(arrs, hex);
+        }
+        buf.resetReaderIndex();
+    }
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg)
             throws Exception {

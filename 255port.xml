@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<taskscan>
+  <description>系统漏扫XML</description>
+  <engineId>3</engineId>
+  <importance>normal</importance>
+  <name>1553668902686_123</name>
+  <scanTemplateId>discovery</scanTemplateId>
+  <toolcategory>001</toolcategory>
+  <output>results</output>
+  <taskcode>29</taskcode>
+  <scanType>scan</scanType>
+  <customConfig>
+    <sendIcmpPings>false</sendIcmpPings>
+    <tcpPorts>21,22,23,25,53,80,88,110,111,113,135,139,143,220,264,389,443,445,449,524,585,636,993,995,1433,1521,1723,3306,3389,5900,8080,9100</tcpPorts>
+    <udpPorts>53,67,68,69,111,123,135,137,138,139,161,162,445,500,514,520,631,1434,1701,1900,4500,5353,49152</udpPorts>
+    <ipFingerprintingEnabled>false</ipFingerprintingEnabled>
+    <tcpAdditionalPorts>449,993,995,264,585,139,524,9100,110,143,80,8080,113,1521,21,22,23,25,1433,443,1723,220,445</tcpAdditionalPorts>
+    <method>SYN</method>
+    <udpAdditionalPorts>161,500,5353,123,1900</udpAdditionalPorts>
+    <parallelismMininum>0</parallelismMininum>
+    <parallelismMaxinum>0</parallelismMaxinum>
+    <packetRateMininum>450</packetRateMininum>
+    <packetRateMaxinum>15000</packetRateMaxinum>
+    <maxParallelAssets>10</maxParallelAssets>
+    <maxScanProcesses>10</maxScanProcesses>
+  </customConfig>
+  <taskconfigItems>
+    <taskconfig>
+      <id>300</id>
+      <ip>172.16.39.37</ip>
+      <cracks>
+        <bfTimeOut>1</bfTimeOut>
+        <connectTimeOut>1</connectTimeOut>
+        <modelItems>
+          <model>
+            <port>22</port>
+            <service>SSH</service>
+          </model>
+          <model>
+            <port>161</port>
+            <service>SNMP</service>
+          </model>
+          <model>
+            <port>23</port>
+            <service>Telnet</service>
+          </model>
+        </modelItems>
+        <name>name2</name>
+        <targets>172.16.39.37</targets>
+        <threads>1</threads>
+      </cracks>
+    </taskconfig>
+  </taskconfigItems>
+</taskscan>

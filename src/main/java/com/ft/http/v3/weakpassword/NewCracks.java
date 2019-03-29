@@ -72,6 +72,13 @@ public class NewCracks {
             this.service = service;
         }
 
+        public void setService(String service) {
+            this.service = service;
+        }
+
+        public void service2Lower() {
+            service = service.toLowerCase();
+        }
         private int port;       // ( 0 .. 65535 )
         private String service; // Enum:"ftp" "ftps" "imap" "imaps" "mysql" "mssql" "pop3" "pop3s" "rdp" "snmp" "ssh" "postgres" "telnet" "smb"
     }
@@ -92,6 +99,10 @@ public class NewCracks {
     }
 
     public void setName(String name) { this.name = name; }
+
+    public List<Model> getModels() {
+        return models;
+    }
 
     private int bfTimeOut;
     private int connectTimeOut;

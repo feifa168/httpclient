@@ -93,28 +93,31 @@ public class App {
             mapHeader.put(HttpHeaderNames.CONTENT_TYPE.toString(), "application/json");
         }
 
-        switch (type) {
-            case HTTP_GET: {
-                client.getMessage(url, mapParams, mapHeader, call);
-                break;
-            }
-            case HTTP_POST: {
-                client.postMessage(url, mapHeader, body, call);
-                break;
-            }
-            case HTTP_PUT: {
-                client.putMessage(url, mapHeader, body, call);
-                break;
-            }
-        }
-
         byte[] result = null;
-        if (client.isActive()) {
+        try {
+            switch (type) {
+                case HTTP_GET: {
+                    client.getMessage(url, mapParams, mapHeader, call);
+                    break;
+                }
+                case HTTP_POST: {
+                    client.postMessage(url, mapHeader, body, call);
+                    break;
+                }
+                case HTTP_PUT: {
+                    client.putMessage(url, mapHeader, body, call);
+                    break;
+                }
+            }
+        } finally {
+//            if (client.isActive()) {
+//                result = call.getResult();
+//            }
             result = call.getResult();
-        }
-        if (result != null) {
-            String jsonString = new String(result);
-            System.out.println("============================\n" + jsonString);
+            if (result != null) {
+                String jsonString = new String(result);
+                System.out.println("============================\n" + jsonString);
+            }
         }
 
         return result;
@@ -127,6 +130,163 @@ public class App {
         Map<String, Object> mapHeader = new HashMap<>();
         mapHeader.put(HttpHeaderNames.CONTENT_TYPE.toString(), "application/json");
         return testNormal(client, url, type, mapHeader, body);
+    }
+
+    public void handleCracks(List<TaskConfig> taskconfigs, Map<String, CrackScanResultInfo> crackResultInfos, Map<String, TaskConfig> mapIp2TaskConfig) {
+        int corePoolSize = Runtime.getRuntime().availableProcessors();
+        threadPool = new ThreadPoolExecutor(corePoolSize, corePoolSize*2, 60, TimeUnit.SECONDS, new LinkedBlockingDeque<>(1024));
+
+        for (TaskConfig taskConfig : taskconfigs) {
+            // 弱口令扫描
+            NewCracks cracks = taskConfig.getCracks();
+            if (null == cracks || null == cracks.getModels()) {
+                continue;
+            }
+            CrackScanResultInfo resultInfo = new CrackScanResultInfo();
+
+            int cracksNum = cracks.getModels().size();
+            if (cracksNum == 0) {
+                continue;
+            }
+
+            String taskIp = taskConfig.getIp();
+            if (null == taskIp) {
+                continue;
+            }
+
+            // todo 测试使用，实际使用要去掉
+            cracks.setName(new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss:SSS").format(new Date()).toString());
+
+            CountDownLatch latch = new CountDownLatch(1);
+            CrackScanResultInfo crackScanResultInfo = new CrackScanResultInfo();
+            crackScanResultInfo.setLatch(latch);
+
+            mapIp2TaskConfig.put(taskIp, taskConfig);
+            crackResultInfos.put(taskIp, crackScanResultInfo);
+
+            threadPool.execute(new CrackThread(cracks, this, resultInfo, latch));
+//            threadPool.execute(()->{
+//                CrackScanReturn crackReturn = null;
+//                try {
+//                    crackReturn = startCracks(cracks);
+//                    if (null != crackReturn) {
+//                        if (0 != crackReturn.getId()) {
+//                            CrackScanReturn crackScanReturn = startCracksScan(crackReturn);
+//                            if (null != crackScanReturn) {
+//                                CrackScanResult result = null;
+//                                do {
+//                                    Thread.sleep(1000);
+//                                    result = queryCracksScanResult(crackScanReturn);
+//                                } while((result != null) && (!result.finished()));
+//                                resultInfo.setCrackScanResult(result);
+//                            }
+//                        }
+//                    }
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                } finally {
+//                    latch.countDown();
+//                }
+//            });
+        }
+
+        threadPool.shutdown();
+    }
+
+    public void handleResult(NewTask task, AssetsScanResultMixWithError scanReslutMixWithError, TaskScanConfig taskScanConfig) {
+        // 处理检查结果
+        String output = null;
+        String taskName = (task != null) ? task.getName() : "";
+        if (taskName==null) {
+            taskName = "";
+        }
+        String toolcategory = null;
+        String taskcode = null;
+        String vulnerabilitiesFile = null;
+        if (taskScanConfig != null) {
+            output = taskScanConfig.getOutput();
+            toolcategory = taskScanConfig.getToolcategory();
+            taskcode = taskScanConfig.getTaskcode();
+        }
+
+        if ((output == null)) {
+            output = "results";
+        }
+        if ( (!output.endsWith("\\")) && (!output.endsWith("/"))) {
+            output += File.separator;
+        }
+        if (toolcategory == null) {
+            toolcategory = "";
+        }
+        if (taskcode == null) {
+            taskcode = "";
+        }
+        File directory = new File(output);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
+//        SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+//        formatter.format(new Date());
+        String newName = output+toolcategory+"_"+taskcode+"_"+taskName+".json";
+        newName = newName.replaceAll(":", "-");
+        //String nname = toolcategory+"_"+taskcode+"_"+taskName+".json";
+        vulnerabilitiesFile = newName + ".tmp";
+        //vulnerabilitiesFile = vulnerabilitiesFile.replaceAll(":", "-");
+
+        // 删除之前的文件
+        File fl = new File(vulnerabilitiesFile);
+        if (fl.exists() && fl.isFile()) {
+            fl.delete();
+        }
+        File fl2 = new File(newName);
+        if (fl2.exists() && fl2.isFile()) {
+            fl2.delete();
+        }
+
+        String mixResult = null;
+        try {
+            mixResult = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(scanReslutMixWithError);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        RandomAccessFile raf = null;
+        try {
+            raf = new RandomAccessFile(vulnerabilitiesFile, "rw");
+
+            //String mixResultUtf8 = new String(mixResult.getBytes("utf-8"), "utf-8");
+            //System.out.println(mixResult);
+            //f1.write(mixResultUtf8.getBytes("utf-8"));
+            if (null != mixResult) {
+                raf.write(mixResult.getBytes("utf-8"));
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (null != raf) {
+                try {
+                    raf.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        File fold = new File(vulnerabilitiesFile);
+        if (fold.exists()) {
+//            String nnm = fold.getAbsolutePath();
+//            nnm = nnm.substring(0, nnm.lastIndexOf(File.separator)+1) + nname;
+
+            File fnew = new File(newName);
+            System.out.println("new exists is " + fnew.exists());
+            //System.out.println("delete result is " + fold.delete());
+            System.out.println("rename from " + vulnerabilitiesFile + " to " + newName + " result is " + fold.renameTo(fnew));
+        } else {
+            System.out.println("rename from " + vulnerabilitiesFile + " is not exist");
+        }
     }
 
     public NewTaskReturn startTask(NewTask task) throws Exception {
@@ -148,6 +308,9 @@ public class App {
             return null;
         }
         HttpClient client = new HttpClient(host, port);
+//        for (NewCracks.Model model : cracks.getModels()) {
+//            model.service2Lower();
+//        }
 
         // 创建弱口令任务
         byte[] postBody = mapper.writeValueAsBytes(cracks);
@@ -160,7 +323,7 @@ public class App {
 
         int resultId = 0;
         CrackScanReturn scanReturn = null;
-        if (result != null) {
+        if (result != null && (-1 == new String(result).indexOf("error"))) {
             try {
                 resultId = Integer.parseInt(new String(result));
                 System.out.println(resultId);
@@ -325,9 +488,9 @@ public class App {
             int perPageSize = page.getSize();
             int totalResources = page.getTotalResources();
             for (int num=1; num<pageNum;num++) {
-                if (num > 5) {
-                    break;
-                }
+//                if (num > 5) {
+//                    break;
+//                }
                 mapParams.put("page", String.valueOf(curPage+num));
                 client = new HttpClient(host, port);
                 byte[] result = null;
@@ -468,10 +631,12 @@ public class App {
             client.stop();
         }
         ScanEngineResult queryResult = buildResultObject(result, ScanEngineResult.class);
-        if (null!=fc && null!=result && null!=queryResult && null!=queryResult.getResources()) {
+        if (null!=result && null!=queryResult && null!=queryResult.getResources()) {
             int size = queryResult.getResources().size();
             queryResult.setTotal(size);
-            write2File(fc, mapper.writerWithDefaultPrettyPrinter().writeValueAsString(queryResult), true);
+            if (null != fc) {
+                write2File(fc, mapper.writerWithDefaultPrettyPrinter().writeValueAsString(queryResult), true);
+            }
         }
         return queryResult;
     }
@@ -481,7 +646,7 @@ public class App {
         // 查询所有漏洞
         Map<String, Object> mapParams = new HashMap<>();
         mapParams.put("page", 0);
-        mapParams.put("size", 10);
+        mapParams.put("size", 5000);
 
         String url = "/api/v3/vulnerabilities/all";
         return queryPageAndResources(url, mapParams,VulnerabilityResult.class, fc);
@@ -687,7 +852,9 @@ public class App {
                 if (null != listPorts) {
                     List<Integer> intPorts = new ArrayList<>();
                     for (String port : listPorts) {
-                        intPorts.add(Integer.valueOf(port));
+                        if (port.length() > 0) {
+                            intPorts.add(Integer.valueOf(port));
+                        }
                     }
                     asset.setTcpPorts(intPorts);
                 }
@@ -702,7 +869,9 @@ public class App {
                 if (null != listPorts) {
                     List<Integer> intPorts = new ArrayList<>();
                     for (String port : listPorts) {
-                        intPorts.add(Integer.valueOf(port));
+                        if (port.length() > 0) {
+                            intPorts.add(Integer.valueOf(port));
+                        }
                     }
                     asset.setUdpPorts(intPorts);
                 }
@@ -780,6 +949,10 @@ public class App {
     }
 
     public NewTask buildNewTask(TaskScanConfig taskScanConfig) throws JsonProcessingException {
+        if (null == taskScanConfig.getTaskconfigs()) {
+            return null;
+        }
+
         List<String> address = new ArrayList<>();
         for (TaskConfig tmpconfig : taskScanConfig.getTaskconfigs()) {
             address.add(tmpconfig.getIp());
@@ -815,6 +988,7 @@ public class App {
     public static class CrackScanResultInfo {
         private CrackScanResult crackScanResult;
         private CountDownLatch latch;
+        private ThreadPoolExecutor pool;
 
         public CountDownLatch getLatch() {
             return latch;
@@ -822,6 +996,14 @@ public class App {
 
         public void setLatch(CountDownLatch latch) {
             this.latch = latch;
+        }
+
+        public ThreadPoolExecutor getPool() {
+            return pool;
+        }
+
+        public void setPool(ThreadPoolExecutor pool) {
+            this.pool = pool;
         }
 
         public CrackScanResult getCrackScanResult() {
@@ -833,12 +1015,97 @@ public class App {
         }
     }
 
-    private CountDownLatch executeWeakPassword(NewCracks cracks, CrackScanResultInfo resultInfo) {
+    public static class CrackThread implements Runnable {
+        private NewCracks cracks;
+        private App app;
+        private CrackScanResultInfo resultInfo;
+        private CountDownLatch latch;
+
+        public CrackThread(NewCracks cracks, App app, CrackScanResultInfo resultInfo, CountDownLatch latch) {
+            this.cracks = cracks;
+            this.app = app;
+            this.resultInfo = resultInfo;
+            this.latch = latch;
+        }
+
+        @Override
+        public void run() {
+            CrackScanReturn crackReturn = null;
+            try {
+                crackReturn = app.startCracks(cracks);
+                if (null != crackReturn) {
+                    if (0 != crackReturn.getId()) {
+                        CrackScanReturn crackScanReturn = app.startCracksScan(crackReturn);
+                        if (null != crackScanReturn) {
+                            CrackScanResult result = null;
+                            do {
+                                Thread.sleep(1000);
+                                result = app.queryCracksScanResult(crackScanReturn);
+                            } while((result != null) && (!result.finished()));
+                            resultInfo.setCrackScanResult(result);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                latch.countDown();
+            }
+        }
+    }
+
+    private ThreadPoolExecutor executeWeakPasswordPool(NewCracks cracks, CrackScanResultInfo resultInfo) {
         if (null == cracks) {
             return null;
         }
 
-        int cracksNum = 1;
+        int cracksNum = cracks.getModels().size();
+        int processNum = Runtime.getRuntime().availableProcessors();
+        int poolNum = processNum > cracksNum ? cracksNum : processNum;
+
+        ExecutorService pool = Executors.newFixedThreadPool(poolNum);
+
+        pool.execute(()->{
+            CrackScanReturn crackReturn = null;
+            try {
+                // todo 测试使用，要去掉
+                cracks.setName(new Date().toString());
+                crackReturn = startCracks(cracks);
+                if (null != crackReturn) {
+                    if (0 != crackReturn.getId()) {
+                        CrackScanReturn crackScanReturn = startCracksScan(crackReturn);
+                        if (null != crackScanReturn) {
+                            CrackScanResult result = null;
+                            do {
+                                Thread.sleep(1000);
+                                result = queryCracksScanResult(crackScanReturn);
+                            } while((result != null) && (!result.finished()));
+                            resultInfo.setCrackScanResult(result);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+            }
+        });
+        pool.shutdown();
+//        ThreadPoolExecutor tpool = (ThreadPoolExecutor)pool;
+//        tpool.getCompletedTaskCount()
+
+        return (ThreadPoolExecutor)pool;
+    }
+
+    private CountDownLatch executeWeakPassword(NewCracks cracks, CrackScanResultInfo resultInfo) {
+        if (null == cracks || null == cracks.getModels()) {
+            return null;
+        }
+
+        int cracksNum = cracks.getModels().size();
+        if (cracksNum == 0) {
+            return null;
+        }
+
         CountDownLatch latch = new CountDownLatch(cracksNum);
         int processNum = Runtime.getRuntime().availableProcessors();
         int poolNum = processNum > cracksNum ? cracksNum : processNum;
@@ -871,6 +1138,8 @@ public class App {
             }
         });
         pool.shutdown();
+//        ThreadPoolExecutor tpool = (ThreadPoolExecutor)pool;
+//        tpool.getCompletedTaskCount()
 
         return latch;
     }
@@ -890,6 +1159,7 @@ public class App {
     private int port;
     private String authName;
     private String authPassword;
+    private ThreadPoolExecutor threadPool;
 
     public static void main(String[] args) {
         if (args.length == 0) {
@@ -972,106 +1242,46 @@ public class App {
             // 获取模板
             if(taskScanConfig.isAcquireTemplate()) {
                 String scanTemplate[] = {"discovery", "full-audit-without-web-spider"};
-
-                FileChannel fc = null;
-                RandomAccessFile raf = null;
-                try {
-                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
-                    String name = "template_"+formatter.format(new Date())+".json";
-
-                    raf = new RandomAccessFile(name, "rw");
-                    fc = raf.getChannel();
-                    fc.write(ByteBuffer.wrap(("{\n\"total\":"+scanTemplate.length+",\n\"resources\":[").getBytes()));
-                    List<ScanTemplate> scanTemplates = new ArrayList<>();
-                    for (int i=0; i<scanTemplate.length; i++) {
-                        try {
-                            ScanTemplate writeScanTemplate = app.queryScanTemplate(scanTemplate[i]);
-                            if (null != writeScanTemplate) {
-                                if (i>0) {
-                                    fc.write(ByteBuffer.wrap(",\n".getBytes()));
-                                }
-                                app.write2File(fc, app.mapper.writerWithDefaultPrettyPrinter().writeValueAsString(writeScanTemplate), true);
-                                scanTemplates.add(writeScanTemplate);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                List<ScanTemplate> scanTemplates = new ArrayList<>();
+                for (int i=0; i<scanTemplate.length; i++) {
+                    try {
+                        ScanTemplate writeScanTemplate = app.queryScanTemplate(scanTemplate[i]);
+                        scanTemplates.add(writeScanTemplate);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    fc.write(ByteBuffer.wrap("]\n}".getBytes()));
-                    ScanTemplateResult scanTemplateResult = new ScanTemplateResult(scanTemplates.size(), scanTemplates);
-                    scanReslutMixWithError.setScanTemplateResult(scanTemplateResult);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    if (null != fc) {
-                        try {
-                            fc.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    if (null != raf) {
-                        try {
-                            raf.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
+                }
+                ScanTemplateResult scanTemplateResult = new ScanTemplateResult(scanTemplates.size(), scanTemplates);
+                scanReslutMixWithError.setScanTemplateResult(scanTemplateResult);
+                if (scanTemplates.size() == 0) {
+                    scanReslutMixWithError.setMessage("获取模板个数为0");
+                    break;
                 }
             }
 
             // 获取引擎
             if (taskScanConfig.isAcquireEngine()) {
                 try {
-                    FileChannel fc = null;
-                    RandomAccessFile raf = null;
-                    try {
-                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
-                        String name = "engine_"+formatter.format(new Date())+".json";
-
-                        raf = new RandomAccessFile(name, "rw");
-                        fc = raf.getChannel();
-                        scanReslutMixWithError.setScanEnginResult(app.queryScanEngine(fc));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    scanReslutMixWithError.setScanEnginResult(app.queryScanEngine(null));
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
+                    scanReslutMixWithError.setMessage("获取扫描引擎失败，原因是"+e.getMessage());
+                    break;
                 }
             }
 
             // 获取所有漏洞
             if (taskScanConfig.isAcquireVulnerabilities()) {
-                FileChannel fc = null;
-                RandomAccessFile raf = null;
                 try {
-                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
-                    String name = "vulnerabilities_"+formatter.format(new Date())+".json";
-
-                    raf = new RandomAccessFile(name, "rw");
-                    fc = raf.getChannel();
-                    VulnerabilityResult vulnerabilityResult = app.queryAllVulnerabilities(fc);
+                    VulnerabilityResult vulnerabilityResult = app.queryAllVulnerabilities(null);
                     if (null != vulnerabilityResult) {
-                        ScanVulnerabilityResult scanVulnerabilityResult = new ScanVulnerabilityResult(vulnerabilityResult.getPage().getSize(), vulnerabilityResult.getResources());
+                        ScanVulnerabilityResult scanVulnerabilityResult = new ScanVulnerabilityResult(vulnerabilityResult.getPage().getTotalResources(), vulnerabilityResult.getResources());
                         scanReslutMixWithError.setScanVulnerabilityResult(scanVulnerabilityResult);
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    if (null != fc) {
-                        try {
-                            fc.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    if (null != raf) {
-                        try {
-                            raf.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
+                    //e.printStackTrace();
+                    scanReslutMixWithError.setMessage("获取漏洞信息失败，原因是"+e.getMessage());
+                    break;
                 }
             }
 
@@ -1096,7 +1306,7 @@ public class App {
                     // 创建模板
                     CreateScanTemplateResult templateResult = app.createScanTemplate(template);
                     if ((null == templateResult) || (null != templateResult.getError())) {
-                        scanReslutMixWithError.setMessage("自定义扫描模板无效");
+                        scanReslutMixWithError.setMessage("自定义扫描模板无效" + (templateResult!=null ? templateResult.getError() : " return null"));
                         break;
                     }
                     taskScanConfig.setScanTemplateId(templateResult.getId());
@@ -1106,242 +1316,285 @@ public class App {
                     break;
                 }
             }
-//            boolean ret = true;
-//            if (ret==true) {
-//                break;
-//            }
 
-            // 构造任务
-            try {
-                task = app.buildNewTask(taskScanConfig);
-            } catch (JsonProcessingException e) {
-                scanReslutMixWithError.setMessage("创建任务失败，原因是"+e.getMessage());
-                break;
-            }
-
-            if (0 == task.getEngineId()) {
-                scanReslutMixWithError.setMessage("没有配置引擎ID");
-                break;
-            }
-            if ((null==task.getScanTemplateId()) || ("".equals(task.getScanTemplateId()))) {
-                scanReslutMixWithError.setMessage("没有配置模板ID");
-                break;
-            }
-            NewTask.Scan sc = task.getScan();
-            if ((null == sc)
-                    || (null == sc.getAssets())
-                    || (null == sc.getAssets().getIncludedTargets())
-                    || (null == sc.getAssets().getIncludedTargets().getAddresses())
-                    || (0 == sc.getAssets().getIncludedTargets().getAddresses().size())
-            ) {
-                scanReslutMixWithError.setMessage("没有配置扫描地址");
-                break;
-            }
-
-            // 创建任务
-            try {
-                newTaskReturn = app.startTask(task);
-
-                if (null == newTaskReturn) {
-                    scanReslutMixWithError.setMessage("创建任务失败,返回无效任务");
+            if (taskScanConfig.getScanType() == TaskScanConfig.ScanType.SCAN_TYPE_SCAN) {
+                // 构造任务
+                try {
+                    task = app.buildNewTask(taskScanConfig);
+                    if (null == task) {
+                        scanReslutMixWithError.setMessage("创建任务失败，原因是任务为空");
+                        break;
+                    }
+                } catch (JsonProcessingException e) {
+                    scanReslutMixWithError.setMessage("创建任务失败，原因是"+e.getMessage());
                     break;
                 }
-            } catch (Exception e) {
-                scanReslutMixWithError.setMessage("创建任务失败,"+e.getMessage());
-                break;
-            }
 
-            int taskId = newTaskReturn.getId();
-            if (0 == taskId) {
-                scanReslutMixWithError.setMessage("创建任务失败,"+newTaskReturn.getError());
-                break;
-            }
+                if (0 == task.getEngineId()) {
+                    scanReslutMixWithError.setMessage("没有配置引擎ID");
+                    break;
+                }
+                if ((null==task.getScanTemplateId()) || ("".equals(task.getScanTemplateId()))) {
+                    scanReslutMixWithError.setMessage("没有配置模板ID");
+                    break;
+                }
+                NewTask.Scan sc = task.getScan();
+                if ((null == sc)
+                        || (null == sc.getAssets())
+                        || (null == sc.getAssets().getIncludedTargets())
+                        || (null == sc.getAssets().getIncludedTargets().getAddresses())
+                        || (0 == sc.getAssets().getIncludedTargets().getAddresses().size())
+                ) {
+                    scanReslutMixWithError.setMessage("没有配置扫描地址");
+                    break;
+                }
 
-            // 设置任务ID
-            scanReslutMixWithError.setTaskid(String.valueOf(taskId));
+                // 创建任务
+                try {
+                    newTaskReturn = app.startTask(task);
 
-            Map<String, TaskConfig> mapIp2TaskConfig = new HashMap<>();
-            for (TaskConfig taskConfig : taskScanConfig.getTaskconfigs()) {
-                mapIp2TaskConfig.put(taskConfig.getIp(), taskConfig);
+                    if (null == newTaskReturn) {
+                        scanReslutMixWithError.setMessage("创建任务失败,返回无效任务");
+                        break;
+                    }
+                } catch (Exception e) {
+                    scanReslutMixWithError.setMessage("创建任务失败,"+e.getMessage());
+                    break;
+                }
 
-                // 弱口令扫描
-                CrackScanResultInfo resultInfo = new CrackScanResultInfo();
-                resultInfo.setLatch(app.executeWeakPassword(taskConfig.getCracks(), resultInfo));
-                crackResultInfos.put(taskConfig.getIp(), resultInfo);
+                int taskId = newTaskReturn.getId();
+                if (0 == taskId) {
+                    scanReslutMixWithError.setMessage("创建任务失败,"+newTaskReturn.getError());
+                    break;
+                }
 
-                // 登录检查
-//                if (taskConfig.getCredentials() == null) {
-//                    continue;
-//                }
+                // 设置任务ID
+                scanReslutMixWithError.setTaskid(String.valueOf(taskId));
+
+                Map<String, TaskConfig> mapIp2TaskConfig = new HashMap<>();
+                app.handleCracks(taskScanConfig.getTaskconfigs(), crackResultInfos, mapIp2TaskConfig);
+
+//                for (TaskConfig taskConfig : taskScanConfig.getTaskconfigs()) {
+//                    mapIp2TaskConfig.put(taskConfig.getIp(), taskConfig);
 //
-//                CredentialReturn credentialReturn;
-//                // /api/v3/tasks/taskId/task_credentials
-//                for (Credential credential : taskConfig.getCredentials()) {
-//                    String url = "/api/v3/tasks/"+taskId+"/task_credentials";
-//                    try {
-//                        credentialReturn = app.createCredential(newTaskReturn, credential);
-//                        if (0 == credentialReturn.getId()) {
-//                            System.out.println("创建认证失败,"+credentialReturn.getError());
-//                            //scanReslutMixWithError.setMessage("创建认证失败,"+newTaskReturn.getError());
+//                    // 弱口令扫描
+//                    CrackScanResultInfo resultInfo = new CrackScanResultInfo();
+//                    resultInfo.setLatch(app.executeWeakPassword(taskConfig.getCracks(), resultInfo));
+//                    //resultInfo.setPool(app.executeWeakPasswordPool(taskConfig.getCracks(), resultInfo));
+//                    crackResultInfos.put(taskConfig.getIp(), resultInfo);
+//
+//                    /////////////////////////////////////////////
+////                    NewCracks cracks = taskConfig.getCracks();
+////                    // todo 测试使用，要去掉
+////                    cracks.setName(new Date().toString());
+////                    try {
+////                        CrackScanReturn crackReturn = app.startCracks(cracks);
+////                        if (null != crackReturn) {
+////                            if (0 != crackReturn.getId()) {
+////                                CrackScanReturn crackScanReturn = app.startCracksScan(crackReturn);
+////                                if (null != crackScanReturn) {
+////                                    CrackScanResult result = null;
+////                                    do {
+////                                        Thread.sleep(1000);
+////                                        result = app.queryCracksScanResult(crackScanReturn);
+////                                    } while ((result != null) && (!result.finished()));
+////                                    resultInfo.setCrackScanResult(result);
+////                                }
+////                            }
+////                        }
+////                    } catch (Exception e) {
+////                        e.printStackTrace();
+////                    }
+//                    ///////////////////////////////////////////////
+//
+//                    // 登录检查
+//                    if (taskConfig.getCredentials() == null) {
+//                        continue;
+//                    }
+//
+//                    CredentialReturn credentialReturn;
+//                    // /api/v3/tasks/taskId/task_credentials
+//                    for (Credential credential : taskConfig.getCredentials()) {
+//                        String url = "/api/v3/tasks/"+taskId+"/task_credentials";
+//                        try {
+//                            credentialReturn = app.createCredential(newTaskReturn, credential);
+//                            if (0 == credentialReturn.getId()) {
+//                                System.out.println("创建认证失败,"+credentialReturn.getError());
+//                                //scanReslutMixWithError.setMessage("创建认证失败,"+newTaskReturn.getError());
+//                            }
+//                        } catch (Exception e) {
+//                            System.out.println("创建认证失败");
 //                        }
-//                    } catch (Exception e) {
-//                        System.out.println("创建认证失败");
 //                    }
 //                }
-            }
 
-            // 创建扫描
-            scan = new NewScan(task.getEngineId(), task.getScan().getAssets().getIncludedTargets().getAddresses(), task.getScanTemplateId());
-            // /v3/tasks/11/scans;
-            String url = "/api/v3/tasks/"+taskId+"/scans";
-            try {
-                newScanReturn = app.startScan(newTaskReturn, scan);
-            } catch (Exception e) {
-                scanReslutMixWithError.setMessage("创建扫描失败");
-                break;
-            }
-            if (0 == newScanReturn.getId()) {
-                scanReslutMixWithError.setMessage("创建扫描失败,"+newScanReturn.getError());
-                break;
-            }
+                // 创建扫描
+                scan = new NewScan(task.getEngineId(), task.getScan().getAssets().getIncludedTargets().getAddresses(), task.getScanTemplateId());
+                // /v3/tasks/11/scans;
+                String url = "/api/v3/tasks/"+taskId+"/scans";
+                try {
+                    newScanReturn = app.startScan(newTaskReturn, scan);
+                } catch (Exception e) {
+                    scanReslutMixWithError.setMessage("创建扫描失败");
+                    break;
+                }
+                if (0 == newScanReturn.getId()) {
+                    scanReslutMixWithError.setMessage("创建扫描失败,"+newScanReturn.getError());
+                    break;
+                }
 
-            // 设置扫描ID
-            scanReslutMixWithError.setScanid(String.valueOf(newScanReturn.getId()));
+                // 设置扫描ID
+                scanReslutMixWithError.setScanid(String.valueOf(newScanReturn.getId()));
 
-            // 查询扫描状态
-            ScanResult scanResult = null;
-            try {
-                scanResult = app.queryScanResult(newScanReturn);
-            } catch (Exception e) {
-                scanReslutMixWithError.setMessage("查询扫描状态失败");
-            }
-            while (!scanResult.finished()) {
+                // 查询扫描状态
+                ScanResult scanResult = null;
                 try {
                     scanResult = app.queryScanResult(newScanReturn);
                 } catch (Exception e) {
                     scanReslutMixWithError.setMessage("查询扫描状态失败");
                 }
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                while (!scanResult.finished()) {
+                    try {
+                        scanResult = app.queryScanResult(newScanReturn);
+                    } catch (Exception e) {
+                        scanReslutMixWithError.setMessage("查询扫描状态失败");
+                    }
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
 
-            // 查询任务状态
-            try {
-                TaskResult taskResult = app.queryTaskScanResult(newTaskReturn);
-            } catch (Exception e) {
-                scanReslutMixWithError.setMessage("查询扫描状态失败");
-            }
+                // 查询任务状态
+                try {
+                    TaskResult taskResult = app.queryTaskScanResult(newTaskReturn);
+                } catch (Exception e) {
+                    scanReslutMixWithError.setMessage("查询扫描状态失败");
+                }
 
-            // 查询资产
-            AssetsQueryResult assetsAll = null;
-            try {
-                assetsAll = app.queryAssets();
-            } catch (Exception e) {
-                scanReslutMixWithError.setMessage("查询资产失败");
-                break;
-            }
-            if (null == assetsAll.getResources() || assetsAll.getResources().size() == 0) {
-                scanReslutMixWithError.setMessage("资产为空");
-                break;
-            }
+                // 查询资产
+                AssetsQueryResult assetsAll = null;
+                try {
+                    assetsAll = app.queryAssets();
+                } catch (Exception e) {
+                    scanReslutMixWithError.setMessage("查询资产失败");
+                    break;
+                }
+                if (null == assetsAll.getResources() || assetsAll.getResources().size() == 0) {
+                    scanReslutMixWithError.setMessage("资产为空");
+                    break;
+                }
 
-            // 获取哪些资产的扫描结果
-            for (Assets assets : assetsAll.getResources()) {
-                String assetsAddr = assets.getIp();
-                for (String addr : task.getScan().getAssets().getIncludedTargets().getAddresses()) {
-                    if ((assetsAddr != null) && (addr != null)) {
-                        if (assetsAddr.equals(addr)) {
+                // 获取哪些资产的扫描结果
+                for (Assets assets : assetsAll.getResources()) {
+                    String assetsAddr = assets.getIp();
+                    for (String addr : task.getScan().getAssets().getIncludedTargets().getAddresses()) {
+                        if ((assetsAddr != null) && (addr != null)) {
+                            if (assetsAddr.equals(addr)) {
 
-                            AssetsQueryVulnerabilitiesResult assetsVulnerabilities = null;
-                            try {
-                                assetsVulnerabilities = app.queryAssetsVulnerabilities(assets.getId());
-                                if (null != assetsVulnerabilities) {
-                                    List<AssetsScanVulnerabilities> asvs = assetsVulnerabilities.getResources();
-                                    if (null != asvs) {
-                                        for (AssetsScanVulnerabilities asv : asvs) {
-                                            if (asv != null) {
-                                                VulnerabilitiesDetail detail = null;
-                                                try {
-                                                    detail = app.queryVulnerabilitiesDetail(asv.getId());
-                                                } catch (Exception e) {
-                                                    // todo
-                                                }
+                                AssetsQueryVulnerabilitiesResult assetsVulnerabilities = null;
+                                try {
+                                    assetsVulnerabilities = app.queryAssetsVulnerabilities(assets.getId());
+                                    if (null != assetsVulnerabilities) {
+                                        List<AssetsScanVulnerabilities> asvs = assetsVulnerabilities.getResources();
+                                        if (null != asvs) {
+                                            for (AssetsScanVulnerabilities asv : asvs) {
+                                                if (asv != null) {
+                                                    VulnerabilitiesDetail detail = null;
+                                                    try {
+                                                        detail = app.queryVulnerabilitiesDetail(asv.getId());
+                                                    } catch (Exception e) {
+                                                        // todo
+                                                    }
 
-                                                List<SingleSolutions> singleSolutionss = new ArrayList<>();
-                                                try {
-                                                    VulnerabilitiesSolutions solutions = app.queryVulnerabilitiesSolutions(asv.getId());
-                                                    if (null != solutions) {
-                                                        List<String> solutionIds = solutions.getResources();
-                                                        if (null != solutionIds) {
-                                                            for (String id : solutionIds) {
-                                                                try {
-                                                                    singleSolutionss.add(app.querySingleSolutions(id));
-                                                                } catch (Exception e) {
-                                                                    // todo
+                                                    List<SingleSolutions> singleSolutionss = new ArrayList<>();
+                                                    try {
+                                                        VulnerabilitiesSolutions solutions = app.queryVulnerabilitiesSolutions(asv.getId());
+                                                        if (null != solutions) {
+                                                            List<String> solutionIds = solutions.getResources();
+                                                            if (null != solutionIds) {
+                                                                for (String id : solutionIds) {
+                                                                    try {
+                                                                        singleSolutionss.add(app.querySingleSolutions(id));
+                                                                    } catch (Exception e) {
+                                                                        // todo
+                                                                    }
                                                                 }
                                                             }
                                                         }
+                                                    } catch (Exception e) {
+                                                        // todo
                                                     }
-                                                } catch (Exception e) {
-                                                    // todo
+                                                    vulnerabilitiesMixs.add(new VulnerabilitiesMix(asv, detail, singleSolutionss));
                                                 }
-                                                vulnerabilitiesMixs.add(new VulnerabilitiesMix(asv, detail, singleSolutionss));
                                             }
                                         }
                                     }
+
+                                } catch (Exception e) {
+                                    scanReslutMixWithError.setMessage("查询资产漏洞失败");
                                 }
 
-                            } catch (Exception e) {
-                                scanReslutMixWithError.setMessage("查询资产漏洞失败");
-                            }
+                                AssetsQueryPortResult assetsPort = null;
+                                try {
+                                    assetsPort = app.queryAssetsPorts(assets.getId());
+                                } catch (Exception e) {
+                                    scanReslutMixWithError.setMessage("查询资产端口失败");
+                                }
+                                TaskConfig tc = mapIp2TaskConfig.get(addr);
+                                String subTaskId = (null != tc) ? tc.getId() : "";
+                                AssetsScanResultMix mix = new AssetsScanResultMix(subTaskId, assets.getId(), assets, addr, null,
+                                        //(null!=assetsVulnerabilities) ? assetsVulnerabilities.getResources() : null,
+                                        (null!=vulnerabilitiesMixs) ? vulnerabilitiesMixs : null,
+                                        (null!=assetsPort) ? assetsPort.getResources() : null);
+                                scanReslutMix.add(mix);
 
-                            AssetsQueryPortResult assetsPort = null;
-                            try {
-                                assetsPort = app.queryAssetsPorts(assets.getId());
-                            } catch (Exception e) {
-                                scanReslutMixWithError.setMessage("查询资产端口失败");
+                                break;
                             }
-                            TaskConfig tc = mapIp2TaskConfig.get(addr);
-                            String subTaskId = (null != tc) ? tc.getId() : "";
-                            AssetsScanResultMix mix = new AssetsScanResultMix(subTaskId, assets.getId(), assets, addr, null,
-                                    //(null!=assetsVulnerabilities) ? assetsVulnerabilities.getResources() : null,
-                                    (null!=vulnerabilitiesMixs) ? vulnerabilitiesMixs : null,
-                                    (null!=assetsPort) ? assetsPort.getResources() : null);
-                            scanReslutMix.add(mix);
-
-                            break;
                         }
                     }
                 }
-            }
 
-            if (scanReslutMix.size() == 0) {
-                scanReslutMixWithError.setMessage("没有找到匹配的资产扫描结果");
-                break;
-            }
+                if (scanReslutMix.size() == 0) {
+                    scanReslutMixWithError.setMessage("没有找到匹配的资产扫描结果");
+                    break;
+                }
 
-            for (AssetsScanResultMix mix : scanReslutMix) {
-                if (mix.getAssets() != null) {
-                    CrackScanResultInfo resultInfo = crackResultInfos.get(mix.getAssets().getIp());
-                    if (null != resultInfo) {
-                        if (resultInfo.getLatch() != null) {
-                            try {
-                                resultInfo.getLatch().await();
+                for (AssetsScanResultMix mix : scanReslutMix) {
+                    if (mix.getAssets() != null) {
+                        CrackScanResultInfo resultInfo = crackResultInfos.get(mix.getAssets().getIp());
+                        if (null != resultInfo) {
+                            if (resultInfo.getLatch() != null) {
+                                try {
+                                    if (null != resultInfo.getLatch()) {
+                                        resultInfo.getLatch().await();
+                                    }
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+//                                ThreadPoolExecutor pool = resultInfo.getPool();
+//                                while (null != pool && (!pool.isTerminated()) ) {
+//                                    try {
+//                                        Thread.sleep(100);
+//                                    } catch (InterruptedException e) {
+//                                        e.printStackTrace();
+//                                    }
+//                                }
                                 mix.setCrackScanResult(resultInfo.getCrackScanResult());
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
+
+                            } else {
+                                System.out.println("crackscan result get latch is null");
                             }
+                        } else {
+                            System.out.println("crackscan result is null");
                         }
                     }
                 }
-            }
 
-            scanReslutMixWithError.setSuccess(true);
-            AssetsScanResultMixWithError.MixResult mixResult = new AssetsScanResultMixWithError.MixResult(scanReslutMix.size(), scanReslutMix);
-            scanReslutMixWithError.setScanResult(mixResult);
+                AssetsScanResultMixWithError.MixResult mixResult = new AssetsScanResultMixWithError.MixResult(scanReslutMix.size(), scanReslutMix);
+                scanReslutMixWithError.setScanResult(mixResult);
+            }
 
             // 更新
             if (taskScanConfig.isUpdate()) {
@@ -1357,59 +1610,12 @@ public class App {
                     e.printStackTrace();
                 }
             }
+            scanReslutMixWithError.setSuccess(true);
 
         } while (false);
 
         // 处理检查结果
         System.out.println("===================== ok ========================");
-        String output = null;
-        String taskName = (task != null) ? task.getName() : "";
-        if (taskName==null) {
-            taskName = "";
-        }
-        String toolcategory = null;
-        String taskcode = null;
-        String vulnerabilitiesFile = null;
-        if (taskScanConfig != null) {
-            output = taskScanConfig.getOutput();
-            toolcategory = taskScanConfig.getToolcategory();
-            taskcode = taskScanConfig.getTaskcode();
-        }
-
-        if ((output == null)) {
-            output = "results";
-        }
-        if ( (!output.endsWith("\\")) && (!output.endsWith("/"))) {
-            output += File.separator;
-        }
-        if (toolcategory == null) {
-            toolcategory = "";
-        }
-        if (taskcode == null) {
-            taskcode = "";
-        }
-        File directory = new File(output);
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
-
-        vulnerabilitiesFile = output+toolcategory+"_"+taskcode+"_"+taskName+".json";
-        vulnerabilitiesFile = vulnerabilitiesFile.replaceAll(":", "-");
-        RandomAccessFile f1 = null;
-        try {
-            f1 = new RandomAccessFile(vulnerabilitiesFile, "rw");
-
-            String mixResult = app.mapper.writerWithDefaultPrettyPrinter().writeValueAsString(scanReslutMixWithError);
-            String mixResultUtf8 = new String(mixResult.getBytes("utf-8"), "utf-8");
-            System.out.println(mixResult);
-            f1.write(mixResultUtf8.getBytes());
-            f1.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        app.handleResult(task, scanReslutMixWithError, taskScanConfig);
     }
 }

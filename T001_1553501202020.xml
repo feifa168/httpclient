@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<taskscan>
+  <description>系统漏扫XML</description>
+  <engineId>3</engineId>
+  <importance>normal</importance>
+  <name>T001_1553501202020</name>
+  <scanTemplateId>full-audit-without-web-spider</scanTemplateId>
+  <toolcategory>toolcategory</toolcategory>
+  <output>/home/build/toolmanage/Data/online/output/</output>
+  <taskcode>54</taskcode>
+  <scanType>scan</scanType>
+  <customConfig>
+    <sendIcmpPings>false</sendIcmpPings>
+    <tcpPorts></tcpPorts>
+    <udpPorts></udpPorts>
+    <ipFingerprintingEnabled>false</ipFingerprintingEnabled>
+    <tcpAdditionalPorts></tcpAdditionalPorts>
+    <method></method>
+    <udpAdditionalPorts></udpAdditionalPorts>
+    <parallelismMininum>0</parallelismMininum>
+    <parallelismMaxinum>0</parallelismMaxinum>
+    <packetRateMininum>450</packetRateMininum>
+    <packetRateMaxinum>15000</packetRateMaxinum>
+    <maxParallelAssets>10</maxParallelAssets>
+    <maxScanProcesses>10</maxScanProcesses>
+  </customConfig>
+  <taskconfigItems>
+    <taskconfig>
+      <id>2113</id>
+      <ip>10.0.92.157</ip>
+      <Credentials>
+        <account>
+          <service>ssh</service>
+          <username>root</username>
+          <password>19900815</password>
+        </account>
+        <description>description</description>
+        <enabled>false</enabled>
+        <hostRestriction>10.0.92.157</hostRestriction>
+        <name>name</name>
+        <portRestriction>22</portRestriction>
+      </Credentials>
+    </taskconfig>
+  </taskconfigItems>
+</taskscan>

@@ -67,7 +67,8 @@ public class HttpClient {
 
                             // 客户端接收到的是httpResponse响应，所以要使用HttpResponseDecoder进行解码
                             pipe.addLast(new HttpResponseDecoder());
-                            pipe.addLast(new HttpObjectAggregator(655336));
+                            //pipe.addLast(new HttpObjectAggregator(655336));
+                            pipe.addLast(new HttpObjectAggregator(1024*1024*60));
                             // 客户端发送的是httprequest，所以要使用HttpRequestEncoder进行编码
                             pipe.addLast(new HttpRequestEncoder());
                             //pipe.addLast(new ChunkedWriteHandler());
@@ -83,6 +84,9 @@ public class HttpClient {
     }
 
     public boolean isActive() {
+        if (null == futtureChannel) {
+            return false;
+        }
         Channel cn = futtureChannel.channel();
         System.out.println(" isactive isRegistered " + cn.isRegistered() + ", isopen " + cn.isOpen() + ", iswritable " + cn.isWritable() + ",isactive " + cn.isActive());
         return cn.isActive();
@@ -110,7 +114,11 @@ public class HttpClient {
     public void setResult(byte[] result) {
         this.running = false;
         this.result = result;
-        resultCallback.setResult(result);
+        if (null != resultCallback) {
+            resultCallback.setResult(result);
+        } else {
+            System.out.println("resultCallback is null");
+        }
     }
     public byte[] getResult() {
         return  this.result;

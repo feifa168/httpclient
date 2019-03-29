@@ -3,6 +3,6 @@
   "useauth" : true,
   "authName" : "admin",
   "authPassword" : "admin@123",
-  "host" : "10.0.92.95",
+  "host" : "10.0.92.96",
   "port" : 443
 }

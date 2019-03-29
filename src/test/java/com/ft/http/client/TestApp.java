@@ -15,6 +15,8 @@ import com.ft.http.v3.weakpassword.CrackScanReturn;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -75,6 +77,10 @@ public class TestApp {
                 break;
             }
             scanReslutMixWithError.setTaskcode(code);
+
+            if (taskScanConfig.getScanType() != TaskScanConfig.ScanType.SCAN_TYPE_SCAN) {
+                break;
+            }
 
             // 构造任务
             try {
@@ -272,5 +278,79 @@ public class TestApp {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void testRename() {
+        File fold = new File("results\\001_29_SCAN_56_2019-03-28 17-38-04.json.tmp");
+        System.out.println(fold.getPath() + ", " + fold.getName());
+        File fnew = new File("results\\001_29_SCAN_56_2019-03-28 17-38-04.json");
+        System.out.println(fold.getPath() + ", " + fold.getName() + " result is " + fold.renameTo(fnew));
+    }
+
+    @Test
+    public void testRename2() {
+
+        File directory = new File("results");
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
+        String src = null;
+        try {
+            RandomAccessFile raf123 = new RandomAccessFile("results\\001_29_SCAN_56_2019-03-28 19-35-51.json.tmp", "r");
+            byte[] buff123 = new byte[(int)raf123.length()];
+            raf123.read(buff123);
+            src = new String(buff123);
+            raf123.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String oName = "results\\123.json.tmp";
+        String nName = "results\\123.json";
+
+        File fl = new File(oName);
+        if (fl.exists() && fl.isFile()) {
+            fl.delete();
+        }
+        fl = new File(nName);
+        if (fl.exists() && fl.isFile()) {
+            fl.delete();
+        }
+
+        RandomAccessFile raf = null;
+        try {
+            raf = new RandomAccessFile(oName, "rw");
+//            byte[] buf = new byte[10000];
+//            for (int i=0; i<buf.length; i++) {
+//                buf[i] = (byte) (i);
+//            }
+            raf.write(src.getBytes("utf-8"));
+            //FileChannel fc = raf.getChannel();
+            //fc.write(ByteBuffer.wrap("hello".getBytes()));
+            //fc.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                raf.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        File fold = new File(oName);
+        System.out.println(fold.getPath() + ", " + fold.getName());
+        //File fnew = new File("results", "123.txt");
+        String nnm = fold.getAbsolutePath();
+        nnm = nnm.substring(0, nnm.lastIndexOf(File.separator)+1) + "123.json";
+        File fnew = new File(nnm);
+        System.out.println("rename from " + oName + " to " + nName + " result is " + fold.renameTo(fnew));
+        System.out.println(fold.getPath() + ", " + fold.getName());
     }
 }

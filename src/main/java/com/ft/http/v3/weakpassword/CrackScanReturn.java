@@ -3,6 +3,10 @@ package com.ft.http.v3.weakpassword;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+// {
+//    "error": "Crack task name already exists."
+// }
+// 14
 public class CrackScanReturn {
 
     @JsonCreator

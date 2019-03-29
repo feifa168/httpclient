@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<taskscan>
+    <description>description</description>
+    <engineId>3</engineId>
+    <importance>normal</importance>
+    <name>SCAN_56_2019-03-16 11:59:34</name>
+    <scanTemplateId>full-audit-without-web-spider</scanTemplateId>
+    <toolcategory>toolcategory</toolcategory>
+    <output>results</output>
+    <taskcode>taskcode</taskcode>
+    <!-- scan | template | engine | vulnerabilities | offlineupdate -->
+    <scanType>scan</scanType>
+    <customConfig>
+        <sendIcmpPings>true</sendIcmpPings>
+        <tcpPorts>22,23,80</tcpPorts>
+        <udpPorts>21,43,25</udpPorts>
+        <ipFingerprintingEnabled>true</ipFingerprintingEnabled>
+        <!--<tcpAdditionalPorts>1-100,22</tcpAdditionalPorts>-->
+        <tcpAdditionalPorts>1-100,22</tcpAdditionalPorts>
+        <method>SYN</method>
+        <!--<udpAdditionalPorts>80-88,5</udpAdditionalPorts>-->
+        <udpAdditionalPorts>80-88,5</udpAdditionalPorts>
+        <parallelismMininum>1</parallelismMininum>
+        <parallelismMaxinum>5</parallelismMaxinum>
+        <packetRateMininum>450</packetRateMininum>
+        <packetRateMaxinum>15000</packetRateMaxinum>
+        <maxParallelAssets>20</maxParallelAssets>
+        <maxScanProcesses>10</maxScanProcesses>
+    </customConfig>
+    <update>false</update>
+    <updateFile>update_1.4.1.dat</updateFile>
+    <acquireVulnerabilities>false</acquireVulnerabilities>
+    <acquireTemplate>true</acquireTemplate>
+    <AcquireEngine>true</AcquireEngine>
+    <taskconfigItems>
+        <taskconfig>
+            <id>taskid</id>
+            <ip>172.16.39.37</ip>
+            <cracks>
+                <bfTimeOut>3</bfTimeOut>
+                <connectTimeOut>5</connectTimeOut>
+                <modelItems>
+                    <model>
+                        <port>22</port>
+                        <service>ssh</service>
+                    </model>
+                    <!--<model>-->
+                        <!--<port>21</port>-->
+                        <!--<service>telnet</service>-->
+                    <!--</model>-->
+                </modelItems>
+                <name>crack_task_2019-03-16 11:59:34</name>
+                <targets>172.16.39.22</targets>
+                <threads>15</threads>
+            </cracks>
+        </taskconfig>
+        <taskconfig>
+            <id>taskid</id>
+            <ip>172.16.39.251</ip>
+        </taskconfig>
+    </taskconfigItems>
+</taskscan>
