@@ -12,13 +12,17 @@ public class RunConfig {
             @JsonProperty("authName") String authName,
             @JsonProperty("authPassword") String authPassword,
             @JsonProperty("host") String host,
-            @JsonProperty("port") int port) {
+            @JsonProperty("port") int port,
+            @JsonProperty("timeout") int timeout,
+            @JsonProperty("signalTimeout") int signalTimeout) {
         this.usessl = usessl;
         this.useauth = useauth;
         this.authName = authName;
         this.authPassword = authPassword;
         this.host = host;
         this.port = port;
+        this.timeout = timeout;
+        this.signalTimeout = signalTimeout;
     }
 
     public boolean isUsessl() {
@@ -45,10 +49,20 @@ public class RunConfig {
         return port;
     }
 
+    public int getTimeout() {
+        return timeout;
+    }
+
+    public int getSignalTimeout() {
+        return signalTimeout;
+    }
+
     private boolean usessl;
     private boolean useauth;
     private String authName;
     private String authPassword;
     private String host;
     private int port;
+    private int timeout;
+    private int signalTimeout;
 }

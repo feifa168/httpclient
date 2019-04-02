@@ -67,8 +67,13 @@ public class App {
         xmlMapper.setPropertyNamingStrategy(PropertyNamingStrategy.UPPER_CAMEL_CASE);
         //设置转换模式
         xmlMapper.enable(MapperFeature.USE_STD_BEAN_NAMING);
+
+        startTime = System.currentTimeMillis();
     }
 
+    public boolean isTimeout() {
+        return (System.currentTimeMillis()-startTime) > signalTimeout*60*1000;
+    }
 
     /**
      * 转换byte数组内容为指定类型对象
@@ -117,6 +122,7 @@ public class App {
         client.configAuth(true, authName, authPassword);
         client.start();
         ResultCallBackImpl call = new ResultCallBackImpl();
+        call.setSignalTimeout(signalTimeout);
 
         //Map<AsciiString, String> mapHeader = new HashMap<>();
         //mapHeader.put(HttpHeaderNames.CONTENT_TYPE, "application/json");
@@ -178,7 +184,18 @@ public class App {
      *
      */
     public void handleCracks(List<TaskConfig> taskconfigs, Map<String, CrackScanResultInfo> crackResultInfos, Map<String, TaskConfig> mapIp2TaskConfig) {
+
+        if (null==taskconfigs || null==crackResultInfos || null==mapIp2TaskConfig) {
+            return;
+        }
+
+        int taskSize = taskconfigs.size();
+        if (taskSize < 1) {
+            return;
+        }
+
         int corePoolSize = Runtime.getRuntime().availableProcessors();
+
         threadPool = new ThreadPoolExecutor(corePoolSize, corePoolSize*2, 60, TimeUnit.SECONDS, new LinkedBlockingDeque<>(1024));
 
         for (TaskConfig taskConfig : taskconfigs) {
@@ -187,7 +204,7 @@ public class App {
             if (null == cracks || null == cracks.getModels()) {
                 continue;
             }
-            CrackScanResultInfo resultInfo = new CrackScanResultInfo();
+            //CrackScanResultInfo resultInfo = new CrackScanResultInfo();
 
             int cracksNum = cracks.getModels().size();
             if (cracksNum == 0) {
@@ -209,7 +226,7 @@ public class App {
             mapIp2TaskConfig.put(taskIp, taskConfig);
             crackResultInfos.put(taskIp, crackScanResultInfo);
 
-            threadPool.execute(new CrackThread(cracks, this, resultInfo, latch));
+            threadPool.execute(new CrackThread(cracks, this, crackScanResultInfo/*resultInfo*/, latch));
 //            threadPool.execute(()->{
 //                CrackScanReturn crackReturn = null;
 //                try {
@@ -1325,6 +1342,8 @@ public class App {
         this.port = runConfig.getPort();
         this.authName = runConfig.getAuthName();
         this.authPassword = runConfig.getAuthPassword();
+        this.timeout = runConfig.getTimeout();
+        this.signalTimeout = runConfig.getSignalTimeout();
         if (((null == host) || host.isEmpty())
                 || ((null == authName) || authName.isEmpty())
                 || ((null == authPassword) || authPassword.isEmpty())
@@ -1395,6 +1414,9 @@ public class App {
                         if (null != crackScanReturn) {
                             CrackScanResult result = null;
                             do {
+                                if (app.isTimeout()) {
+                                    break;
+                                }
                                 Thread.sleep(1000);
                                 result = app.queryCracksScanResult(crackScanReturn);
                             } while((result != null) && (!result.finished()));
@@ -1547,6 +1569,9 @@ public class App {
     private int port;
     private String authName;
     private String authPassword;
+    private int     timeout;     // 超时时间，单位分钟
+    private int     signalTimeout;  // 单次超时时间，单位分钟
+    private long    startTime;   // 启动时间，单位毫秒
     private ThreadPoolExecutor threadPool;
 
     public static void main(String[] args) {
@@ -1842,6 +1867,10 @@ public class App {
                     scanReslutMixWithError.setMessage("查询扫描状态失败");
                 }
                 while (!scanResult.finished()) {
+                    if (app.isTimeout()) {
+                        break;
+                    }
+
                     try {
                         scanResult = app.queryScanResult(newScanReturn);
                     } catch (Exception e) {

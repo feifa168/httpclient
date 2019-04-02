@@ -1,0 +1,68 @@
+{
+  "toolcategory" : "002",
+  "taskcode" : "30",
+  "scanType" : "scan",
+  "success" : true,
+  "taskid" : "27",
+  "scanid" : "27",
+  "scanResult" : {
+    "total" : 1,
+    "resources" : [ {
+      "assetId" : 10,
+      "assets" : {
+        "id" : 10,
+        "ip" : "172.16.39.37",
+        "riskScore" : "0.0",
+        "services" : [ {
+          "configurations" : [ {
+            "name" : "ssh.banner",
+            "value" : "SSH-2.0-OpenSSH_6.6.1"
+          }, {
+            "name" : "ssh.protocol.version",
+            "value" : "2.0"
+          }, {
+            "name" : "ssh.rsa.pubkey.fingerprint",
+            "value" : "0A303AF45D37F49F7AD1C265388FB2A1"
+          } ],
+          "name" : "SSH",
+          "port" : 22,
+          "product" : "OpenSSH",
+          "protocol" : "TCP",
+          "vendor" : "OpenBSD",
+          "version" : "6.6.1"
+        } ],
+        "vulnerabilities" : {
+          "critical" : 0,
+          "exploits" : 0,
+          "malwareKits" : 0,
+          "moderate" : 0,
+          "severe" : 0,
+          "total" : 0
+        },
+        "addresses" : [ {
+          "ip" : "172.16.39.37"
+        } ]
+      },
+      "address" : "172.16.39.37",
+      "crackScanResult" : {
+        "id" : 3,
+        "startTime" : "2019-04-02 13:51:46",
+        "status" : 4,
+        "progress" : 100,
+        "items" : [ {
+          "target" : "172.16.39.37",
+          "service" : "ssh",
+          "username" : "test",
+          "password" : "123456",
+          "port" : 22
+        } ]
+      },
+      "vulnerabilitiesMixs" : [ ],
+      "portResult" : [ {
+        "port" : 22,
+        "protocol" : "TCP"
+      } ],
+      "subTaskid" : "300"
+    } ]
+  }
+}

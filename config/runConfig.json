@@ -3,6 +3,8 @@
   "useauth" : true,
   "authName" : "admin",
   "authPassword" : "admin@123",
-  "host" : "10.0.92.96",
-  "port" : 443
+  "host" : "10.0.92.114",
+  "port" : 443,
+  "timeout" : 60,
+  "signalTimeout" : 5
 }

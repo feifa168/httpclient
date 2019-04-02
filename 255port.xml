@@ -6,9 +6,9 @@
   <importance>normal</importance>
   <name>1553668902686_123</name>
   <scanTemplateId>discovery</scanTemplateId>
-  <toolcategory>001</toolcategory>
+  <toolcategory>002</toolcategory>
   <output>results</output>
-  <taskcode>29</taskcode>
+  <taskcode>30</taskcode>
   <scanType>scan</scanType>
   <customConfig>
     <sendIcmpPings>false</sendIcmpPings>
@@ -30,16 +30,12 @@
       <id>300</id>
       <ip>172.16.39.37</ip>
       <cracks>
-        <bfTimeOut>1</bfTimeOut>
-        <connectTimeOut>1</connectTimeOut>
+        <bfTimeOut>3</bfTimeOut>
+        <connectTimeOut>10</connectTimeOut>
         <modelItems>
           <model>
             <port>22</port>
-            <service>SSH</service>
-          </model>
-          <model>
-            <port>161</port>
-            <service>SNMP</service>
+            <service>ssh</service>
           </model>
           <model>
             <port>23</port>
@@ -48,7 +44,7 @@
         </modelItems>
         <name>name2</name>
         <targets>172.16.39.37</targets>
-        <threads>1</threads>
+        <threads>15</threads>
       </cracks>
     </taskconfig>
   </taskconfigItems>

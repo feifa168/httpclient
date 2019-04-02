@@ -30,8 +30,12 @@ import java.util.Map;
 public class HttpClient {
 
     public HttpClient(String host, int port) {
+        this(host, port, 5);
+    }
+    public HttpClient(String host, int port, int signalTimeout) {
         this.host = host;
         this.port = port;
+        this.signalTimeout = signalTimeout;
 
         mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE)
                 .setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
@@ -223,6 +227,7 @@ public class HttpClient {
     private boolean useauth = false;
     private String  user;
     private String pwd;
+    private int     signalTimeout;  // 单次超时时间，单位分钟
 
     private EventLoopGroup workerGroup;
     private ChannelFuture futtureChannel;

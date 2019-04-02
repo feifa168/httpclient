@@ -22,7 +22,7 @@ public class TestRunConfig {
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)    // 忽略pojo中不存在的字段
         ;
 
-        RunConfig config = new RunConfig(true, true, "admin", "admin@123", "10.0.92.95", 443);
+        RunConfig config = new RunConfig(true, true, "admin", "admin@123", "10.0.92.95", 443, 60, 5);
         String jsonString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(config);
         System.out.println(jsonString);
 
