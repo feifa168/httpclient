@@ -27,25 +27,8 @@
   </customConfig>
   <taskconfigItems>
     <taskconfig>
-      <id>300</id>
+      <id>4192</id>
       <ip>172.16.39.37</ip>
-      <cracks>
-        <bfTimeOut>3</bfTimeOut>
-        <connectTimeOut>10</connectTimeOut>
-        <modelItems>
-          <model>
-            <port>22</port>
-            <service>ssh</service>
-          </model>
-          <model>
-            <port>23</port>
-            <service>Telnet</service>
-          </model>
-        </modelItems>
-        <name>name2</name>
-        <targets>172.16.39.37</targets>
-        <threads>15</threads>
-      </cracks>
     </taskconfig>
   </taskconfigItems>
 </taskscan>

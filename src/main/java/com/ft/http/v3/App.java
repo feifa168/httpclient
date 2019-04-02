@@ -199,34 +199,58 @@ public class App {
         threadPool = new ThreadPoolExecutor(corePoolSize, corePoolSize*2, 60, TimeUnit.SECONDS, new LinkedBlockingDeque<>(1024));
 
         for (TaskConfig taskConfig : taskconfigs) {
-            // 弱口令扫描
-            NewCracks cracks = taskConfig.getCracks();
-            if (null == cracks || null == cracks.getModels()) {
-                continue;
-            }
-            //CrackScanResultInfo resultInfo = new CrackScanResultInfo();
-
-            int cracksNum = cracks.getModels().size();
-            if (cracksNum == 0) {
-                continue;
-            }
 
             String taskIp = taskConfig.getIp();
             if (null == taskIp) {
                 continue;
             }
-
-            // todo 测试使用，实际使用要去掉
-            cracks.setName(new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss:SSS").format(new Date()).toString());
-
-            CountDownLatch latch = new CountDownLatch(1);
-            CrackScanResultInfo crackScanResultInfo = new CrackScanResultInfo();
-            crackScanResultInfo.setLatch(latch);
-
             mapIp2TaskConfig.put(taskIp, taskConfig);
-            crackResultInfos.put(taskIp, crackScanResultInfo);
 
-            threadPool.execute(new CrackThread(cracks, this, crackScanResultInfo/*resultInfo*/, latch));
+            do {
+                // 登录检查
+                if (taskConfig.getCredentials() == null) {
+                    break;
+                }
+
+                int taskId = newTaskReturn.getId();
+                CredentialReturn credentialReturn;
+                // /api/v3/tasks/taskId/task_credentials
+                for (Credential credential : taskConfig.getCredentials()) {
+                    String url = "/api/v3/tasks/"+taskId+"/task_credentials";
+                    try {
+                        credentialReturn = createCredential(newTaskReturn, credential);
+                        if (0 == credentialReturn.getId()) {
+                            System.out.println("创建认证失败,"+credentialReturn.getError());
+                            //scanReslutMixWithError.setMessage("创建认证失败,"+newTaskReturn.getError());
+                        }
+                    } catch (Exception e) {
+                        System.out.println("创建认证失败");
+                    }
+                }
+            } while (false);
+
+            do {
+                // 弱口令扫描
+                NewCracks cracks = taskConfig.getCracks();
+                if (null == cracks) {
+                    continue;
+                }
+                //CrackScanResultInfo resultInfo = new CrackScanResultInfo();
+
+                if ( null == cracks.getModels() || 0 == cracks.getModels().size()) {
+                    continue;
+                }
+
+                // todo 测试使用，实际使用要去掉
+                cracks.setName(new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss:SSS").format(new Date()).toString());
+
+                CountDownLatch latch = new CountDownLatch(1);
+                CrackScanResultInfo crackScanResultInfo = new CrackScanResultInfo();
+                crackScanResultInfo.setLatch(latch);
+
+                crackResultInfos.put(taskIp, crackScanResultInfo);
+
+                threadPool.execute(new CrackThread(cracks, this, crackScanResultInfo/*resultInfo*/, latch));
 //            threadPool.execute(()->{
 //                CrackScanReturn crackReturn = null;
 //                try {
@@ -250,28 +274,7 @@ public class App {
 //                    latch.countDown();
 //                }
 //            });
-
-
-            // 登录检查
-            if (taskConfig.getCredentials() == null) {
-                continue;
-            }
-
-            int taskId = newTaskReturn.getId();
-            CredentialReturn credentialReturn;
-            // /api/v3/tasks/taskId/task_credentials
-            for (Credential credential : taskConfig.getCredentials()) {
-                String url = "/api/v3/tasks/"+taskId+"/task_credentials";
-                try {
-                    credentialReturn = createCredential(newTaskReturn, credential);
-                    if (0 == credentialReturn.getId()) {
-                        System.out.println("创建认证失败,"+credentialReturn.getError());
-                        //scanReslutMixWithError.setMessage("创建认证失败,"+newTaskReturn.getError());
-                    }
-                } catch (Exception e) {
-                    System.out.println("创建认证失败");
-                }
-            }
+            } while (false);
         }
 
         threadPool.shutdown();
