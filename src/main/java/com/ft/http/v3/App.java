@@ -183,7 +183,7 @@ public class App {
      * @return  无
      *
      */
-    public void handleCracks(List<TaskConfig> taskconfigs, Map<String, CrackScanResultInfo> crackResultInfos, Map<String, TaskConfig> mapIp2TaskConfig) {
+    public void handleCracks(List<TaskConfig> taskconfigs, NewTaskReturn newTaskReturn, Map<String, CrackScanResultInfo> crackResultInfos, Map<String, TaskConfig> mapIp2TaskConfig) {
 
         if (null==taskconfigs || null==crackResultInfos || null==mapIp2TaskConfig) {
             return;
@@ -250,6 +250,28 @@ public class App {
 //                    latch.countDown();
 //                }
 //            });
+
+
+            // 登录检查
+            if (taskConfig.getCredentials() == null) {
+                continue;
+            }
+
+            int taskId = newTaskReturn.getId();
+            CredentialReturn credentialReturn;
+            // /api/v3/tasks/taskId/task_credentials
+            for (Credential credential : taskConfig.getCredentials()) {
+                String url = "/api/v3/tasks/"+taskId+"/task_credentials";
+                try {
+                    credentialReturn = createCredential(newTaskReturn, credential);
+                    if (0 == credentialReturn.getId()) {
+                        System.out.println("创建认证失败,"+credentialReturn.getError());
+                        //scanReslutMixWithError.setMessage("创建认证失败,"+newTaskReturn.getError());
+                    }
+                } catch (Exception e) {
+                    System.out.println("创建认证失败");
+                }
+            }
         }
 
         threadPool.shutdown();
@@ -1785,7 +1807,7 @@ public class App {
                 scanReslutMixWithError.setTaskid(String.valueOf(taskId));
 
                 Map<String, TaskConfig> mapIp2TaskConfig = new HashMap<>();
-                app.handleCracks(taskScanConfig.getTaskconfigs(), crackResultInfos, mapIp2TaskConfig);
+                app.handleCracks(taskScanConfig.getTaskconfigs(), newTaskReturn, crackResultInfos, mapIp2TaskConfig);
 
 //                for (TaskConfig taskConfig : taskScanConfig.getTaskconfigs()) {
 //                    mapIp2TaskConfig.put(taskConfig.getIp(), taskConfig);
