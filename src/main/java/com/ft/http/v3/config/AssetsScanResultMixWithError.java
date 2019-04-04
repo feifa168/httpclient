@@ -2,6 +2,7 @@ package com.ft.http.v3.config;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.ft.http.v3.scan.ScanResult;
 import com.ft.http.v3.scanengine.ScanEngineResult;
 import com.ft.http.v3.scantemplate.ScanTemplate;
 import com.ft.http.v3.scantemplate.ScanTemplateResult;
@@ -54,7 +55,8 @@ public class AssetsScanResultMixWithError {
                                         @JsonProperty("message") String message,
                                         @JsonProperty("taskid") String taskid,
                                         @JsonProperty("scanid") String scanid,
-                                        @JsonProperty("scanResult") MixResult scanResult,
+                                        @JsonProperty("mixScanResult") MixResult mixScanResult,
+                                        @JsonProperty("scanResult") ScanResult scanResult,
                                         @JsonProperty("scanTemplateResult") ScanTemplateResult scanTemplateResult,
                                         @JsonProperty("scanEnginResult") ScanEngineResult scanEnginResult,
                                         @JsonProperty("scanVulnerabilityResult") ScanVulnerabilityResult scanVulnerabilityResult,
@@ -66,6 +68,7 @@ public class AssetsScanResultMixWithError {
         this.message = message;
         this.taskid = taskid;
         this.scanid = scanid;
+        this.mixScanResult = mixScanResult;
         this.scanResult = scanResult;
         this.scanTemplateResult = scanTemplateResult;
         this.scanEnginResult = scanEnginResult;
@@ -113,7 +116,11 @@ public class AssetsScanResultMixWithError {
 //        this.result = result;
 //    }
 
-    public void setScanResult(MixResult scanResult) {
+    public void setMixScanResult(MixResult mixScanResult) {
+        this.mixScanResult = mixScanResult;
+    }
+
+    public void setScanResult(ScanResult scanResult) {
         this.scanResult = scanResult;
     }
 
@@ -149,7 +156,8 @@ public class AssetsScanResultMixWithError {
     private String taskid;
     private String scanid;
     //private List<AssetsScanResultMix> result;
-    private MixResult scanResult;
+    private MixResult mixScanResult;
+    private ScanResult scanResult;
     private ScanTemplateResult scanTemplateResult;
     private ScanEngineResult scanEnginResult;
     private ScanVulnerabilityResult scanVulnerabilityResult;

@@ -72,6 +72,10 @@ public class App {
     }
 
     public boolean isTimeout() {
+        return (System.currentTimeMillis()-startTime) > timeout*60*1000;
+    }
+
+    public boolean isSignalTimeout() {
         return (System.currentTimeMillis()-startTime) > signalTimeout*60*1000;
     }
 
@@ -1614,7 +1618,6 @@ public class App {
         NewScanReturn newScanReturn = null;
 
         List<AssetsScanResultMix> scanReslutMix = new ArrayList<>();
-        List<VulnerabilitiesMix> vulnerabilitiesMixs = new ArrayList<>();
         AssetsScanResultMixWithError scanReslutMixWithError = new AssetsScanResultMixWithError();
         Map<String, CrackScanResultInfo> crackResultInfos = new HashMap<>();
         //task = buildNewTask2();
@@ -1907,6 +1910,7 @@ public class App {
                         e.printStackTrace();
                     }
                 }
+                scanReslutMixWithError.setScanResult(scanResult);
 
                 // 查询任务状态
                 try {
@@ -1935,6 +1939,7 @@ public class App {
                         if ((assetsAddr != null) && (addr != null)) {
                             if (assetsAddr.equals(addr)) {
 
+                                List<VulnerabilitiesMix> vulnerabilitiesMixs = new ArrayList<>();
                                 AssetsQueryVulnerabilitiesResult assetsVulnerabilities = null;
                                 try {
                                     assetsVulnerabilities = app.queryAssetsVulnerabilities(assets.getId());
@@ -2035,7 +2040,7 @@ public class App {
                 }
 
                 AssetsScanResultMixWithError.MixResult mixResult = new AssetsScanResultMixWithError.MixResult(scanReslutMix.size(), scanReslutMix);
-                scanReslutMixWithError.setScanResult(mixResult);
+                scanReslutMixWithError.setMixScanResult(mixResult);
             }
 
             // 更新

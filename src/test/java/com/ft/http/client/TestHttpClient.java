@@ -480,7 +480,7 @@ public class TestHttpClient {
             }
 
             scanReslutMixWithError.setSuccess(true);
-            scanReslutMixWithError.setScanResult(null/*scanReslutMix*/);
+            scanReslutMixWithError.setMixScanResult(null/*scanReslutMix*/);
 
         } while (false);
 
