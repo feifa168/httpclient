@@ -25,18 +25,49 @@
     <!--<maxParallelAssets>10</maxParallelAssets>-->
     <!--<maxScanProcesses>10</maxScanProcesses>-->
   <!--</customConfig>-->
+  <update>false</update>
+  <updateFile>update_1.4.1.dat</updateFile>
+  <acquireVulnerabilities>false</acquireVulnerabilities>
+  <acquireTemplate>true</acquireTemplate>
+  <AcquireEngine>false</AcquireEngine>
   <taskconfigItems>
     <taskconfig>
       <id>4192</id>
       <ip>172.16.39.37</ip>
+        <Credentials>
+            <account>
+                <service>ssh</service>
+                <username>root</username>
+                <password>toor</password>
+                <!--<permissionElevation>sudo</permissionElevation>-->
+                <!--<permissionElevationUsername>permissionElevationUsername</permissionElevationUsername>-->
+                <!--<permissionElevationPassword>permissionElevationPassword</permissionElevationPassword>-->
+            </account>
+            <description>description</description>
+            <hostRestriction>172.16.39.37</hostRestriction>
+            <name>name</name>
+            <portRestriction>22</portRestriction>
+        </Credentials>
+        <!--<Credentials>-->
+            <!--<account>-->
+                <!--<service>telnet</service>-->
+                <!--<username>user</username>-->
+                <!--<password>password</password>-->
+            <!--</account>-->
+            <!--<description>description</description>-->
+            <!--<enabled>false</enabled>-->
+            <!--<hostRestriction>127.0.0.1</hostRestriction>-->
+            <!--<name>name</name>-->
+            <!--<portRestriction>22</portRestriction>-->
+        <!--</Credentials>-->
     </taskconfig>
-    <taskconfig>
-      <id>4193</id>
-      <ip>172.16.39.22</ip>
-    </taskconfig>
-    <taskconfig>
-      <id>4194</id>
-      <ip>10.0.92.254</ip>
-    </taskconfig>
+    <!--<taskconfig>-->
+      <!--<id>4193</id>-->
+      <!--<ip>172.16.39.22</ip>-->
+    <!--</taskconfig>-->
+    <!--<taskconfig>-->
+      <!--<id>4194</id>-->
+      <!--<ip>10.0.92.254</ip>-->
+    <!--</taskconfig>-->
   </taskconfigItems>
 </taskscan>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<taskscan>
+  <description>获取漏洞信息</description>
+  <name>Vul_1553599505863</name>
+  <toolcategory>001</toolcategory>
+  <output>results/</output>
+  <taskcode>Vul_1553599505863</taskcode>
+  <scanType>vulnerabilities</scanType>
+  <acquireVulnerabilities>true</acquireVulnerabilities>
+</taskscan>

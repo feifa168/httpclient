@@ -169,14 +169,15 @@ public class TestHttpClient {
         }
     }
 
-    private AssetsQueryResult queryAssets() throws Exception {
+    private AssetsQueryResult queryAssets(int taskId) throws Exception {
         HttpClient client = new HttpClient(host, port);
         // 查询资产
         Map<String, Object> mapParams = new HashMap<>();
         mapParams.put("page", 0);
         mapParams.put("size", 10);
 
-        String url = "/api/v3/assets";
+        //String url = "/api/v3/assets";
+        String url = "/api/v3/tasks/"+taskId+"/assets";
         byte[] result = testNormal(client,url, App.HttpRequestType.HTTP_GET, mapParams,null, null);
         AssetsQueryResult queryResult = buildResultObject(result, AssetsQueryResult.class);
         pageResource(queryResult, client, url, mapParams, null, null);
@@ -442,7 +443,7 @@ public class TestHttpClient {
             TaskResult taskResult = queryTaskScanResult(newTaskReturn);
 
             // 查询资产
-            AssetsQueryResult assetsAll = queryAssets();
+            AssetsQueryResult assetsAll = queryAssets(taskId);
             if (null == assetsAll.getResources() || assetsAll.getResources().size() == 0) {
                 scanReslutMixWithError.setMessage("资产为空");
                 break;

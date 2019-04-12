@@ -78,6 +78,7 @@ public class VulnerabilitiesDetail {
                                  @JsonProperty("riskScore") double riskScore,
                                  @JsonProperty("severity") String severity,
                                  @JsonProperty("severityScore") int severityScore,
+                                 @JsonProperty("solution") String solution,
                                  @JsonProperty("title") String title) {
         this.added = added;
         this.categories = categories;
@@ -92,6 +93,7 @@ public class VulnerabilitiesDetail {
         this.riskScore = riskScore;
         this.severity = severity;
         this.severityScore = severityScore;
+        this.solution = solution;
         this.title = title;
     }
 
@@ -108,5 +110,6 @@ public class VulnerabilitiesDetail {
     private double riskScore;
     private String severity;
     private int severityScore;
+    private String solution;
     private String title;
 }

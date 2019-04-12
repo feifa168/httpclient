@@ -1,0 +1,98 @@
+{
+  "toolcategory" : "002",
+  "taskcode" : "30",
+  "scanType" : "scan",
+  "success" : true,
+  "taskid" : "90",
+  "scanid" : "90",
+  "mixScanResult" : {
+    "total" : 1,
+    "resources" : [ {
+      "assetId" : 30,
+      "assets" : {
+        "id" : 30,
+        "ip" : "172.16.39.37",
+        "os" : "Linux 3.11",
+        "osFingerprint" : {
+          "description" : "Linux 3.11",
+          "id" : 6,
+          "product" : "Linux",
+          "systemName" : "Linux",
+          "vendor" : "Linux",
+          "version" : "3.11"
+        },
+        "riskScore" : "9631.234375",
+        "services" : [ {
+          "configurations" : [ {
+            "name" : "ssh.banner",
+            "value" : "SSH-2.0-OpenSSH_6.6.1"
+          }, {
+            "name" : "ssh.protocol.version",
+            "value" : "2.0"
+          }, {
+            "name" : "ssh.rsa.pubkey.fingerprint",
+            "value" : "0A303AF45D37F49F7AD1C265388FB2A1"
+          } ],
+          "name" : "SSH",
+          "port" : 22,
+          "product" : "OpenSSH",
+          "protocol" : "TCP",
+          "vendor" : "OpenBSD",
+          "version" : "6.6.1"
+        }, {
+          "configurations" : [ {
+            "name" : "protocol-version",
+            "value" : "3.3"
+          }, {
+            "name" : "supported-auth-1",
+            "value" : "1380336160"
+          }, {
+            "name" : "supported-auth-count",
+            "value" : "1"
+          } ],
+          "name" : "VNC",
+          "port" : 5900,
+          "protocol" : "TCP"
+        } ],
+        "vulnerabilities" : {
+          "critical" : 7,
+          "exploits" : 13,
+          "malwareKits" : 0,
+          "moderate" : 3,
+          "severe" : 16,
+          "total" : 26
+        },
+        "addresses" : [ {
+          "ip" : "172.16.39.37"
+        } ]
+      },
+      "address" : "172.16.39.37",
+      "vulnerabilitiesMixs" : [ ],
+      "portResult" : [ {
+        "port" : 22,
+        "protocol" : "TCP"
+      }, {
+        "port" : 5900,
+        "protocol" : "TCP"
+      } ],
+      "subTaskid" : "4192"
+    } ]
+  },
+  "scanResult" : {
+    "assets" : 1,
+    "duration" : "PT1M46.695S",
+    "endTime" : "2019-04-09T01:17:57.625Z",
+    "engineId" : 0,
+    "engineName" : "Local scan engine",
+    "id" : 90,
+    "scanType" : "Manual",
+    "startTime" : "2019-04-09T01:16:10.930Z",
+    "status" : "FINISHED",
+    "vulnerabilities" : {
+      "critical" : 7,
+      "moderate" : 3,
+      "severe" : 16,
+      "total" : 26
+    }
+  }
+}

@@ -1,0 +1,1058 @@
+{
+  "toolcategory" : "002",
+  "taskcode" : "30",
+  "scanType" : "scan",
+  "success" : true,
+  "taskid" : "106",
+  "scanid" : "106",
+  "mixScanResult" : {
+    "total" : 1,
+    "resources" : [ {
+      "assetId" : 30,
+      "assets" : {
+        "id" : 30,
+        "ip" : "172.16.39.37",
+        "os" : "Linux 3.11",
+        "osFingerprint" : {
+          "description" : "Linux 3.11",
+          "id" : 6,
+          "product" : "Linux",
+          "systemName" : "Linux",
+          "vendor" : "Linux",
+          "version" : "3.11"
+        },
+        "riskScore" : "9637.1377",
+        "services" : [ {
+          "configurations" : [ {
+            "name" : "ssh.banner",
+            "value" : "SSH-2.0-OpenSSH_6.6.1"
+          }, {
+            "name" : "ssh.protocol.version",
+            "value" : "2.0"
+          }, {
+            "name" : "ssh.rsa.pubkey.fingerprint",
+            "value" : "0A303AF45D37F49F7AD1C265388FB2A1"
+          } ],
+          "name" : "SSH",
+          "port" : 22,
+          "product" : "OpenSSH",
+          "protocol" : "TCP",
+          "vendor" : "OpenBSD",
+          "version" : "6.6.1"
+        }, {
+          "configurations" : [ {
+            "name" : "protocol-version",
+            "value" : "3.3"
+          }, {
+            "name" : "supported-auth-1",
+            "value" : "1380336160"
+          }, {
+            "name" : "supported-auth-count",
+            "value" : "1"
+          } ],
+          "name" : "VNC",
+          "port" : 5900,
+          "protocol" : "TCP"
+        } ],
+        "vulnerabilities" : {
+          "critical" : 7,
+          "exploits" : 13,
+          "malwareKits" : 0,
+          "moderate" : 3,
+          "severe" : 16,
+          "total" : 26
+        },
+        "addresses" : [ {
+          "ip" : "172.16.39.37"
+        } ]
+      },
+      "address" : "172.16.39.37",
+      "vulnerabilitiesMixs" : [ {
+        "assetsScanVulnerabilities" : {
+          "id" : "openbsd-openssh-cve-2015-5600",
+          "title" : "OpenSSH漏洞: CVE-2015-5600",
+          "cvss" : 8,
+          "cve" : "CVE-2015-5600",
+          "publishDate" : "2015-08-02",
+          "riskScore" : 629,
+          "severity" : 9,
+          "exploit" : 0,
+          "malware" : 0,
+          "instances" : 1
+        },
+        "vulnerabilitiesDetail" : {
+          "added" : "2015-08-05",
+          "categories" : [ "Denial of Service", "IAVM", "OpenSSH", "SSH" ],
+          "cves" : [ "CVE-2015-5600" ],
+          "cvss" : {
+            "v2" : {
+              "score" : 8.5,
+              "vector" : "AV:N/AC:L/Au:N/C:P/I:N/A:C"
+            }
+          },
+          "denialOfService" : false,
+          "description" : {
+            "html" : "<p>OpenSSH 6.9以及早前版本的sshd的auth2-chall.c中的kbdint_next_device函数没有合理限制对单个连接中的键盘交互设备的处理，这更便于远程攻击者通过ssh-oKbdInteractiveDevices选项中长的和重复的列表执行暴力破解攻击或导致拒绝服务（CPU消耗），如修改的客户端所示，该客户端为此列表上的每个pam元素提供不同的密码。</p>"
+          },
+          "exploits" : 0,
+          "id" : "openbsd-openssh-cve-2015-5600",
+          "malwareKits" : 0,
+          "modified" : "2016-12-05",
+          "riskScore" : 628.99,
+          "severity" : "Critical",
+          "severityScore" : 9,
+          "solution" : "升级 OpenSSH 到最新版本<p>从以下地址下载并应用更新：<a href=\"ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH\">ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH</a></p><p><p>OpenSSH的最新版本是7.6。</p>\n<p>虽然你可以随时<a href=\"http://www.openssh.com/portable.html\">从源代码构建OpenSSH </a>，许多平台和发行版为OpenSSH提供了预构建的二进制包。这些预建软件包通常是针对特定分配进行定制和优化的，因此我们建议您使用可用于您的操作系统的软件包。</p></p>",
+          "title" : "OpenSSH漏洞: CVE-2015-5600"
+        }
+      }, {
+        "assetsScanVulnerabilities" : {
+          "id" : "openbsd-openssh-cve-2016-6515",
+          "title" : "OpenSSH漏洞: CVE-2016-6515",
+          "cvss" : 7,
+          "cve" : "CVE-2016-6515",
+          "publishDate" : "2016-08-07",
+          "riskScore" : 291,
+          "severity" : 8,
+          "exploit" : 1,
+          "malware" : 0,
+          "instances" : 1
+        },
+        "vulnerabilitiesDetail" : {
+          "added" : "2016-08-12",
+          "categories" : [ "Denial of Service", "OpenSSH", "SSH" ],
+          "cves" : [ "CVE-2016-6515" ],
+          "cvss" : {
+            "v2" : {
+              "score" : 7.8,
+              "vector" : "AV:N/AC:L/Au:N/C:N/I:N/A:C"
+            }
+          },
+          "denialOfService" : true,
+          "description" : {
+            "html" : "<p>在7.3之前版本的OpenSSH中的sshd中的auth-passwd.c中的auth_password函数不限制密码验证的密码长度，这允许远程攻击者通过长字符串导致拒绝服务（加密CPU消耗）。</p>"
+          },
+          "exploits" : 1,
+          "id" : "openbsd-openssh-cve-2016-6515",
+          "malwareKits" : 0,
+          "modified" : "2018-01-08",
+          "riskScore" : 291.13,
+          "severity" : "Critical",
+          "severityScore" : 8,
+          "solution" : "升级至OpenSSH 7.3<p>从以下地址下载并应用更新：<a href=\"ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH\">ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH</a></p><p><p>当<a href=\"http://www.openssh.com/portable.html\">从源</a>搭建OpenSSH时，多个平台和版本提供提前搭建的适用于OpenSSH的二进制包。这些提前搭建的包通常为自定义和优化的，所以如果适用于您的操作系统，推荐使用这些包。</p></p>",
+          "title" : "OpenSSH漏洞: CVE-2016-6515"
+        }
+      }, {
+        "assetsScanVulnerabilities" : {
+          "id" : "openbsd-openssh-cve-2016-8858",
+          "title" : "OpenSSH漏洞: CVE-2016-8858",
+          "cvss" : 7,
+          "cve" : "CVE-2016-8858",
+          "publishDate" : "2016-12-09",
+          "riskScore" : 282,
+          "severity" : 8,
+          "exploit" : 0,
+          "malware" : 0,
+          "instances" : 1
+        },
+        "vulnerabilitiesDetail" : {
+          "added" : "2016-12-12",
+          "categories" : [ "Denial of Service", "OpenSSH", "SSH" ],
+          "cves" : [ "CVE-2016-8858" ],
+          "cvss" : {
+            "v2" : {
+              "score" : 7.8,
+              "vector" : "AV:N/AC:L/Au:N/C:N/I:N/A:C"
+            }
+          },
+          "denialOfService" : true,
+          "description" : {
+            "html" : "<p>**有争议的** 在OpenSSH 6.x和7.x至7.3版本的kex.c中的kex_input_kexinit函数允许远程攻击者通过发送许多重复的KEXINIT请求导致拒绝服务（内存消耗）。注意：第三方报告说&quot;OpenSSH upstream不认为这是安全问题&quot;。</p>"
+          },
+          "exploits" : 0,
+          "id" : "openbsd-openssh-cve-2016-8858",
+          "malwareKits" : 0,
+          "modified" : "2017-10-30",
+          "riskScore" : 281.82,
+          "severity" : "Critical",
+          "severityScore" : 8,
+          "solution" : "升级 OpenSSH 到最新版本<p>从以下地址下载并应用更新：<a href=\"ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH\">ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH</a></p><p><p>OpenSSH的最新版本是7.6。</p>\n<p>虽然你可以随时<a href=\"http://www.openssh.com/portable.html\">从源代码构建OpenSSH </a>，许多平台和发行版为OpenSSH提供了预构建的二进制包。这些预建软件包通常是针对特定分配进行定制和优化的，因此我们建议您使用可用于您的操作系统的软件包。</p></p>",
+          "title" : "OpenSSH漏洞: CVE-2016-8858"
+        }
+      }, {
+        "assetsScanVulnerabilities" : {
+          "id" : "sssd-unauthorized-ssh-login",
+          "title" : "SSSD本地管理器回调未认证登陆漏洞",
+          "cvss" : 7,
+          "cve" : "CVE-2009-2410",
+          "publishDate" : "2009-07-30",
+          "riskScore" : 724,
+          "severity" : 8,
+          "exploit" : 0,
+          "malware" : 0,
+          "instances" : 1
+        },
+        "vulnerabilitiesDetail" : {
+          "added" : "2009-09-23",
+          "categories" : [ "Network", "SSH" ],
+          "cves" : [ "CVE-2009-2410" ],
+          "cvss" : {
+            "v2" : {
+              "score" : 7.5,
+              "vector" : "AV:N/AC:L/Au:N/C:P/I:P/A:P"
+            }
+          },
+          "denialOfService" : false,
+          "description" : {
+            "html" : "<p>SSSD的某些版本没有正确处理新用户帐户的创建。这可能潜在地允许依赖语境的攻击者在SSH上登录帐户名称和任意密码。</p>"
+          },
+          "exploits" : 0,
+          "id" : "sssd-unauthorized-ssh-login",
+          "malwareKits" : 0,
+          "modified" : "2015-02-13",
+          "riskScore" : 724.19,
+          "severity" : "Critical",
+          "severityScore" : 8,
+          "solution" : "更新SSSD<p><p>用&lt;code&gt;yum</p>命令将SSSD更新至0.4.1。</p>",
+          "title" : "SSSD本地管理器回调未认证登陆漏洞"
+        }
+      }, {
+        "assetsScanVulnerabilities" : {
+          "id" : "backdoor-vnc-0001",
+          "title" : "VNC远程控制服务已安装",
+          "cvss" : 7,
+          "publishDate" : "2004-11-01",
+          "riskScore" : 746,
+          "severity" : 8,
+          "exploit" : 0,
+          "malware" : 0,
+          "instances" : 1
+        },
+        "vulnerabilitiesDetail" : {
+          "added" : "2004-11-01",
+          "categories" : [ "Backdoor" ],
+          "cvss" : {
+            "v2" : {
+              "score" : 7.5,
+              "vector" : "AV:N/AC:L/Au:N/C:P/I:P/A:P"
+            }
+          },
+          "denialOfService" : false,
+          "description" : {
+            "html" : "<p>AT&amp;T Virtual Network Computing (VNC)允许远程用户访问安装系统。如果此服务被破坏,用户可以完全控制系统。</p>"
+          },
+          "exploits" : 0,
+          "id" : "backdoor-vnc-0001",
+          "malwareKits" : 0,
+          "modified" : "2012-07-09",
+          "riskScore" : 745.64,
+          "severity" : "Critical",
+          "severityScore" : 8,
+          "solution" : "补丁程序VNC远程控制服务安装<p><p>移除或禁用此服务。如必要，设置合适（难破解）密码。需注意VNC<a href=\"http://www.realvnc.com/faq.html#password8can\">将密码缩短至8个字节</a>验证时，尽量使其不易破解。</p>\n<p>为保护eaves-droppers的资料,<a href=\"http://www.realvnc.com/faq.html#firewall\">tunnelingVNC至SSH</a>推荐。</p>\n<p>另外,还推荐限制访问特殊的IP地址。</p><a href=\"http://www.uk.research.att.com/vnc/extras.html#tcpwrapper\">使用TPC包装器</a><p>更多VNC信息，请访问<a href=\"http://www.realvnc.com/\">VNC website</a>.</p></p>",
+          "title" : "VNC远程控制服务已安装"
+        }
+      }, {
+        "assetsScanVulnerabilities" : {
+          "id" : "openbsd-openssh-cve-2016-1908",
+          "title" : "OpenSSH漏洞： CVE-2016-1908",
+          "cvss" : 7,
+          "cve" : "CVE-2016-1908",
+          "publishDate" : "2017-04-11",
+          "riskScore" : 602,
+          "severity" : 8,
+          "exploit" : 0,
+          "malware" : 0,
+          "instances" : 1
+        },
+        "vulnerabilitiesDetail" : {
+          "added" : "2017-04-19",
+          "categories" : [ "IAVM", "OpenSSH", "SSH" ],
+          "cves" : [ "CVE-2016-1908" ],
+          "cvss" : {
+            "v2" : {
+              "score" : 7.5,
+              "vector" : "AV:N/AC:L/Au:N/C:P/I:P/A:P"
+            }
+          },
+          "denialOfService" : false,
+          "description" : {
+            "html" : "<p>OpenSSH 7.2之前版本的客户端对不可信X11转发的cookie生成失败，并依赖于本地X11服务器进行访问控制决策，这允许远程X11客户端通过利用X11服务器上的配置问题来触发回退问题并获取受信任的X11转发权限，如X11服务器上缺少的SECURITY扩展证明。</p>"
+          },
+          "exploits" : 0,
+          "id" : "openbsd-openssh-cve-2016-1908",
+          "malwareKits" : 0,
+          "modified" : "2018-01-08",
+          "riskScore" : 602.03,
+          "severity" : "Critical",
+          "severityScore" : 8,
+          "solution" : "升级至OpenSSH 7.2<p>从以下地址下载并应用升级：<a href=\"ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH\">ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH</a></p><p><p>     虽然可一直<a href=\"http://www.openssh.com/portable.html\">从源代码构建OpenSSH </a>，许多平台和发行版为OpenSSH提供了预先构建的二进制包。这些预构建的软件包通常是针对特定分发进行自定义和优化的，因此如果它们适用于您的操作系统，我们建议您使用这些软件包。</p></p>",
+          "title" : "OpenSSH漏洞： CVE-2016-1908"
+        }
+      }, {
+        "assetsScanVulnerabilities" : {
+          "id" : "openbsd-openssh-cve-2016-10009",
+          "title" : "OpenSSH漏洞: CVE-2016-10009",
+          "cvss" : 7,
+          "cve" : "CVE-2016-10009",
+          "publishDate" : "2017-01-04",
+          "riskScore" : 620,
+          "severity" : 8,
+          "exploit" : 1,
+          "malware" : 0,
+          "instances" : 1
+        },
+        "vulnerabilitiesDetail" : {
+          "added" : "2017-01-09",
+          "categories" : [ "OpenSSH", "Remote Execution", "SSH" ],
+          "cves" : [ "CVE-2016-10009" ],
+          "cvss" : {
+            "v2" : {
+              "score" : 7.5,
+              "vector" : "AV:N/AC:L/Au:N/C:P/I:P/A:P"
+            }
+          },
+          "denialOfService" : false,
+          "description" : {
+            "html" : "<p>OpenSSH 7.4之前版本的ssh-agent中ssh-agent.c的不可信搜索路径漏洞允许远程攻击者通过利用对转发的代理套接字的控制来执行任意本地PKCS＃11模块。</p>"
+          },
+          "exploits" : 1,
+          "id" : "openbsd-openssh-cve-2016-10009",
+          "malwareKits" : 0,
+          "modified" : "2018-01-08",
+          "riskScore" : 619.91,
+          "severity" : "Critical",
+          "severityScore" : 8,
+          "solution" : "升级to OpenSSH 7.4<p>从以下地址下载并应用更新：<a href=\"ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH\">ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH</a></p><p><p>当您一直使用<a href=\"http://www.openssh.com/portable.html\">构建来自源的OpenSSH时</a>,\n多个平台和版本为Apache HTTP服务器提供预先编译的二进制包。对于特殊版本通常自定义和优化预先编译的包。因此，如果它们适用于操作系统，我们推荐您使用这些包。</p></p>",
+          "title" : "OpenSSH漏洞: CVE-2016-10009"
+        }
+      }, {
+        "assetsScanVulnerabilities" : {
+          "id" : "openbsd-openssh-cve-2015-8325",
+          "title" : "OpenSSH漏洞: CVE-2015-8325",
+          "cvss" : 7,
+          "cve" : "CVE-2015-8325",
+          "publishDate" : "2016-04-30",
+          "riskScore" : 516,
+          "severity" : 7,
+          "exploit" : 0,
+          "malware" : 0,
+          "instances" : 1
+        },
+        "vulnerabilitiesDetail" : {
+          "added" : "2016-05-09",
+          "categories" : [ "IAVM", "OpenSSH", "SSH" ],
+          "cves" : [ "CVE-2015-8325" ],
+          "cvss" : {
+            "v2" : {
+              "score" : 7.2,
+              "vector" : "AV:L/AC:L/Au:N/C:C/I:C/A:C"
+            }
+          },
+          "denialOfService" : false,
+          "description" : {
+            "html" : "<p>当启用UseLogin功能并且将PAM配置为在用户主目录中读取.pam_environment文件时，OpenSSH 7.2p2及其早期版本的sshd中的session.c的do_setup_env函数允许本地用户通过触发/bin/login程序的特制环境来获取权限。如LD_PRELOAD环境变量所示，</p>"
+          },
+          "exploits" : 0,
+          "id" : "openbsd-openssh-cve-2015-8325",
+          "malwareKits" : 0,
+          "modified" : "2018-01-08",
+          "riskScore" : 516.14,
+          "severity" : "Severe",
+          "severityScore" : 7,
+          "solution" : "升级 OpenSSH 到最新版本<p>从以下地址下载并应用更新：<a href=\"ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH\">ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH</a></p><p><p>OpenSSH的最新版本是7.6。</p>\n<p>虽然你可以随时<a href=\"http://www.openssh.com/portable.html\">从源代码构建OpenSSH </a>，许多平台和发行版为OpenSSH提供了预构建的二进制包。这些预建软件包通常是针对特定分配进行定制和优化的，因此我们建议您使用可用于您的操作系统的软件包。</p></p>",
+          "title" : "OpenSSH漏洞: CVE-2015-8325"
+        }
+      }, {
+        "assetsScanVulnerabilities" : {
+          "id" : "openbsd-openssh-cve-2015-6565",
+          "title" : "OpenSSH漏洞: CVE-2015-6565",
+          "cvss" : 7,
+          "cve" : "CVE-2015-6565",
+          "publishDate" : "2015-08-23",
+          "riskScore" : 603,
+          "severity" : 7,
+          "exploit" : 1,
+          "malware" : 0,
+          "instances" : 1
+        },
+        "vulnerabilitiesDetail" : {
+          "added" : "2015-08-26",
+          "categories" : [ "Denial of Service", "OpenSSH", "SSH" ],
+          "cves" : [ "CVE-2015-6565" ],
+          "cvss" : {
+            "v2" : {
+              "score" : 7.2,
+              "vector" : "AV:L/AC:L/Au:N/C:C/I:C/A:C"
+            }
+          },
+          "denialOfService" : false,
+          "description" : {
+            "html" : "<p>OpenSSH 6.8和6.9中的sshd使用TTY设备的全局可写权限，这允许本地用户通过写入设备导致拒绝服务（终端中断）或产生其他的不明影响，如通过写入转义字符所示。</p>"
+          },
+          "exploits" : 1,
+          "id" : "openbsd-openssh-cve-2015-6565",
+          "malwareKits" : 0,
+          "modified" : "2016-11-30",
+          "riskScore" : 603.01,
+          "severity" : "Severe",
+          "severityScore" : 7,
+          "solution" : "升级 OpenSSH 到最新版本<p>从以下地址下载并应用更新：<a href=\"ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH\">ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH</a></p><p><p>OpenSSH的最新版本是7.6。</p>\n<p>虽然你可以随时<a href=\"http://www.openssh.com/portable.html\">从源代码构建OpenSSH </a>，许多平台和发行版为OpenSSH提供了预构建的二进制包。这些预建软件包通常是针对特定分配进行定制和优化的，因此我们建议您使用可用于您的操作系统的软件包。</p></p>",
+          "title" : "OpenSSH漏洞: CVE-2015-6565"
+        }
+      }, {
+        "assetsScanVulnerabilities" : {
+          "id" : "openbsd-openssh-cve-2016-10012",
+          "title" : "OpenSSH漏洞: CVE-2016-10012",
+          "cvss" : 7,
+          "cve" : "CVE-2016-10012",
+          "publishDate" : "2017-01-04",
+          "riskScore" : 460,
+          "severity" : 7,
+          "exploit" : 0,
+          "malware" : 0,
+          "instances" : 1
+        },
+        "vulnerabilitiesDetail" : {
+          "added" : "2017-01-09",
+          "categories" : [ "OpenSSH", "SSH" ],
+          "cves" : [ "CVE-2016-10012" ],
+          "cvss" : {
+            "v2" : {
+              "score" : 7.2,
+              "vector" : "AV:L/AC:L/Au:N/C:C/I:C/A:C"
+            }
+          },
+          "denialOfService" : false,
+          "description" : {
+            "html" : "OpenSSH 7.4之前版本的sshd中的共享内存管理器（与预认证压缩相关联）不能确保所有编译器都强制执行边界检查，这可能允许本地用户通过利用对沙盒特权分离进程的访问来获取权限，这与m_zback和m_zlib数据结构相关。"
+          },
+          "exploits" : 0,
+          "id" : "openbsd-openssh-cve-2016-10012",
+          "malwareKits" : 0,
+          "modified" : "2018-01-08",
+          "riskScore" : 459.6,
+          "severity" : "Severe",
+          "severityScore" : 7,
+          "solution" : "升级to OpenSSH 7.4<p>从以下地址下载并应用更新：<a href=\"ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH\">ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH</a></p><p><p>当您一直使用<a href=\"http://www.openssh.com/portable.html\">构建来自源的OpenSSH时</a>,\n多个平台和版本为Apache HTTP服务器提供预先编译的二进制包。对于特殊版本通常自定义和优化预先编译的包。因此，如果它们适用于操作系统，我们推荐您使用这些包。</p></p>",
+          "title" : "OpenSSH漏洞: CVE-2016-10012"
+        }
+      }, {
+        "assetsScanVulnerabilities" : {
+          "id" : "openbsd-openssh-cve-2014-2653",
+          "title" : "OpenSSH漏洞: CVE-2014-2653",
+          "cvss" : 5,
+          "cve" : "CVE-2014-2653",
+          "publishDate" : "2014-03-27",
+          "riskScore" : 517,
+          "severity" : 6,
+          "exploit" : 0,
+          "malware" : 0,
+          "instances" : 1
+        },
+        "vulnerabilitiesDetail" : {
+          "added" : "2014-03-31",
+          "categories" : [ "DNS", "OpenSSH", "SSH" ],
+          "cves" : [ "CVE-2014-2653" ],
+          "cvss" : {
+            "v2" : {
+              "score" : 5.8,
+              "vector" : "AV:N/AC:M/Au:N/C:P/I:P/A:N"
+            }
+          },
+          "denialOfService" : false,
+          "description" : {
+            "html" : "<p>在OpenSSH 6.6及更早版本的客户端的sshconnect.c中的verify_host_key函数存在漏洞，远程攻击者通过提交不被接受的HostCertificate，触发跳过对SSHFP DNS RR的检查。</p>"
+          },
+          "exploits" : 0,
+          "id" : "openbsd-openssh-cve-2014-2653",
+          "malwareKits" : 0,
+          "modified" : "2014-11-17",
+          "riskScore" : 516.84,
+          "severity" : "Severe",
+          "severityScore" : 6,
+          "solution" : "升级 OpenSSH 到最新版本<p>从以下地址下载并应用更新：<a href=\"ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH\">ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH</a></p><p><p>OpenSSH的最新版本是7.6。</p>\n<p>虽然你可以随时<a href=\"http://www.openssh.com/portable.html\">从源代码构建OpenSSH </a>，许多平台和发行版为OpenSSH提供了预构建的二进制包。这些预建软件包通常是针对特定分配进行定制和优化的，因此我们建议您使用可用于您的操作系统的软件包。</p></p>",
+          "title" : "OpenSSH漏洞: CVE-2014-2653"
+        }
+      }, {
+        "assetsScanVulnerabilities" : {
+          "id" : "openbsd-openssh-cve-2016-3115",
+          "title" : "OpenSSH漏洞: CVE-2016-3115",
+          "cvss" : 5,
+          "cve" : "CVE-2016-3115",
+          "publishDate" : "2016-03-22",
+          "riskScore" : 419,
+          "severity" : 6,
+          "exploit" : 3,
+          "malware" : 0,
+          "instances" : 1
+        },
+        "vulnerabilitiesDetail" : {
+          "added" : "2016-03-24",
+          "categories" : [ "OpenSSH", "SSH" ],
+          "cves" : [ "CVE-2016-3115" ],
+          "cvss" : {
+            "v2" : {
+              "score" : 5.5,
+              "vector" : "AV:N/AC:L/Au:S/C:P/I:P/A:N"
+            }
+          },
+          "denialOfService" : false,
+          "description" : {
+            "html" : "<p>OpenSSH 7.2p2之前版本sshd的session.c中的多个CRLF注入漏洞允许远程经过身份验证的用户通过与(1) do_authenticated1和(2) session_x11_req函数相关的特制X11转发数据绕过预设的shell命令限制。</p>"
+          },
+          "exploits" : 3,
+          "id" : "openbsd-openssh-cve-2016-3115",
+          "malwareKits" : 0,
+          "modified" : "2018-01-08",
+          "riskScore" : 419.03,
+          "severity" : "Severe",
+          "severityScore" : 6,
+          "solution" : "升级至OpenSSH 7.2p2<p>从以下地址下载并应用更新：<a href=\"ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH\">ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH</a></p><p><p>当<a href=\"http://www.openssh.com/portable.html\">从源</a>搭建OpenSSH时，多个平台和版本提供提前搭建的适用于OpenSSH的二进制包。这些提前搭建的包通常为自定义和优化的，所以如果适用于您的操作系统，推荐使用这些包。</p></p>",
+          "title" : "OpenSSH漏洞: CVE-2016-3115"
+        }
+      }, {
+        "assetsScanVulnerabilities" : {
+          "id" : "openbsd-openssh-cve-2018-15919",
+          "title" : "OpenSSH 漏洞: CVE-2018-15919",
+          "cvss" : 5,
+          "cve" : "CVE-2018-15919",
+          "publishDate" : "2018-08-28",
+          "riskScore" : 437,
+          "severity" : 5,
+          "exploit" : 0,
+          "malware" : 0,
+          "instances" : 1
+        },
+        "vulnerabilitiesDetail" : {
+          "added" : "2018-11-09",
+          "categories" : [ "Information Gathering", "OpenSSH", "SSH" ],
+          "cves" : [ "CVE-2018-15919" ],
+          "cvss" : {
+            "v2" : {
+              "score" : 5.0,
+              "vector" : "AV:N/AC:L/Au:N/C:P/I:N/A:N"
+            }
+          },
+          "denialOfService" : false,
+          "description" : {
+            "html" : "\n    \n<p>Remotely observable behaviour in auth-gss2.c in OpenSSH through 7.8 could be used by remote attackers to detect existence of users on a target system when GSS2 is in use. NOTE: the discoverer states &#39;We understand that the OpenSSH developers do not want to treat such a username enumeration (or &quot;oracle&quot;) as a vulnerability.&#39;</p>\n  "
+          },
+          "exploits" : 0,
+          "id" : "openbsd-openssh-cve-2018-15919",
+          "malwareKits" : 0,
+          "modified" : "2018-11-09",
+          "riskScore" : 437.28,
+          "severity" : "Severe",
+          "severityScore" : 5,
+          "solution" : "升级 OpenSSH 到最新版本<p>从以下地址下载并应用更新：<a href=\"ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH\">ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH</a></p><p><p>OpenSSH的最新版本是7.6。</p>\n<p>虽然你可以随时<a href=\"http://www.openssh.com/portable.html\">从源代码构建OpenSSH </a>，许多平台和发行版为OpenSSH提供了预构建的二进制包。这些预建软件包通常是针对特定分配进行定制和优化的，因此我们建议您使用可用于您的操作系统的软件包。</p></p>",
+          "title" : "OpenSSH 漏洞: CVE-2018-15919"
+        }
+      }, {
+        "assetsScanVulnerabilities" : {
+          "id" : "openbsd-openssh-cve-2017-15906",
+          "title" : "OpenSSH 漏洞: CVE-2017-15906",
+          "cvss" : 5,
+          "cve" : "CVE-2017-15906",
+          "publishDate" : "2017-10-25",
+          "riskScore" : 192,
+          "severity" : 5,
+          "exploit" : 0,
+          "malware" : 0,
+          "instances" : 1
+        },
+        "vulnerabilitiesDetail" : {
+          "added" : "2017-11-17",
+          "categories" : [ "OpenSSH", "SSH" ],
+          "cves" : [ "CVE-2017-15906" ],
+          "cvss" : {
+            "v2" : {
+              "score" : 5.0,
+              "vector" : "AV:N/AC:L/Au:N/C:N/I:P/A:N"
+            }
+          },
+          "denialOfService" : false,
+          "description" : {
+            "html" : "<p>在7.6之前版本的OpenSSH中的sftp-server.c中的process_open函数不能正确地防止在只读模式时执行写操作，这允许攻击者创建零长度文件。</p>"
+          },
+          "exploits" : 0,
+          "id" : "openbsd-openssh-cve-2017-15906",
+          "malwareKits" : 0,
+          "modified" : "2018-04-13",
+          "riskScore" : 192.34,
+          "severity" : "Severe",
+          "severityScore" : 5,
+          "solution" : "升级到 OpenSSH 版本 7.6<p>从以下站点下载并应用升级: <a href=\"ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH\">ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH</a></p><p><p>虽然您始终可以<a href=\"http://www.openssh.com/portable.html\">从源代码构建OpenSSH </a>，但许多平台和发行版都为OpenSSH提供了预构建的二进制包。这些预构建的软件包通常是针对特定分发进行定制和优化的，因此我们建议您使用这些软件包（如果它们适用于您的操作系统）。</p></p>",
+          "title" : "OpenSSH 漏洞: CVE-2017-15906"
+        }
+      }, {
+        "assetsScanVulnerabilities" : {
+          "id" : "openbsd-openssh-cve-2018-15473",
+          "title" : "OpenSSH 漏洞: CVE-2018-15473",
+          "cvss" : 5,
+          "cve" : "CVE-2018-15473",
+          "publishDate" : "2018-08-17",
+          "riskScore" : 441,
+          "severity" : 5,
+          "exploit" : 4,
+          "malware" : 0,
+          "instances" : 1
+        },
+        "vulnerabilitiesDetail" : {
+          "added" : "2018-10-18",
+          "categories" : [ "Information Gathering", "OpenSSH", "SSH" ],
+          "cves" : [ "CVE-2018-15473" ],
+          "cvss" : {
+            "v2" : {
+              "score" : 5.0,
+              "vector" : "AV:N/AC:L/Au:N/C:P/I:N/A:N"
+            }
+          },
+          "denialOfService" : false,
+          "description" : {
+            "html" : "\n    \n<p>OpenSSH through 7.7 is prone to a user enumeration vulnerability due to not delaying bailout for an invalid authenticating user until after the packet containing the request has been fully parsed, related to auth2-gss.c, auth2-hostbased.c, and auth2-pubkey.c.</p>\n  "
+          },
+          "exploits" : 4,
+          "id" : "openbsd-openssh-cve-2018-15473",
+          "malwareKits" : 0,
+          "modified" : "2018-10-18",
+          "riskScore" : 441.39,
+          "severity" : "Severe",
+          "severityScore" : 5,
+          "solution" : "升级 OpenSSH 到最新版本<p>从以下地址下载并应用更新：<a href=\"ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH\">ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH</a></p><p><p>OpenSSH的最新版本是7.6。</p>\n<p>虽然你可以随时<a href=\"http://www.openssh.com/portable.html\">从源代码构建OpenSSH </a>，许多平台和发行版为OpenSSH提供了预构建的二进制包。这些预建软件包通常是针对特定分配进行定制和优化的，因此我们建议您使用可用于您的操作系统的软件包。</p></p>",
+          "title" : "OpenSSH 漏洞: CVE-2018-15473"
+        }
+      }, {
+        "assetsScanVulnerabilities" : {
+          "id" : "openbsd-openssh-cve-2016-1907",
+          "title" : "OpenSSH漏洞: CVE-2016-1907",
+          "cvss" : 5,
+          "cve" : "CVE-2016-1907",
+          "publishDate" : "2016-01-19",
+          "riskScore" : 167,
+          "severity" : 5,
+          "exploit" : 0,
+          "malware" : 0,
+          "instances" : 1
+        },
+        "vulnerabilitiesDetail" : {
+          "added" : "2016-01-25",
+          "categories" : [ "Denial of Service", "OpenSSH", "SSH" ],
+          "cves" : [ "CVE-2016-1907" ],
+          "cvss" : {
+            "v2" : {
+              "score" : 5.0,
+              "vector" : "AV:N/AC:L/Au:N/C:N/I:N/A:P"
+            }
+          },
+          "denialOfService" : true,
+          "description" : {
+            "html" : "<p>OpenSSH 7.1p2之前版本的packet.c中的ssh_packet_read_poll2函数允许远程攻击者通过特制网络流量导致拒绝服务（越界读取和应用程序崩溃）。</p>"
+          },
+          "exploits" : 0,
+          "id" : "openbsd-openssh-cve-2016-1907",
+          "malwareKits" : 0,
+          "modified" : "2017-10-30",
+          "riskScore" : 167.18,
+          "severity" : "Severe",
+          "severityScore" : 5,
+          "solution" : "升级至OpenSSH 7.1p2<p>从以下地址下载并应用更新：<a href=\"ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH\">ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH</a></p><p><p>当<a href=\"http://www.openssh.com/portable.html\">从源</a>搭建OpenSSH时，多个平台和版本提供提前搭建的适用于OpenSSH的二进制包。这些提前搭建的包通常为自定义和优化的，所以如果适用于您的操作系统，推荐使用这些包。</p></p>",
+          "title" : "OpenSSH漏洞: CVE-2016-1907"
+        }
+      }, {
+        "assetsScanVulnerabilities" : {
+          "id" : "openbsd-openssh-cve-2016-10708",
+          "title" : "OpenSSH 漏洞: CVE-2016-10708",
+          "cvss" : 5,
+          "cve" : "CVE-2016-10708",
+          "publishDate" : "2018-01-21",
+          "riskScore" : 152,
+          "severity" : 5,
+          "exploit" : 0,
+          "malware" : 0,
+          "instances" : 1
+        },
+        "vulnerabilitiesDetail" : {
+          "added" : "2018-02-12",
+          "categories" : [ "Denial of Service", "OpenSSH", "SSH" ],
+          "cves" : [ "CVE-2016-10708" ],
+          "cvss" : {
+            "v2" : {
+              "score" : 5.0,
+              "vector" : "AV:N/AC:L/Au:N/C:N/I:N/A:P"
+            }
+          },
+          "denialOfService" : true,
+          "description" : {
+            "html" : "<p>7.4之前版本的OpenSSH中的sshd允许远程攻击者通过无序的NEWKEYS消息导致拒绝服务（NULL指针解除引用和守护进程崩溃），如Honggfuzz所示，与kex.c和packet.c有关。</p>"
+          },
+          "exploits" : 0,
+          "id" : "openbsd-openssh-cve-2016-10708",
+          "malwareKits" : 0,
+          "modified" : "2018-02-12",
+          "riskScore" : 151.68,
+          "severity" : "Severe",
+          "severityScore" : 5,
+          "solution" : "升级to OpenSSH 7.4<p>从以下地址下载并应用更新：<a href=\"ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH\">ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH</a></p><p><p>当您一直使用<a href=\"http://www.openssh.com/portable.html\">构建来自源的OpenSSH时</a>,\n多个平台和版本为Apache HTTP服务器提供预先编译的二进制包。对于特殊版本通常自定义和优化预先编译的包。因此，如果它们适用于操作系统，我们推荐您使用这些包。</p></p>",
+          "title" : "OpenSSH 漏洞: CVE-2016-10708"
+        }
+      }, {
+        "assetsScanVulnerabilities" : {
+          "id" : "openbsd-openssh-cve-2016-0778",
+          "title" : "OpenSSH漏洞: CVE-2016-0778",
+          "cvss" : 4,
+          "cve" : "CVE-2016-0778",
+          "publishDate" : "2016-01-14",
+          "riskScore" : 384,
+          "severity" : 5,
+          "exploit" : 0,
+          "malware" : 0,
+          "instances" : 1
+        },
+        "vulnerabilitiesDetail" : {
+          "added" : "2016-01-25",
+          "categories" : [ "Denial of Service", "OpenSSH", "SSH" ],
+          "cves" : [ "CVE-2016-0778" ],
+          "cvss" : {
+            "v2" : {
+              "score" : 4.6,
+              "vector" : "AV:N/AC:H/Au:S/C:P/I:P/A:P"
+            }
+          },
+          "denialOfService" : false,
+          "description" : {
+            "html" : "<p>当启用某些代理和转发选项时，OpenSSH 5.x, 6.x和7.x至7.1p2的客户端所在的roaming_common.c中的(1) roaming_read 和(2) roaming_write函数不能正确保持连接文件描述符，这允许远程服务器通过请求多个转发导致拒绝服务（基于堆的缓冲区溢出）或可能产生不明的其他影响。</p>"
+          },
+          "exploits" : 0,
+          "id" : "openbsd-openssh-cve-2016-0778",
+          "malwareKits" : 0,
+          "modified" : "2017-10-30",
+          "riskScore" : 384.35,
+          "severity" : "Severe",
+          "severityScore" : 5,
+          "solution" : "升级 OpenSSH 到最新版本<p>从以下地址下载并应用更新：<a href=\"ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH\">ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH</a></p><p><p>OpenSSH的最新版本是7.6。</p>\n<p>虽然你可以随时<a href=\"http://www.openssh.com/portable.html\">从源代码构建OpenSSH </a>，许多平台和发行版为OpenSSH提供了预构建的二进制包。这些预建软件包通常是针对特定分配进行定制和优化的，因此我们建议您使用可用于您的操作系统的软件包。</p></p>",
+          "title" : "OpenSSH漏洞: CVE-2016-0778"
+        }
+      }, {
+        "assetsScanVulnerabilities" : {
+          "id" : "openbsd-openssh-cve-2016-6210",
+          "title" : "OpenSSH漏洞： CVE-2016-6210",
+          "cvss" : 4,
+          "cve" : "CVE-2016-6210",
+          "publishDate" : "2017-02-13",
+          "riskScore" : 344,
+          "severity" : 4,
+          "exploit" : 3,
+          "malware" : 0,
+          "instances" : 1
+        },
+        "vulnerabilitiesDetail" : {
+          "added" : "2017-03-13",
+          "categories" : [ "OpenSSH", "SSH" ],
+          "cves" : [ "CVE-2016-6210" ],
+          "cvss" : {
+            "v2" : {
+              "score" : 4.3,
+              "vector" : "AV:N/AC:M/Au:N/C:P/I:N/A:N"
+            }
+          },
+          "denialOfService" : false,
+          "description" : {
+            "html" : "<p>OpenSSH 7.3之前版本的sshd，当SHA256或SHA512用于用户密码散列时，当用户名不存在时，使用BLOWFISH散列静态密码，这允许远程攻击者通过利用提供大密码的响应之间的时序差异来枚举用户。</p>"
+          },
+          "exploits" : 3,
+          "id" : "openbsd-openssh-cve-2016-6210",
+          "malwareKits" : 0,
+          "modified" : "2018-01-08",
+          "riskScore" : 343.56,
+          "severity" : "Severe",
+          "severityScore" : 4,
+          "solution" : "升级至OpenSSH 7.3<p>从以下地址下载并应用更新：<a href=\"ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH\">ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH</a></p><p><p>当<a href=\"http://www.openssh.com/portable.html\">从源</a>搭建OpenSSH时，多个平台和版本提供提前搭建的适用于OpenSSH的二进制包。这些提前搭建的包通常为自定义和优化的，所以如果适用于您的操作系统，推荐使用这些包。</p></p>",
+          "title" : "OpenSSH漏洞： CVE-2016-6210"
+        }
+      }, {
+        "assetsScanVulnerabilities" : {
+          "id" : "openbsd-openssh-cve-2015-5352",
+          "title" : "OpenSSH漏洞: CVE-2015-5352",
+          "cvss" : 4,
+          "cve" : "CVE-2015-5352",
+          "publishDate" : "2015-08-02",
+          "riskScore" : 165,
+          "severity" : 4,
+          "exploit" : 0,
+          "malware" : 0,
+          "instances" : 1
+        },
+        "vulnerabilitiesDetail" : {
+          "added" : "2015-08-05",
+          "categories" : [ "OpenSSH", "SSH" ],
+          "cves" : [ "CVE-2015-5352" ],
+          "cvss" : {
+            "v2" : {
+              "score" : 4.3,
+              "vector" : "AV:N/AC:M/Au:N/C:N/I:P/A:N"
+            }
+          },
+          "denialOfService" : false,
+          "description" : {
+            "html" : "<p>当使用ForwardX11Trusted模式时，OpenSSH 6.9之前版本ssh的channels.c中的x11_open_helper函数缺少对X连接的拒绝截止日期的检查，这更便于远程攻击者通过准许的时间窗口外的连接绕过预设的访问限制。</p>"
+          },
+          "exploits" : 0,
+          "id" : "openbsd-openssh-cve-2015-5352",
+          "malwareKits" : 0,
+          "modified" : "2018-01-08",
+          "riskScore" : 165.15,
+          "severity" : "Severe",
+          "severityScore" : 4,
+          "solution" : "升级至OpenSSH 6.9<p>从以下地址下载并应用更新: <a href=\"ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH\">ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH</a></p><p><p>即使您总可以从<a href=\"http://www.openssh.com/portable.html\">网址的资源</a>中构建OpenSSH，许多平台和分布也为 OpenSSH 提供了预建的二进制包。这些预构建的软件包通常针对特定的分布进行定制和优化，因此我们建议如果它们可用于您的操作系统您可以使用该包。</p></p>",
+          "title" : "OpenSSH漏洞: CVE-2015-5352"
+        }
+      }, {
+        "assetsScanVulnerabilities" : {
+          "id" : "openbsd-openssh-cve-2019-6110",
+          "title" : "OpenSSH Vulnerability: CVE-2019-6110",
+          "cvss" : 4,
+          "cve" : "CVE-2019-6110",
+          "publishDate" : "2019-01-31",
+          "riskScore" : 129,
+          "severity" : 4,
+          "exploit" : 1,
+          "malware" : 0,
+          "instances" : 1
+        },
+        "vulnerabilitiesDetail" : {
+          "added" : "2019-02-07",
+          "categories" : [ "OpenSSH", "SSH" ],
+          "cves" : [ "CVE-2019-6110" ],
+          "cvss" : {
+            "v2" : {
+              "score" : 4.0,
+              "vector" : "AV:N/AC:H/Au:N/C:P/I:P/A:N"
+            }
+          },
+          "denialOfService" : false,
+          "description" : {
+            "html" : "\n    \n<p>In OpenSSH 7.9, due to accepting and displaying arbitrary stderr output from the server, a malicious server (or Man-in-The-Middle attacker) can manipulate the client output, for example to use ANSI control codes to hide additional files being transferred.</p>\n  "
+          },
+          "exploits" : 1,
+          "id" : "openbsd-openssh-cve-2019-6110",
+          "malwareKits" : 0,
+          "modified" : "2019-02-07",
+          "riskScore" : 128.53,
+          "severity" : "Severe",
+          "severityScore" : 4,
+          "solution" : "升级 OpenSSH 到最新版本<p>从以下地址下载并应用更新：<a href=\"ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH\">ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH</a></p><p><p>OpenSSH的最新版本是7.6。</p>\n<p>虽然你可以随时<a href=\"http://www.openssh.com/portable.html\">从源代码构建OpenSSH </a>，许多平台和发行版为OpenSSH提供了预构建的二进制包。这些预建软件包通常是针对特定分配进行定制和优化的，因此我们建议您使用可用于您的操作系统的软件包。</p></p>",
+          "title" : "OpenSSH Vulnerability: CVE-2019-6110"
+        }
+      }, {
+        "assetsScanVulnerabilities" : {
+          "id" : "openbsd-openssh-cve-2019-6109",
+          "title" : "OpenSSH Vulnerability: CVE-2019-6109",
+          "cvss" : 4,
+          "cve" : "CVE-2019-6109",
+          "publishDate" : "2019-01-31",
+          "riskScore" : 125,
+          "severity" : 4,
+          "exploit" : 0,
+          "malware" : 0,
+          "instances" : 1
+        },
+        "vulnerabilitiesDetail" : {
+          "added" : "2019-02-04",
+          "categories" : [ "OpenSSH", "SSH" ],
+          "cves" : [ "CVE-2019-6109" ],
+          "cvss" : {
+            "v2" : {
+              "score" : 4.0,
+              "vector" : "AV:N/AC:H/Au:N/C:P/I:P/A:N"
+            }
+          },
+          "denialOfService" : false,
+          "description" : {
+            "html" : "\n    \n<p>An issue was discovered in OpenSSH 7.9. Due to missing character encoding in the progress display, a malicious server (or Man-in-The-Middle attacker) can employ crafted object names to manipulate the client output, e.g., by using ANSI control codes to hide additional files being transferred. This affects refresh_progress_meter() in progressmeter.c.</p>\n  "
+          },
+          "exploits" : 0,
+          "id" : "openbsd-openssh-cve-2019-6109",
+          "malwareKits" : 0,
+          "modified" : "2019-02-12",
+          "riskScore" : 125.18,
+          "severity" : "Severe",
+          "severityScore" : 4,
+          "solution" : "升级 OpenSSH 到最新版本<p>从以下地址下载并应用更新：<a href=\"ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH\">ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH</a></p><p><p>OpenSSH的最新版本是7.6。</p>\n<p>虽然你可以随时<a href=\"http://www.openssh.com/portable.html\">从源代码构建OpenSSH </a>，许多平台和发行版为OpenSSH提供了预构建的二进制包。这些预建软件包通常是针对特定分配进行定制和优化的，因此我们建议您使用可用于您的操作系统的软件包。</p></p>",
+          "title" : "OpenSSH Vulnerability: CVE-2019-6109"
+        }
+      }, {
+        "assetsScanVulnerabilities" : {
+          "id" : "openbsd-openssh-cve-2016-0777",
+          "title" : "OpenSSH漏洞: CVE-2016-0777",
+          "cvss" : 4,
+          "cve" : "CVE-2016-0777",
+          "publishDate" : "2016-01-14",
+          "riskScore" : 345,
+          "severity" : 4,
+          "exploit" : 0,
+          "malware" : 0,
+          "instances" : 1
+        },
+        "vulnerabilitiesDetail" : {
+          "added" : "2016-01-21",
+          "categories" : [ "OpenSSH", "SSH" ],
+          "cves" : [ "CVE-2016-0777" ],
+          "cvss" : {
+            "v2" : {
+              "score" : 4.0,
+              "vector" : "AV:N/AC:L/Au:S/C:P/I:N/A:N"
+            }
+          },
+          "denialOfService" : false,
+          "description" : {
+            "html" : "<p>OpenSSH 5.x, 6.x和7.x至7.1p2版本的客户端的roaming_common.c中的resend_bytes函数允许远程服务器通过请求传输完整的缓冲区从进程内存获取敏感信息，正如读取私钥所示。</p>"
+          },
+          "exploits" : 0,
+          "id" : "openbsd-openssh-cve-2016-0777",
+          "malwareKits" : 0,
+          "modified" : "2017-10-30",
+          "riskScore" : 345.04,
+          "severity" : "Severe",
+          "severityScore" : 4,
+          "solution" : "升级 OpenSSH 到最新版本<p>从以下地址下载并应用更新：<a href=\"ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH\">ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH</a></p><p><p>OpenSSH的最新版本是7.6。</p>\n<p>虽然你可以随时<a href=\"http://www.openssh.com/portable.html\">从源代码构建OpenSSH </a>，许多平台和发行版为OpenSSH提供了预构建的二进制包。这些预建软件包通常是针对特定分配进行定制和优化的，因此我们建议您使用可用于您的操作系统的软件包。</p></p>",
+          "title" : "OpenSSH漏洞: CVE-2016-0777"
+        }
+      }, {
+        "assetsScanVulnerabilities" : {
+          "id" : "openbsd-openssh-cve-2018-20685",
+          "title" : "OpenSSH Vulnerability: CVE-2018-20685",
+          "cvss" : 2,
+          "cve" : "CVE-2018-20685",
+          "publishDate" : "2019-01-10",
+          "riskScore" : 47,
+          "severity" : 3,
+          "exploit" : 0,
+          "malware" : 0,
+          "instances" : 1
+        },
+        "vulnerabilitiesDetail" : {
+          "added" : "2019-01-31",
+          "categories" : [ "OpenSSH", "SSH" ],
+          "cves" : [ "CVE-2018-20685" ],
+          "cvss" : {
+            "v2" : {
+              "score" : 2.6,
+              "vector" : "AV:N/AC:H/Au:N/C:N/I:P/A:N"
+            }
+          },
+          "denialOfService" : false,
+          "description" : {
+            "html" : "\n    \n<p>In OpenSSH 7.9, scp.c in the scp client allows remote SSH servers to bypass intended access restrictions via the filename of . or an empty filename. The impact is modifying the permissions of the target directory on the client side.</p>\n  "
+          },
+          "exploits" : 0,
+          "id" : "openbsd-openssh-cve-2018-20685",
+          "malwareKits" : 0,
+          "modified" : "2019-02-12",
+          "riskScore" : 46.97,
+          "severity" : "Moderate",
+          "severityScore" : 3,
+          "solution" : "升级 OpenSSH 到最新版本<p>从以下地址下载并应用更新：<a href=\"ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH\">ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH</a></p><p><p>OpenSSH的最新版本是7.6。</p>\n<p>虽然你可以随时<a href=\"http://www.openssh.com/portable.html\">从源代码构建OpenSSH </a>，许多平台和发行版为OpenSSH提供了预构建的二进制包。这些预建软件包通常是针对特定分配进行定制和优化的，因此我们建议您使用可用于您的操作系统的软件包。</p></p>",
+          "title" : "OpenSSH Vulnerability: CVE-2018-20685"
+        }
+      }, {
+        "assetsScanVulnerabilities" : {
+          "id" : "openbsd-openssh-cve-2016-10011",
+          "title" : "OpenSSH漏洞: CVE-2016-10011",
+          "cvss" : 2,
+          "cve" : "CVE-2016-10011",
+          "publishDate" : "2017-01-04",
+          "riskScore" : 300,
+          "severity" : 2,
+          "exploit" : 0,
+          "malware" : 0,
+          "instances" : 1
+        },
+        "vulnerabilitiesDetail" : {
+          "added" : "2017-01-09",
+          "categories" : [ "OpenSSH", "SSH" ],
+          "cves" : [ "CVE-2016-10011" ],
+          "cvss" : {
+            "v2" : {
+              "score" : 2.1,
+              "vector" : "AV:L/AC:L/Au:N/C:P/I:N/A:N"
+            }
+          },
+          "denialOfService" : false,
+          "description" : {
+            "html" : "<p>OpenSSH 7.4之前版本的sshd中的authfile.c没有适当地考虑重新分配对缓冲区内容的影响，这可能会使本地用户通过利用访问特权分离的子进程来获取敏感的私钥信息。</p>"
+          },
+          "exploits" : 0,
+          "id" : "openbsd-openssh-cve-2016-10011",
+          "malwareKits" : 0,
+          "modified" : "2018-01-08",
+          "riskScore" : 300.15,
+          "severity" : "Moderate",
+          "severityScore" : 2,
+          "solution" : "升级to OpenSSH 7.4<p>从以下地址下载并应用更新：<a href=\"ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH\">ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH</a></p><p><p>当您一直使用<a href=\"http://www.openssh.com/portable.html\">构建来自源的OpenSSH时</a>,\n多个平台和版本为Apache HTTP服务器提供预先编译的二进制包。对于特殊版本通常自定义和优化预先编译的包。因此，如果它们适用于操作系统，我们推荐您使用这些包。</p></p>",
+          "title" : "OpenSSH漏洞: CVE-2016-10011"
+        }
+      }, {
+        "assetsScanVulnerabilities" : {
+          "id" : "generic-icmp-timestamp",
+          "title" : "ICMP时间戳回应",
+          "cvss" : 0,
+          "cve" : "CVE-1999-0524",
+          "publishDate" : "1997-08-01",
+          "riskScore" : 0,
+          "severity" : 1,
+          "exploit" : 0,
+          "malware" : 0,
+          "instances" : 1
+        },
+        "vulnerabilitiesDetail" : {
+          "added" : "2004-11-01",
+          "categories" : [ "Network" ],
+          "cves" : [ "CVE-1999-0524" ],
+          "cvss" : {
+            "v2" : {
+              "score" : 0.0,
+              "vector" : "AV:L/AC:L/Au:N/C:N/I:N/A:N"
+            }
+          },
+          "denialOfService" : false,
+          "description" : {
+            "html" : "<p>远程主机响应ICMP时间戳的一个请求。在ICMP时间戳回应包含远程主机的日期和时间。此信息理论上可能用来对付一些系统，去利用在其他设备中的微弱的期限随机数发生器。</p>\n<p>此外，某些操作系统的版本可以通过分析他们对无效的ICMP时间戳请求的反应，精确地采取指纹。</p>"
+          },
+          "exploits" : 0,
+          "id" : "generic-icmp-timestamp",
+          "malwareKits" : 0,
+          "modified" : "2018-03-21",
+          "riskScore" : 0.0,
+          "severity" : "Moderate",
+          "severityScore" : 1,
+          "solution" : "禁用Cisco PIX的ICMP时间戳响应<p><p>正确配置的PIX防火墙可以不响应ICMP数据包的外部接口。在PIX软件版本4.1（6）直到5.2.1，ICMP可以访问PIX的内部接口，PIX不能配置为不响应。在PIX软件版本5.2.1开始，内部接口仍然默认是ICMP，但其内部接口的ICMP响应可以用ICMP命令禁用，如下，在&lt;inside&gt;是内部接口的名称:</p>\n<pre>   icmp deny any 13 &lt;inside&gt;</pre>\n<pre>   icmp deny any 14 &lt;inside&gt;</pre>\n<p>完成配置后不要忘记保存</p>\n<p>更多信息查看Cisco的支持文档<a href=\"http://www.cisco.com/warp/public/110/31.html\">Handling ICMP Pings with the PIX Firewall</a></p>\n<p>最简单和最有效的解决方案是配置你的\n防火墙阻止传入和传出的ICMP报文和ICMP\n类型13（时间戳请求）和14（时间戳响应）。</p></p>禁用Windows XP/2K3的ICMP时间戳响应<p><p>在ICMP配置面板中选择Windows防火墙通过取消勾选&quot;允许传入的时间戳请求&quot;可以可以禁用ICMP时间戳的响应。\n    更多信息请看<a href=\"http://support.microsoft.com/kb/313190\">http://support.microsoft.com/kb/313190</a></p>\n<p>最简单和最有效的解决办法是配置你的防火墙阻止传入和传出的ICMP类型13（ICMP时间戳请求）和14（时间戳响应）。</p></p>\n<p><p>在ICMP配置面板中选择Windows防火墙通过取消勾选&quot;允许传入的时间戳请求&quot;可以可以禁用ICMP时间戳的响应。</p>\n<ol>\n<li>进入网络连接控制面板。</li>\n<li>Right click on the network adapter and select &quot;properties&quot;, or select the internet adapter and select File-&gt;Properties.\n\n右键单击&quot;网络适配器&quot;，选择&quot;属性&quot;，或选择&quot;网络适配器&quot;和选择&quot;文件&quot;-&gt;&quot;属性&quot;。</li>\n<li>选择 &quot;高级&quot; tab.</li>\n<li>在防火墙的窗口, 选择&quot;设置&quot;.</li>\n<li>选择&quot;常规&quot; tab.</li>\n<li>选择&quot;on (recommended)&quot;选项，开启防火墙.</li>\n<li>选择 &quot;高级&quot; tab.</li>\n<li>在防火墙的窗口, 选择&quot;设置&quot;.</li>\n<li>取消 &quot;允许传入的时间戳请求&quot; 选项.</li>\n<li>选择&quot;OK&quot;退出ICMP 设置窗口，保存退出.</li>\n<li>选择&quot;OK&quot; 退出Windows防火墙窗口保存设置.</li>\n<li>选择&quot;OK&quot; 退出网络是配置窗口.</li></ol>\n<p>更多信息请看:<a href=\"http://www.microsoft.com/resources/documentation/windows/xp/all/proddocs/en-us/hnw_understanding_firewall.mspx?mfr=true\">http://www.microsoft.com/resources/documentation/windows/xp/all/proddocs/en-us/hnw_understanding_firewall.mspx?mfr=true</a></p></p>禁用SGI Irix的ICMP时间戳响应<p><p>IRIX不提供禁用ICMP时间戳响应的途径。因此，应采用ipfilterd和/或通过防火墙阻断受影响主机的ICMP。</p>\n<p>最简单有效的解决方案是对防火墙进行配置，阻止输入和输出13型（时间戳请求）和14型ICMP数据包（时间戳响应）。</p></p>禁用Windows NT 4的ICMP时间戳响应<p><p>Windows NT 4不提供阻止ICMP数据包的途径。因此，应通过防火墙阻止它们。</p>\n<p>最简单有效的解决方案是对防火墙进行配置，阻止输入和输出13型（时间戳请求）和14型ICMP数据包（时间戳响应）。</p></p>禁用Solaris的TCMP时间戳响应<p><p>执行以下命令：</p><pre>   /usr/sbin/ndd -set /dev/ip ip_respond_to_timestamp 0</pre><pre>   /usr/sbin/ndd -set /dev/ip ip_respond_to_timestamp_broadcast 0</pre><p>最简单有效的解决方案是对防火墙进行配置，阻止输入和输出13型（时间戳请求）和14型ICMP数据包（时间戳响应）。</p></p>禁用Linux的ICMP时间戳响应<p><p>Linux既不提供sysctl也不提供/proc/sys/net/ipv4接口使ICMP时间戳响应禁用。因此，应采用iptables和/或通过防火墙阻止受影响的主机的ICMP。例如：</p>\n<pre>   ipchains -A input -p icmp --icmp-type timestamp-request -j DROP</pre>\n<pre>   ipchains -A output -p icmp --icmp-type timestamp-reply -j DROP</pre><p>最简单有效的解决方案是对防火墙进行配置，阻止输入和输出13型（时间戳请求）和14型ICMP数据包（时间戳响应）。</p></p>禁用Windows 2000的ICMP时间戳响应<p><p>使用IPSec过滤器功能定义和实现一个IP筛选列表阻止ICMP13、14类型。注意，在&quot;网络和拨号连接&quot;控制面板的标准TCP/IP的阻止能力不能阻止ICMP（只能阻止TCP 和UDP）。IPSec过滤器的功能与IPSec严格标准相关，允许选择性地阻断这些ICMP包。 更多信息请查阅<a href=\"http://support.microsoft.com/kb/313190\">http://support.microsoft.com/kb/313190</a></p>\n<p>最简单和最有效的解决办法是配置你的防火墙阻止传入和传出的ICMP类型13（子网掩码请求）和14（子网掩码响应）的ICMP 包。</p></p>禁用HP/UX的ICMP时间戳响应<p><p>执行以下命令：</p>\n<p>ndd -set /dev/ip ip_respond_to_timestamp_broadcast 0</p>\n<p>最简单有效的解决方案是对防火墙进行配置，阻止输入和输出13型（时间戳请求）和14型ICMP数据包（时间戳响应）。</p></p>禁用Cisco IOS的ICMP时间戳响应<p><p>用ACL阻止13型和14型ICMP。例如：</p><pre>   deny icmp any any 13</pre><pre>   deny icmp any any 14</pre><p>注意，一般情况下最好采用能通过默认值阻止全部的ACL，然后选择性地允许特定类型的通信。例如，阻止全部，然后仅允许ICMP不可达、ICMP回波应答、ICMP超时和ICMP源抑制：</p><pre>   permit icmp any any unreachable</pre><pre>   permit icmp any any echo-reply</pre><pre>   permit icmp any any time-exceeded</pre><pre>   permit icmp any any source-quench</pre><p>最简单有效的解决方案是对防火墙进行配置，阻止输入和输出13型（时间戳请求）和14型ICMP数据包（时间戳响应）。</p></p>禁用OpenBSD的TCMP时间戳响应<p><p>设置&quot;net.inet.icmp.tstamprepl&quot; sysctl变量为0。</p><pre>   sysctl -w net.inet.icmp.tstamprepl=0</pre><p>最简单有效的解决方案是对防火墙进行配置，阻止输入和输出13型（时间戳请求）和14型ICMP数据包（时间戳响应）。</p></p>禁用ICMP时间戳响应<p><p>禁用对设备的ICMP时间戳响应。如果设备不支持这种级别的配置，最新且最有效的解决办法是配置防火墙通过13型（时间戳请求）和14型（时间戳响应）阻止输入和输出ICMP。</p></p>禁用Windows Vista/2008的ICMP时间戳响应<p><p>ICMP时间戳响应可通过netsh命令行公用程序禁用。</p><ol><li>进入Windows控制面板。</li><li>选择&quot;Windows Firewall&quot;.</li><li>在Windows Firewall选项框中，选择&quot;更改设置&quot;。</li><li>通过选择&quot;(推荐)&quot; 选项启用防火墙。</li><li>打开命令提示符。</li><li>输入&quot;防火墙设置icmpsetting 13 禁用&quot;</li></ol><p>更多信息请参照：<a href=\"http://www.microsoft.com/resources/documentation/windows/xp/all/proddocs/en-us/hnw_understanding_firewall.mspx?mfr=true\">http://www.microsoft.com/resources/documentation/windows/xp/all/proddocs/en-us/hnw_understanding_firewall.mspx?mfr=true</a></p></p>",
+          "title" : "ICMP时间戳回应"
+        }
+      } ],
+      "portResult" : [ {
+        "port" : 22,
+        "protocol" : "TCP"
+      }, {
+        "port" : 5900,
+        "protocol" : "TCP"
+      } ],
+      "subTaskid" : "4192"
+    } ]
+  },
+  "scanResult" : {
+    "assets" : 1,
+    "duration" : "PT1M46.083S",
+    "endTime" : "2019-04-11T01:37:56.157Z",
+    "engineId" : 0,
+    "engineName" : "Local scan engine",
+    "id" : 106,
+    "scanType" : "Manual",
+    "startTime" : "2019-04-11T01:36:10.074Z",
+    "status" : "FINISHED",
+    "vulnerabilities" : {
+      "critical" : 7,
+      "moderate" : 3,
+      "severe" : 16,
+      "total" : 26
+    }
+  }
+}

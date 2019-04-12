@@ -655,7 +655,7 @@ public class App {
         Map<String, Object> mapParams = new HashMap<>();
         mapParams.put("active", "true");
         mapParams.put("page", 0);
-        mapParams.put("size", 10);
+        mapParams.put("size", 500);
 
         String url = "/api/v3/tasks/"+taskReturn.getId()+"/scans";
         byte[] result = null;
@@ -769,14 +769,16 @@ public class App {
      * @throws  Exception  异常情况
      *
      */
-    private AssetsQueryResult queryAssets() throws Exception {
+    private AssetsQueryResult queryAssets(int taskId) throws Exception {
         HttpClient client = new HttpClient(host, port);
         // 查询资产
         Map<String, Object> mapParams = new HashMap<>();
         mapParams.put("page", 0);
-        mapParams.put("size", 10);
+        mapParams.put("size", 500);
 
-        String url = "/api/v3/assets";
+        // /api/v3/tasks/{id}/assets
+        //String url = "/api/v3/assets";
+        String url = "/api/v3/tasks/"+taskId+"/assets";
         byte[] result = null;
         try {
             result = testNormal(client,url, HttpRequestType.HTTP_GET, mapParams, null, null);
@@ -802,7 +804,7 @@ public class App {
         // 查询资产漏洞
         Map<String, Object> mapParams = new HashMap<>();
         mapParams.put("page", 0);
-        mapParams.put("size", 10);
+        mapParams.put("size", 500);
 
         String url = "/api/v3/assets/"+assetId+"/vulnerabilities";
         byte[] result = null;
@@ -1922,7 +1924,7 @@ public class App {
                 // 查询资产
                 AssetsQueryResult assetsAll = null;
                 try {
-                    assetsAll = app.queryAssets();
+                    assetsAll = app.queryAssets(taskId);
                 } catch (Exception e) {
                     scanReslutMixWithError.setMessage("查询资产失败");
                     break;
@@ -1955,25 +1957,26 @@ public class App {
                                                         // todo
                                                     }
 
-                                                    List<SingleSolutions> singleSolutionss = new ArrayList<>();
-                                                    try {
-                                                        VulnerabilitiesSolutions solutions = app.queryVulnerabilitiesSolutions(asv.getId());
-                                                        if (null != solutions) {
-                                                            List<String> solutionIds = solutions.getResources();
-                                                            if (null != solutionIds) {
-                                                                for (String id : solutionIds) {
-                                                                    try {
-                                                                        singleSolutionss.add(app.querySingleSolutions(id));
-                                                                    } catch (Exception e) {
-                                                                        // todo
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    } catch (Exception e) {
-                                                        // todo
-                                                    }
-                                                    vulnerabilitiesMixs.add(new VulnerabilitiesMix(asv, detail, singleSolutionss));
+                                                    // 漏洞详情中包含了解决方案，所以不需要再单独获取
+//                                                    List<SingleSolutions> singleSolutionss = new ArrayList<>();
+//                                                    try {
+//                                                        VulnerabilitiesSolutions solutions = app.queryVulnerabilitiesSolutions(asv.getId());
+//                                                        if (null != solutions) {
+//                                                            List<String> solutionIds = solutions.getResources();
+//                                                            if (null != solutionIds) {
+//                                                                for (String id : solutionIds) {
+//                                                                    try {
+//                                                                        singleSolutionss.add(app.querySingleSolutions(id));
+//                                                                    } catch (Exception e) {
+//                                                                        // todo
+//                                                                    }
+//                                                                }
+//                                                            }
+//                                                        }
+//                                                    } catch (Exception e) {
+//                                                        // todo
+//                                                    }
+                                                    vulnerabilitiesMixs.add(new VulnerabilitiesMix(asv, detail, null/*singleSolutionss*/));
                                                 }
                                             }
                                         }
