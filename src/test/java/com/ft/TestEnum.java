@@ -61,7 +61,14 @@ public class TestEnum {
     }
 
     @Test
-    public void test2() {
+    public void test2() throws Exception {
+        String methodName = "level";
+        myEnum2 m2 = myEnum2.valueOf(methodName);
+        Method[] methods = FieldConfig.class.getDeclaredMethods();
+        System.out.println("method is " + methodName + " value is " + getFieldInfo(m2, "value"));
+        for (Method md : methods) {
+            System.out.println("method is " + md.getName() + " value is " + getFieldInfo(m2, md.getName()));
+        }
     }
 
     public Object getFieldInfo(Object enumm, String name) throws Exception{
